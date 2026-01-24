@@ -1,0 +1,60 @@
+CUSTOM PANDA CHEF IMAGE INSTRUCTIONS
+=====================================
+
+To use your own panda chef image (like the one in your splash screen design):
+
+1. SAVE YOUR IMAGE
+   - Save your panda chef image as: panda-chef.png (or .jpg)
+   - Place it in this folder: /public/
+
+2. UPDATE SPLASHSCREEN.JSX
+   - Open: src/components/common/SplashScreen.jsx
+   - Find the section with comment: "/* Panda Chef Illustration */"
+   - Replace the CSS-based panda with:
+
+   <img 
+     src="/panda-chef.png" 
+     alt="HungerWood Panda Chef"
+     className="w-full h-full object-contain p-4"
+   />
+
+3. OPTIMAL IMAGE SPECS
+   - Size: 512x512px or 1024x1024px
+   - Format: PNG (with transparent background) or JPEG
+   - File size: Under 200KB for best performance
+   - Style: Match the wooden frame aesthetic
+
+4. EXAMPLE CODE
+   Replace lines 39-103 in SplashScreen.jsx with:
+
+   <div className="w-48 h-48 bg-gradient-to-b from-amber-400 to-amber-500 rounded-xl flex items-center justify-center relative overflow-hidden">
+     {/* Wood grain pattern background */}
+     <div className="absolute inset-0 opacity-20">
+       <div className="w-full h-full bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,rgba(0,0,0,0.1)_2px,rgba(0,0,0,0.1)_4px)]"></div>
+     </div>
+     
+     {/* Your custom panda chef image */}
+     <img 
+       src="/panda-chef.png" 
+       alt="HungerWood Panda Chef"
+       className="w-full h-full object-contain relative z-10 p-2"
+     />
+   </div>
+
+5. TEST
+   - Save the file
+   - Refresh your browser
+   - Clear cache if needed (Ctrl+Shift+R)
+
+CURRENT SETUP:
+--------------
+Currently using a CSS-based panda illustration.
+This provides a fallback if no custom image is available.
+You can keep this or replace it with your own image.
+
+TIPS:
+-----
+- Use PNG for transparent backgrounds
+- Ensure panda is centered in the image
+- Test on different screen sizes
+- Optimize image size for web (compress if needed)

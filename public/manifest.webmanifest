@@ -1,0 +1,52 @@
+{
+  "name": "HungerWood - Food Ordering",
+  "short_name": "HungerWood",
+  "description": "Order delicious multi-cuisine food from HungerWood, Gaya, Bihar",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFF8F1",
+  "theme_color": "#6B3F2A",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo_1.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo_1.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "restaurant", "delivery"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Menu",
+      "short_name": "Menu",
+      "description": "Browse our menu",
+      "url": "/menu",
+      "icons": [
+        {
+          "src": "/logo_1.jpeg",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "short_name": "Orders",
+      "description": "View your orders",
+      "url": "/orders",
+      "icons": [
+        {
+          "src": "/logo_1.jpeg",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
