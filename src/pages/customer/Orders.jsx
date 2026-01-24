@@ -205,7 +205,8 @@ const Orders = () => {
 
       <main className="max-w-md mx-auto pb-20 w-full">
         {/* Filter and Sort Section */}
-        <div className="px-4 mt-4 mb-2">
+        
+        {ordersToDisplay.length > 10 && (<div className="px-4 mt-4 mb-2">
           <div className="flex items-center gap-2 justify-between">
             {/* Filter Button */}
             <button
@@ -303,10 +304,10 @@ const Orders = () => {
               )}
             </div>
           )}
-        </div>
+        </div>)}
 
         {/* Results Count */}
-        {!showFilters && ordersToDisplay.length > 0 && (
+        {!showFilters && ordersToDisplay.length > 10 && (
           <div className="px-4 mb-3">
             <p className="text-sm text-[#887263] dark:text-gray-400">
               {ordersToDisplay.length} {ordersToDisplay.length === 1 ? 'order' : 'orders'} found

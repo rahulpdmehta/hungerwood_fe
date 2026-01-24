@@ -106,7 +106,8 @@ const ItemDetails = () => {
 
   const handleAddToCart = () => {
     addItem({
-      id: item.id,
+      id: item.id || item._id,
+      _id: item._id || item.id, // Preserve both for compatibility
       name: item.name,
       price: calculateTotalPrice(),
       discount: item.discount || 0,

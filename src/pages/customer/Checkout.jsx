@@ -105,13 +105,24 @@ const Checkout = () => {
     setIsPlacingOrder(true);
 
     try {
-      // Validate cart items have IDs
-      const invalidItems = items.filter(item => !item.id && !item._id);
+      // Validate cart items have IDs and other required fields
+      const invalidItems = items.filter(item => {
+        const hasId = item.id || item._id;
+        const hasRequiredFields = item.name && item.price && item.quantity;
+        return !hasId || !hasRequiredFields;
+      });
+      
       if (invalidItems.length > 0) {
-        console.error('Cart items missing IDs:', invalidItems);
-        alert('Some items in your cart are invalid. Please clear your cart and add items again.');
-        setIsPlacingOrder(false);
-        return;
+        console.error('Cart items missing required fields:', invalidItems);
+        // Only show alert if items are truly invalid (missing name, price, or quantity)
+        const trulyInvalid = invalidItems.filter(item => !item.name || !item.price || !item.quantity);
+        if (trulyInvalid.length > 0) {
+          alert('Some items in your cart are invalid. Please clear your cart and add items again.');
+          setIsPlacingOrder(false);
+          return;
+        }
+        // If only missing ID, try to proceed with what we have
+        console.warn('Some items missing ID, but proceeding with available data');
       }
 
       // Validate delivery address for delivery orders
@@ -124,16 +135,26 @@ const Checkout = () => {
       // Prepare order data
       const finalPaymentMethod = walletAmount >= subtotal ? 'WALLET' : paymentMethod.toUpperCase();
 
-      const orderData = {
-        items: items.map(item => ({
-          menuItem: item.id || item._id,
+      // Ensure all items have menuItem ID before creating order
+      const itemsWithMenuId = items.map(item => {
+        const menuItemId = item.id || item._id || item.menuItem;
+        if (!menuItemId) {
+          console.error('Item missing ID:', item);
+          throw new Error(`Item "${item.name || 'Unknown'}" is missing a valid ID. Please remove it from cart and add it again.`);
+        }
+        return {
+          menuItem: menuItemId,
           quantity: item.quantity,
           price: item.price,
-          id: item.id || item._id,
+          id: menuItemId, // Keep for backward compatibility
           name: item.name || item.title || 'Menu Item',
           image: item.image || item.imageUrl || null,
           discount: item.discount || 0,
-        })),
+        };
+      });
+
+      const orderData = {
+        items: itemsWithMenuId,
         orderType: orderType.toUpperCase(),
         deliveryAddress: orderType === 'Delivery' && selectedAddress ? {
           street: selectedAddress.street,
@@ -157,7 +178,16 @@ const Checkout = () => {
 
       // Call backend API to create order
       const response = await orderService.createOrder(orderData);
-      const orderId = response.data.id || response.data._id;
+      
+      // Extract order ID - handle both MongoDB _id and transformed id
+      const orderId = response.data?.id || response.data?._id || response.data?.data?.id || response.data?.data?._id;
+      
+      if (!orderId) {
+        console.error('Order created but no ID returned:', response.data);
+        throw new Error('Order was created but could not retrieve order ID. Please check your orders.');
+      }
+      
+      console.log('✅ Order created with ID:', orderId);
 
       // 🎉 Trigger order placed animation and sound
       animations.orderPlaced({

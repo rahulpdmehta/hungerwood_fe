@@ -39,8 +39,9 @@ export const useOrderSSE = (orderId) => {
 
     // Connect to SSE
     const connectSSE = useCallback(() => {
-        if (!orderId) {
-            console.warn('⚠️ No orderId provided for SSE connection');
+        if (!orderId || orderId === 'undefined' || orderId === 'null') {
+            console.warn('⚠️ No valid orderId provided for SSE connection:', orderId);
+            setError('Invalid order ID');
             return;
         }
 

@@ -1,5 +1,5 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-export const APP_NAME = import.meta.env.VITE_APP_NAME;
+export const API_BASE_URL = 'https://hungerwood-be.vercel.app/api';
+export const APP_NAME = import.meta.env.VITE_APP_NAME || 'HungerWood';
 
 export const USER_ROLES = {
   CUSTOMER: 'customer',

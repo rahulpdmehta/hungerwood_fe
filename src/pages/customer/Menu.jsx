@@ -253,7 +253,8 @@ const Menu = () => {
 
   const handleAddToCart = (item) => {
     addItem({
-      id: item.id,
+      id: item.id || item._id,
+      _id: item._id || item.id, // Preserve both for compatibility
       name: item.name,
       price: item.price,
       discount: item.discount || 0,
