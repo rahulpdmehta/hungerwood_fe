@@ -34,3 +34,8 @@ export const orderKeys = {
   admin: (params) => [...orderKeys.all, 'admin', params],
   stats: (params) => [...orderKeys.all, 'stats', params],
 };
+
+export const versionKeys = {
+  all: ['versions'],
+  current: () => [...versionKeys.all, 'current'],
+};

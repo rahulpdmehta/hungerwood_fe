@@ -3,10 +3,10 @@ import api from './api';
 // Helper to transform _id to id for frontend consistency and preserve category
 const transformItem = (item) => {
   if (!item) return item;
-  const { _id, ...rest } = item;
+  const { id, ...rest } = item;
   const transformed = {
     ...rest,
-    id: _id || item.id,
+    id: id || item.id || item._id,
   };
   
   // Ensure category is preserved - handle both populated object and string

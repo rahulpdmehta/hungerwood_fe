@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import useCartStore from '@store/useCartStore';
 import useWalletStore from '@store/useWalletStore';
 import BackButton from '@components/common/BackButton';
@@ -27,6 +27,11 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [loadingAddresses, setLoadingAddresses] = useState(false);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  
+  // Refs to prevent duplicate order placement
+  const isProcessingRef = useRef(false);
+  const lastOrderTimeRef = useRef(0);
+  const DEBOUNCE_TIME = 3000; // 3 seconds debounce
 
   // Wallet state
   const { balance: walletBalance, loading: walletLoading, fetchBalance } = useWalletStore();
@@ -99,9 +104,26 @@ const Checkout = () => {
     console.log('Wallet amount changed:', amount);
   };
 
-  const handlePlaceOrder = async () => {
-    // Set flag to prevent empty cart redirect during order placement
+  const handlePlaceOrder = useCallback(async () => {
+    // Prevent duplicate orders - check if already processing
+    if (isProcessingRef.current) {
+      console.log('⏸️ Order placement already in progress, ignoring duplicate click');
+      return;
+    }
+
+    // Debounce: prevent orders within DEBOUNCE_TIME seconds
+    const now = Date.now();
+    const timeSinceLastOrder = now - lastOrderTimeRef.current;
+    if (timeSinceLastOrder < DEBOUNCE_TIME) {
+      const remainingTime = Math.ceil((DEBOUNCE_TIME - timeSinceLastOrder) / 1000);
+      alert(`Please wait ${remainingTime} second${remainingTime > 1 ? 's' : ''} before placing another order.`);
+      return;
+    }
+
+    // Set flags to prevent duplicate calls
+    isProcessingRef.current = true;
     setIsPlacingOrder(true);
+    lastOrderTimeRef.current = now;
 
     try {
       // Validate cart items have IDs and other required fields
@@ -212,13 +234,18 @@ const Checkout = () => {
 
         // Clear cart after navigation is initiated
         clearCart();
+        
+        // Reset processing flag after navigation (order is successfully placed)
+        isProcessingRef.current = false;
       }, 5500); // Wait for animation to complete (5 seconds animation + 0.5s buffer)
     } catch (error) {
       console.error('Failed to place order:', error);
       alert(error.message || 'Failed to place order. Please try again.');
-      setIsPlacingOrder(false); // Reset flag on error
+      // Reset flags on error
+      setIsPlacingOrder(false);
+      isProcessingRef.current = false;
     }
-  };
+  }, [items, orderType, selectedAddress, paymentMethod, cookingInstructions, itemTotal, deliveryFee, taxes, totalPayable, walletAmount, navigate, animations, clearCart]);
 
   // Redirect to cart if empty (but not when placing an order)
   if (items.length === 0 && !isPlacingOrder) {
@@ -506,10 +533,22 @@ const Checkout = () => {
         </div>
         <button
           onClick={handlePlaceOrder}
-          className="w-full bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+          disabled={isPlacingOrder}
+          className={`w-full bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 ${
+            isPlacingOrder ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
-          Place Order
-          <span className="material-symbols-outlined">arrow_forward</span>
+          {isPlacingOrder ? (
+            <>
+              <span className="material-symbols-outlined animate-spin">sync</span>
+              Placing Order...
+            </>
+          ) : (
+            <>
+              Place Order
+              <span className="material-symbols-outlined">arrow_forward</span>
+            </>
+          )}
         </button>
       </div>
     </div>

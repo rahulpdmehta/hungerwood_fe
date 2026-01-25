@@ -323,3 +323,8 @@ div#root > .animate-fadeIn > div {
 html {
   font-size: 15px;
 }
+
+div#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}

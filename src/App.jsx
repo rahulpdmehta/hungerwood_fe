@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { useVersionChecker } from '@hooks/useVersionChecker';
 import AppRoutes from '@/routes/AppRoutes';
 import SplashScreen from '@components/common/SplashScreen';
 import useAuthStore from '@store/useAuthStore';
@@ -15,6 +16,9 @@ function AppContent() {
   const { isAuthenticated } = useAuthStore();
   const [showSplash, setShowSplash] = useState(true);
   const [isReady, setIsReady] = useState(false);
+  
+  // Version checker - runs globally to detect data changes and invalidate cache
+  useVersionChecker();
 
   useEffect(() => {
     // Check if splash has been shown in this session

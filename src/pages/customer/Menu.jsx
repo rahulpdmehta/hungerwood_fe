@@ -338,7 +338,7 @@ const Menu = () => {
             <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
               <div className="flex flex-row items-start justify-start gap-4">
                 {specials.map((special, index) => (
-                  <SpecialItemCard key={special.id || `special-${index}`} item={special} />
+                  <SpecialItemCard key={special._id || special.id || `special-${index}`} item={special} />
                 ))}
               </div>
             </div>
@@ -366,7 +366,7 @@ const Menu = () => {
             </div>
           ) : (
             filteredItems.map((item, index) => (
-              <MenuItemCard key={item.id || `menu-item-${index}`} item={item} onAddToCart={handleAddToCart} />
+              <MenuItemCard key={item._id || item.id || `menu-item-${index}`} item={item} onAddToCart={handleAddToCart} />
             ))
           )}
         </div>

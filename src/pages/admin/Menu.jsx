@@ -68,6 +68,7 @@ const AdminMenu = () => {
 
   // Filter and sort menu items
   const filteredMenuItems = menuItems.filter(item => {
+    console.log('filteredMenuItems', item);
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !categoryFilter || item.category === categoryFilter ||
@@ -97,12 +98,32 @@ const AdminMenu = () => {
     if (item) {
       setSelectedItem(item);
       console.log('handleOpenModal', item);
+      
+      // Handle category: can be string (name), object with _id/id, or ObjectId
+      let categoryId = '';
+      if (item.category) {
+        if (typeof item.category === 'object') {
+          // Category is an object - use _id or id
+          categoryId = item.category._id || item.category.id || '';
+        } else if (typeof item.category === 'string') {
+          // Category is a string (name) - find matching category by name
+          const matchingCategory = categories.find(cat => 
+            cat.name === item.category || 
+            cat.name?.toLowerCase() === item.category.toLowerCase() ||
+            String(cat._id) === item.category ||
+            String(cat.id) === item.category
+          );
+          // Use id first (from transformation), then _id, then fallback to the string itself
+          categoryId = matchingCategory?.id || matchingCategory?._id || item.category;
+        }
+      }
+      
       setFormData({
         id: item.id || '',
         name: item.name || '',
         description: item.description || '',
         price: item.price || '',
-        category: typeof item.category === 'object' ? item.category?.id : item.category || '',
+        category: categoryId,
         image: item.image || '',
         isVeg: item.isVeg !== undefined ? item.isVeg : true,
         isAvailable: item.isAvailable !== undefined ? item.isAvailable : true,
@@ -212,6 +233,7 @@ const AdminMenu = () => {
         toast.error('Item ID is missing');
         return;
       }
+      console.log('handleToggleAvailability', itemId);
       await menuItemService.toggleAvailability(itemId);
       toast.success(`Item ${item.isAvailable ? 'marked unavailable' : 'marked available'}`);
       loadData();
@@ -456,7 +478,7 @@ const AdminMenu = () => {
                     >
                       <option value="">Select Category</option>
                       {categories.map(cat => (
-                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                        <option key={cat._id || cat.id} value={cat._id || cat.id}>{cat.name}</option>
                       ))}
                     </select>
                   </div>

@@ -198,11 +198,11 @@ const Cart = () => {
         </div>
 
         {/* Cancellation Policy */}
-        <div className="mx-4 mt-6 p-4 bg-[#7f4f13]/5 dark:bg-[#7f4f13]/10 rounded-xl border-2 border-[#7f4f13]/20 shadow-md">
+        <div className="mx-4 mt-6 p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border-2 border-green-200 dark:border-green-800 shadow-md">
           <div className="flex gap-3">
-            <span className="material-symbols-outlined text-[#7f4f13]">verified_user</span>
+            <span className="material-symbols-outlined text-green-600">verified_user</span>
             <div>
-              <p className="text-xs font-bold text-[#7f4f13] mb-1">Safety & Quality Assured</p>
+              <p className="text-xs font-bold text-green-600 mb-1">Safety & Quality Assured</p>
               <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed uppercase tracking-tight">
                 Orders cannot be cancelled once accepted by the kitchen to avoid food waste.
               </p>
