@@ -99,5 +99,20 @@ ffmpeg -i input.mp3 -af "volume=0.8" output.mp3
 
 ---
 
+## 📖 Detailed Definitions
+
+For comprehensive definitions, specifications, and search terms for each sound file, see:
+**`SOUND_DEFINITIONS.md`**
+
+This document includes:
+- Detailed characteristics for each sound
+- Specific use cases
+- Recommended search terms
+- Technical specifications
+- Quality checklist
+- Testing guidelines
+
+---
+
 **Need help?** Check the main animation documentation:  
 `ANIMATION_SYSTEM_DOCUMENTATION.md`

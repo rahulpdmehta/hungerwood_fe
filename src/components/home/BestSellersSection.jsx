@@ -18,8 +18,7 @@ const BestSellersSection = () => {
 
   const handleAddToCart = (item) => {
     addItem({
-      id: item.id || item._id,
-      _id: item._id || item.id, // Preserve both for compatibility
+      id: item.id,
       name: item.name,
       price: item.price,
       quantity: 1,
@@ -53,7 +52,7 @@ const BestSellersSection = () => {
           bestSellers.map((item, index) => {
             // Handle both API format (isVeg) and fallback format (veg)
             const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
-            const itemId = item.id || item._id || `best-seller-${index}`;
+            const itemId = item.id || `best-seller-${index}`;
 
             return (
               <div

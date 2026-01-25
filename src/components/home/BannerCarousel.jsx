@@ -14,7 +14,7 @@ const BannerCarousel = () => {
         ) : activeBanners.length > 0 ? (
           activeBanners.map((banner, index) => (
             <div
-              key={banner.id || banner._id || `banner-${index}`}
+              key={banner.id || `banner-${index}`}
               className="snap-center shrink-0 w-[85%] aspect-[2/1] rounded-xl relative overflow-hidden cursor-pointer shadow-lg border border-gray-200 dark:border-zinc-700 hover:shadow-xl transition-shadow"
               onClick={() => banner.ctaLink && navigate(banner.ctaLink)}
             >

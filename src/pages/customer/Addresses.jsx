@@ -183,7 +183,7 @@ const Addresses = () => {
 
         {/* Add/Edit Address Form */}
         {showAddForm && (
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+          <div className="bg-white rounded-2xl shadow-md border-2 border-gray-100 p-4">
             <h3 className="text-lg font-bold text-text-primary mb-4">
               {editingAddress ? 'Edit Address' : 'Add New Address'}
             </h3>
@@ -317,7 +317,7 @@ const Addresses = () => {
             {addresses.map((address) => (
               <div
                 key={address.id}
-                className={`bg-white rounded-2xl shadow-sm border-2 p-4 ${
+                className={`bg-white rounded-2xl shadow-md border-2 p-4 ${
                   address.isDefault ? 'border-primary/50' : 'border-gray-100'
                 }`}
               >

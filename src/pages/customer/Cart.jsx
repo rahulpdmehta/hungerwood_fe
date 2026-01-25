@@ -41,7 +41,7 @@ const Cart = () => {
     return (
       <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-[#211811] shadow-xl overflow-x-hidden">
         {/* TopAppBar */}
-        <div className="sticky top-0 z-10 flex items-center bg-white/90 dark:bg-[#211811]/90 backdrop-blur-md p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800">
+        <div className="sticky top-0 z-10 flex items-center bg-white/90 dark:bg-[#211811]/90 backdrop-blur-md p-4 pb-2 justify-between border-b-2 border-gray-100 dark:border-gray-800 shadow-md">
           <BackButton variant="minimal" />
           <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
             Cart
@@ -71,7 +71,7 @@ const Cart = () => {
   return (
     <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-[#211811] shadow-xl overflow-x-hidden">
       {/* TopAppBar */}
-      <div className="sticky top-0 z-10 flex items-center bg-white/90 dark:bg-[#211811]/90 backdrop-blur-md p-4 pb-2 justify-between border-b border-gray-100 dark:border-gray-800">
+      <div className="sticky top-0 z-10 flex items-center bg-white/90 dark:bg-[#211811]/90 backdrop-blur-md p-4 pb-2 justify-between border-b-2 border-gray-100 dark:border-gray-800 shadow-md">
         <BackButton variant="minimal" />
         <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
           Cart
@@ -95,11 +95,11 @@ const Cart = () => {
           {items.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-4 bg-white dark:bg-[#211811] rounded-xl py-3 border-b border-gray-50 dark:border-gray-800 last:border-0"
+              className="flex items-center gap-4 bg-white dark:bg-[#2d221a] rounded-xl p-3 mb-3 border-2 border-gray-200 dark:border-gray-700 shadow-md last:mb-0"
             >
               <div className="flex items-center gap-4 flex-1">
                 <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 border-2 border-gray-200 dark:border-gray-700 shadow-sm"
+                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 border-2 border-gray-200 dark:border-gray-700 shadow-md"
                   style={{ backgroundImage: `url("${item.image}")` }}
                 ></div>
                 <div className="flex flex-col justify-center">
@@ -119,7 +119,7 @@ const Cart = () => {
                 </div>
               </div>
               <div className="shrink-0">
-                <div className="flex items-center gap-3 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 p-1 rounded-full px-3">
+                <div className="flex items-center gap-3 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 p-1 rounded-full px-3 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
                   <button
                     onClick={() => {
                       if (item.quantity === 1) {
@@ -155,18 +155,18 @@ const Cart = () => {
             <textarea
               value={cookingInstructions}
               onChange={(e) => setCookingInstructions(e.target.value)}
-              className="form-input flex w-full resize-none overflow-hidden rounded-xl text-[#181411] dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#7f4f13] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 min-h-24 placeholder:text-[#887263] p-[15px] text-sm font-normal leading-normal transition-all shadow-sm"
+              className="form-input flex w-full resize-none overflow-hidden rounded-xl text-[#181411] dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#7f4f13] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 min-h-24 placeholder:text-[#887263] p-[15px] text-sm font-normal leading-normal transition-all shadow-md"
               placeholder="e.g. Make it extra spicy, no onions etc."
             />
           </label>
         </div>
 
         {/* Bill Details */}
-        <div className="mt-4">
-          <h3 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4">
+        <div className="mt-4 mx-4">
+          <h3 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-2 pt-4">
             Bill Details
           </h3>
-          <div className="px-4 py-3 space-y-3">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 border-2 border-gray-200 dark:border-gray-700 shadow-md space-y-3">
             <div className="flex justify-between items-center text-sm">
               <span className="text-[#887263] dark:text-gray-400">Item Total</span>
               <span className="font-medium">₹{originalTotal}</span>
@@ -184,7 +184,7 @@ const Cart = () => {
               </div>
               <span className="font-medium">₹{taxes}</span>
             </div>
-            <div className="flex justify-between items-center text-sm pb-3 border-b border-dashed border-gray-200 dark:border-gray-700">
+            <div className="flex justify-between items-center text-sm pb-3 border-b-2 border-dashed border-gray-300 dark:border-gray-600">
               <span className="text-[#887263] dark:text-gray-400">Packaging Fee</span>
               <span className="font-medium">₹{packagingFee}</span>
             </div>
@@ -212,7 +212,7 @@ const Cart = () => {
       </div>
 
       {/* Sticky Bottom Checkout */}
-      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white/95 dark:bg-[#211811]/95 backdrop-blur-md border-t border-gray-100 dark:border-gray-800">
+      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white/95 dark:bg-[#211811]/95 backdrop-blur-md border-t-2 border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] text-[#887263] dark:text-gray-400 uppercase font-bold tracking-widest">

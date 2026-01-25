@@ -3,9 +3,10 @@ import api from './api';
 // Helper to transform _id to id for frontend consistency
 const transformAddress = (address) => {
   if (!address) return address;
+  const { _id, ...rest } = address;
   return {
-    ...address,
-    id: address._id || address.id,
+    ...rest,
+    id: _id || address.id,
   };
 };
 

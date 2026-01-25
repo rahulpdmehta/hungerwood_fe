@@ -272,6 +272,7 @@ const OrderTracking = () => {
         <BackButton
           className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"
+          onClick={() => navigate('/orders')}
         />
         <div className="flex-1 text-center pr-10">
           <p className="text-[#887263] dark:text-gray-400 text-xs font-medium">
@@ -463,7 +464,7 @@ const OrderTracking = () => {
         {/* Order Details */}
         <div className="mb-6">
           <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3">Order Details</h3>
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h4 className="text-[#181411] dark:text-white font-bold text-base mb-1">HungerWood Gaya</h4>
@@ -544,7 +545,7 @@ const OrderTracking = () => {
         </div>
 
         {/* Bill Details */}
-        <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
+        <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
           <h3 className="text-[#181411] dark:text-white text-base font-bold mb-4">Bill Details</h3>
 
           <div className="space-y-3">
@@ -598,7 +599,7 @@ const OrderTracking = () => {
 
         {/* Delivery Address */}
         {orderType === 'Delivery' && (
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-full bg-[#7f4f13]/10 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-[#7f4f13]">location_on</span>

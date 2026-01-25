@@ -7,16 +7,37 @@ import api from './api';
 
 // ==================== CATEGORY MANAGEMENT ====================
 
+// Helper to transform _id to id for categories
+const transformCategory = (category) => {
+  if (!category) return category;
+  const { _id, ...rest } = category;
+  return {
+    ...rest,
+    id: _id || category.id,
+  };
+};
+
+const transformCategories = (categories) => {
+  if (!Array.isArray(categories)) return categories;
+  return categories.map(transformCategory);
+};
+
 export const categoryService = {
   // Get all categories
   getAll: async () => {
     const response = await api.get('/admin/categories');
+    if (response.data) {
+      response.data = transformCategories(response.data);
+    }
     return response.data;
   },
 
   // Get category by ID
   getById: async (id) => {
     const response = await api.get(`/admin/categories/${id}`);
+    if (response.data) {
+      response.data = transformCategory(response.data);
+    }
     return response.data;
   },
 
@@ -79,16 +100,37 @@ export const categoryService = {
 
 // ==================== MENU ITEM MANAGEMENT ====================
 
+// Helper to transform _id to id for frontend consistency
+const transformMenuItem = (item) => {
+  if (!item) return item;
+  const { _id, ...rest } = item;
+  return {
+    ...rest,
+    id: _id || item.id,
+  };
+};
+
+const transformMenuItems = (items) => {
+  if (!Array.isArray(items)) return items;
+  return items.map(transformMenuItem);
+};
+
 export const menuItemService = {
   // Get all menu items
   getAll: async (params = {}) => {
     const response = await api.get('/menu/items', { params });
+    if (response.data) {
+      response.data = transformMenuItems(response.data);
+    }
     return response.data;
   },
 
   // Get menu item by ID
   getById: async (id) => {
     const response = await api.get(`/menu/items/${id}`);
+    if (response.data) {
+      response.data = transformMenuItem(response.data);
+    }
     return response.data;
   },
 
@@ -105,7 +147,6 @@ export const menuItemService = {
     if (data.isAvailable !== undefined) formData.append('isAvailable', data.isAvailable);
     if (data.isBestSeller !== undefined) formData.append('isBestSeller', data.isBestSeller);
     if (data.discount !== undefined) formData.append('discount', data.discount);
-
     // Handle file upload
     if (data.image instanceof File) {
       formData.append('image', data.image);
@@ -132,7 +173,6 @@ export const menuItemService = {
     if (data.isAvailable !== undefined) formData.append('isAvailable', data.isAvailable);
     if (data.isBestSeller !== undefined) formData.append('isBestSeller', data.isBestSeller);
     if (data.discount !== undefined) formData.append('discount', data.discount);
-
     // Handle file upload
     if (data.image instanceof File) {
       formData.append('image', data.image);

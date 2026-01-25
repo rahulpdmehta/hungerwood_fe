@@ -115,7 +115,7 @@ const Categories = () => {
       }
 
       if (selectedCategory) {
-        await categoryService.update(selectedCategory._id, data);
+        await categoryService.update(selectedCategory.id, data);
         toast.success('Category updated successfully');
       } else {
         await categoryService.create(data);
@@ -134,7 +134,7 @@ const Categories = () => {
     if (!selectedCategory) return;
 
     try {
-      await categoryService.delete(selectedCategory._id);
+      await categoryService.delete(selectedCategory.id);
       toast.success('Category deleted successfully');
       setDeleteDialogOpen(false);
       setSelectedCategory(null);
@@ -147,7 +147,7 @@ const Categories = () => {
 
   const handleToggleStatus = async (category) => {
     try {
-      await categoryService.toggleStatus(category._id);
+      await categoryService.toggleStatus(category.id);
       toast.success(`Category ${category.isActive ? 'deactivated' : 'activated'} successfully`);
       loadCategories();
     } catch (error) {

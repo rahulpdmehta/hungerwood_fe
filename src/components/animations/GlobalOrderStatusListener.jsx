@@ -69,7 +69,7 @@ const GlobalOrderStatusListener = () => {
 
                     // Check each order for status changes
                     orders.forEach(order => {
-                        const orderId = order._id || order.id;
+                        const orderId = order.id;
                         const currentStatus = order.status;
                         const previousStatus = knownOrders.current.get(orderId);
 

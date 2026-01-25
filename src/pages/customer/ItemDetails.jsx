@@ -92,8 +92,7 @@ const ItemDetails = () => {
 
   const handleAddToCart = () => {
     addItem({
-      id: displayItem.id || displayItem._id,
-      _id: displayItem._id || displayItem.id, // Preserve both for compatibility
+      id: displayItem.id,
       name: displayItem.name,
       price: calculateTotalPrice(),
       discount: displayItem.discount || 0,
@@ -196,9 +195,9 @@ const ItemDetails = () => {
               <button
                 key={level}
                 onClick={() => setSpiceLevel(level)}
-                className={`flex-1 py-3 px-4 rounded-lg border-2 font-bold text-center transition-all shadow-sm ${spiceLevel === level
-                  ? 'border-[#7f4f13] bg-[#7f4f13]/10 text-[#7f4f13] shadow-md'
-                  : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:shadow-md'
+                className={`flex-1 py-3 px-4 rounded-lg border-2 font-bold text-center transition-all shadow-md ${spiceLevel === level
+                  ? 'border-[#7f4f13] bg-[#7f4f13]/10 text-[#7f4f13] shadow-lg'
+                  : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:shadow-lg'
                   }`}
               >
                 {level}
@@ -239,14 +238,14 @@ const ItemDetails = () => {
           <button
             onClick={() => handleQuantityChange(-1)}
             disabled={quantity <= 1}
-            className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#7f4f13] shadow-sm disabled:opacity-50"
+            className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#7f4f13] shadow-md border-2 border-gray-200 dark:border-gray-600 disabled:opacity-50"
           >
             <span className="material-symbols-outlined">remove</span>
           </button>
           <span className="text-lg font-bold px-2">{quantity}</span>
           <button
             onClick={() => handleQuantityChange(1)}
-            className="flex size-10 items-center justify-center rounded-full bg-[#7f4f13] text-white shadow-sm"
+            className="flex size-10 items-center justify-center rounded-full bg-[#7f4f13] text-white shadow-md border-2 border-[#7f4f13]/20 hover:shadow-lg"
           >
             <span className="material-symbols-outlined">add</span>
           </button>

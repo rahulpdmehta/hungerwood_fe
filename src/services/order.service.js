@@ -3,9 +3,10 @@ import api from './api';
 // Helper to transform _id to id for frontend consistency
 const transformOrder = (order) => {
   if (!order) return order;
+  const { _id, ...rest } = order;
   return {
-    ...order,
-    id: order._id || order.id,
+    ...rest,
+    id: _id || order.id,
   };
 };
 

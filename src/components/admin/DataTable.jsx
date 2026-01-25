@@ -72,7 +72,7 @@ const DataTable = ({
             </tr>
           ) : (
             data.map((row, index) => (
-              <tr key={row._id || row.id || index} className="hover:bg-gray-50">
+              <tr key={row.id || index} className="hover:bg-gray-50">
                 {columns.map((column) => (
                   <td key={column.key} className="px-6 py-4 whitespace-nowrap text-sm">
                     {column.render ? column.render(row) : row[column.key]}

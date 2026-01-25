@@ -89,7 +89,7 @@ const Referral = () => {
   return (
     <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] justify-between shadow-sm">
+      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b-2 border-[#f4f2f0] dark:border-[#3d2e24] justify-between shadow-md">
         <BackButton
           className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"
@@ -118,7 +118,7 @@ const Referral = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-3 gap-3 mb-6">
           {/* Total Earnings */}
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] text-center">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-center">
             <p className="text-2xl font-bold text-green-600 dark:text-green-400 mb-1">
               ₹{totalEarnings}
             </p>
@@ -128,7 +128,7 @@ const Referral = () => {
           </div>
 
           {/* Total Referrals */}
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] text-center">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-center">
             <p className="text-2xl font-bold text-[#7f4f13] mb-1">
               {totalReferrals}
             </p>
@@ -138,7 +138,7 @@ const Referral = () => {
           </div>
 
           {/* Bonus Amount */}
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] text-center">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-center">
             <p className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-1">
               ₹{referralBonus}
             </p>
@@ -149,12 +149,12 @@ const Referral = () => {
         </div>
 
         {/* Referral Code Card */}
-        <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
+        <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
           <h3 className="text-[#181411] dark:text-white font-bold text-base mb-3">
             Your Referral Code
           </h3>
 
-          <div className="bg-gradient-to-r from-[#fef9f5] to-white dark:from-[#211811] dark:to-[#2d221a] rounded-xl p-4 border-2 border-dashed border-[#7f4f13]/30 mb-4">
+          <div className="bg-gradient-to-r from-[#fef9f5] to-white dark:from-[#211811] dark:to-[#2d221a] rounded-xl p-4 border-2 border-dashed border-[#7f4f13]/50 mb-4 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-[#887263] dark:text-gray-400 mb-1">
@@ -166,7 +166,7 @@ const Referral = () => {
               </div>
               <button
                 onClick={handleCopyCode}
-                className="w-12 h-12 bg-[#7f4f13] text-white rounded-xl flex items-center justify-center shadow-md hover:bg-[#7f4f13]/90 active:scale-95 transition-all"
+                className="w-12 h-12 bg-[#7f4f13] text-white rounded-xl flex items-center justify-center shadow-lg border-2 border-[#7f4f13]/20 hover:bg-[#7f4f13]/90 hover:shadow-xl active:scale-95 transition-all"
               >
                 <span className="material-symbols-outlined">
                   {copied ? 'check' : 'content_copy'}
@@ -176,7 +176,7 @@ const Referral = () => {
           </div>
 
           {copied && (
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg p-3 mb-4 flex items-center gap-2">
+            <div className="bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-700 rounded-lg p-3 mb-4 flex items-center gap-2 shadow-md">
               <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-sm">
                 check_circle
               </span>
@@ -190,9 +190,9 @@ const Referral = () => {
           <div className="grid grid-cols-4 gap-3">
             <button
               onClick={() => handleShare('whatsapp')}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-700 hover:bg-green-100 dark:hover:bg-green-900/30 hover:shadow-md transition-all"
             >
-              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center shadow-md border-2 border-green-600/30">
                 <span className="material-symbols-outlined text-white text-lg">
                   chat
                 </span>
@@ -204,9 +204,9 @@ const Referral = () => {
 
             <button
               onClick={() => handleShare('telegram')}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-700 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:shadow-md transition-all"
             >
-              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center shadow-md border-2 border-blue-600/30">
                 <span className="material-symbols-outlined text-white text-lg">
                   send
                 </span>
@@ -218,9 +218,9 @@ const Referral = () => {
 
             <button
               onClick={() => handleShare('sms')}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-200 dark:border-purple-700 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:shadow-md transition-all"
             >
-              <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center shadow-md border-2 border-purple-600/30">
                 <span className="material-symbols-outlined text-white text-lg">
                   sms
                 </span>
@@ -232,9 +232,9 @@ const Referral = () => {
 
             <button
               onClick={() => handleShare('more')}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700 hover:shadow-md transition-all"
             >
-              <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center">
+              <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center shadow-md border-2 border-gray-600/30">
                 <span className="material-symbols-outlined text-white text-lg">
                   share
                 </span>
@@ -247,7 +247,7 @@ const Referral = () => {
         </div>
 
         {/* Referred Friends List */}
-        <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
+        <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
           <h3 className="text-[#181411] dark:text-white font-bold text-base mb-4">
             Your Referrals ({totalReferrals})
           </h3>
@@ -256,7 +256,7 @@ const Referral = () => {
             {referredFriends.map((friend) => (
               <div
                 key={friend.id}
-                className="flex items-center justify-between p-3 rounded-xl bg-[#fef9f5] dark:bg-[#211811] border border-[#f4f2f0] dark:border-[#3d2e24]"
+                className="flex items-center justify-between p-3 rounded-xl bg-[#fef9f5] dark:bg-[#211811] border-2 border-[#f4f2f0] dark:border-[#3d2e24] shadow-sm"
               >
                 {/* Left: Avatar + Info */}
                 <div className="flex items-center gap-3">
@@ -293,7 +293,7 @@ const Referral = () => {
         </div>
 
         {/* How it Works */}
-        <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
+        <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
           <h3 className="text-[#181411] dark:text-white font-bold text-base mb-4">
             How It Works
           </h3>
@@ -301,7 +301,7 @@ const Referral = () => {
           <div className="space-y-4">
             {/* Step 1 */}
             <div className="flex gap-4">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-green-200 dark:border-green-700 shadow-sm">
                 <span className="text-green-600 dark:text-green-400 font-bold text-lg">1</span>
               </div>
               <div>
@@ -316,7 +316,7 @@ const Referral = () => {
 
             {/* Step 2 */}
             <div className="flex gap-4">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-green-200 dark:border-green-700 shadow-sm">
                 <span className="text-green-600 dark:text-green-400 font-bold text-lg">2</span>
               </div>
               <div>
@@ -331,7 +331,7 @@ const Referral = () => {
 
             {/* Step 3 */}
             <div className="flex gap-4">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-green-200 dark:border-green-700 shadow-sm">
                 <span className="text-green-600 dark:text-green-400 font-bold text-lg">3</span>
               </div>
               <div>
@@ -346,7 +346,7 @@ const Referral = () => {
 
             {/* Step 4 */}
             <div className="flex gap-4">
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center flex-shrink-0 border-2 border-green-200 dark:border-green-700 shadow-sm">
                 <span className="text-green-600 dark:text-green-400 font-bold text-lg">4</span>
               </div>
               <div>
@@ -364,7 +364,7 @@ const Referral = () => {
 
 
         {/* Terms & Conditions */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-xl p-4">
+        <div className="bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-700 rounded-xl p-4 shadow-md">
           <div className="flex items-start gap-3">
             <span className="material-symbols-outlined text-blue-600 dark:text-blue-400 text-lg mt-0.5">
               info

@@ -239,8 +239,7 @@ const Menu = () => {
 
   const handleAddToCart = (item) => {
     addItem({
-      id: item.id || item._id,
-      _id: item._id || item.id, // Preserve both for compatibility
+      id: item.id,
       name: item.name,
       price: item.price,
       discount: item.discount || 0,
@@ -339,7 +338,7 @@ const Menu = () => {
             <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
               <div className="flex flex-row items-start justify-start gap-4">
                 {specials.map((special, index) => (
-                  <SpecialItemCard key={special.id || special._id || `special-${index}`} item={special} />
+                  <SpecialItemCard key={special.id || `special-${index}`} item={special} />
                 ))}
               </div>
             </div>
@@ -367,7 +366,7 @@ const Menu = () => {
             </div>
           ) : (
             filteredItems.map((item, index) => (
-              <MenuItemCard key={item.id || item._id || `menu-item-${index}`} item={item} onAddToCart={handleAddToCart} />
+              <MenuItemCard key={item.id || `menu-item-${index}`} item={item} onAddToCart={handleAddToCart} />
             ))
           )}
         </div>

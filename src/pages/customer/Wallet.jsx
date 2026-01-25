@@ -144,7 +144,7 @@ const Wallet = () => {
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
-                  className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] animate-pulse"
+                  className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] animate-pulse"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>

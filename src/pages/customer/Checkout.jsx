@@ -63,7 +63,6 @@ const Checkout = () => {
     if (items.length > 0) {
       console.log('First item:', items[0]);
       console.log('First item has id?', !!items[0].id);
-      console.log('First item has _id?', !!items[0]._id);
     }
   }, [items]);
 
@@ -107,7 +106,7 @@ const Checkout = () => {
     try {
       // Validate cart items have IDs and other required fields
       const invalidItems = items.filter(item => {
-        const hasId = item.id || item._id;
+        const hasId = item.id;
         const hasRequiredFields = item.name && item.price && item.quantity;
         return !hasId || !hasRequiredFields;
       });
@@ -137,7 +136,7 @@ const Checkout = () => {
 
       // Ensure all items have menuItem ID before creating order
       const itemsWithMenuId = items.map(item => {
-        const menuItemId = item.id || item._id || item.menuItem;
+        const menuItemId = item.id || item.menuItem;
         if (!menuItemId) {
           console.error('Item missing ID:', item);
           throw new Error(`Item "${item.name || 'Unknown'}" is missing a valid ID. Please remove it from cart and add it again.`);
@@ -179,8 +178,8 @@ const Checkout = () => {
       // Call backend API to create order
       const response = await orderService.createOrder(orderData);
       
-      // Extract order ID - handle both MongoDB _id and transformed id
-      const orderId = response.data?.id || response.data?._id || response.data?.data?.id || response.data?.data?._id;
+      // Extract order ID
+      const orderId = response.data?.id || response.data?.data?.id;
       
       if (!orderId) {
         console.error('Order created but no ID returned:', response.data);
@@ -230,7 +229,7 @@ const Checkout = () => {
   return (
     <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-[#f8f7f6] dark:bg-[#211811] shadow-xl overflow-x-hidden">
       {/* TopAppBar */}
-      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] justify-between">
+      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b-2 border-[#f4f2f0] dark:border-[#3d2e24] justify-between shadow-md">
         <BackButton
           className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"

@@ -31,7 +31,7 @@ const AdminMenu = () => {
     isVeg: true,
     isAvailable: true,
     isBestSeller: false,
-    discount: 0
+    discount: 0,
   });
   const [sortKey, setSortKey] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -71,7 +71,7 @@ const AdminMenu = () => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = !categoryFilter || item.category === categoryFilter ||
-      item.category?._id === categoryFilter ||
+      item.category?.id === categoryFilter ||
       item.category?.name === categoryFilter;
     return matchesSearch && matchesCategory;
   });
@@ -96,11 +96,13 @@ const AdminMenu = () => {
   const handleOpenModal = (item = null) => {
     if (item) {
       setSelectedItem(item);
+      console.log('handleOpenModal', item);
       setFormData({
+        id: item.id || '',
         name: item.name || '',
         description: item.description || '',
         price: item.price || '',
-        category: typeof item.category === 'object' ? item.category?._id : item.category || '',
+        category: typeof item.category === 'object' ? item.category?.id : item.category || '',
         image: item.image || '',
         isVeg: item.isVeg !== undefined ? item.isVeg : true,
         isAvailable: item.isAvailable !== undefined ? item.isAvailable : true,
@@ -113,7 +115,7 @@ const AdminMenu = () => {
         name: '',
         description: '',
         price: '',
-        category: categories[0]?._id || '',
+        category: categories[0]?.id || '',
         image: '',
         isVeg: true,
         isAvailable: true,
@@ -163,7 +165,12 @@ const AdminMenu = () => {
       }
 
       if (selectedItem) {
-        await menuItemService.update(selectedItem._id, data);
+        const itemId = selectedItem.id;
+        if (!itemId) {
+          toast.error('Item ID is missing');
+          return;
+        }
+        await menuItemService.update(itemId, data);
         toast.success('Menu item updated successfully');
       } else {
         await menuItemService.create(data);
@@ -182,7 +189,12 @@ const AdminMenu = () => {
     if (!selectedItem) return;
 
     try {
-      await menuItemService.delete(selectedItem._id);
+      const itemId = selectedItem.id;
+      if (!itemId) {
+        toast.error('Item ID is missing');
+        return;
+      }
+      await menuItemService.delete(itemId);
       toast.success('Menu item deleted successfully');
       setDeleteDialogOpen(false);
       setSelectedItem(null);
@@ -195,7 +207,12 @@ const AdminMenu = () => {
 
   const handleToggleAvailability = async (item) => {
     try {
-      await menuItemService.toggleAvailability(item._id);
+      const itemId = item.id;
+      if (!itemId) {
+        toast.error('Item ID is missing');
+        return;
+      }
+      await menuItemService.toggleAvailability(itemId);
       toast.success(`Item ${item.isAvailable ? 'marked unavailable' : 'marked available'}`);
       loadData();
     } catch (error) {
@@ -336,7 +353,7 @@ const AdminMenu = () => {
           >
             <option value="">All Categories</option>
             {categories.map(cat => (
-              <option key={cat._id} value={cat._id}>{cat.name}</option>
+              <option key={cat.id} value={cat.id}>{cat.name}</option>
             ))}
           </select>
         </div>
@@ -439,7 +456,7 @@ const AdminMenu = () => {
                     >
                       <option value="">Select Category</option>
                       {categories.map(cat => (
-                        <option key={cat._id} value={cat._id}>{cat.name}</option>
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
                       ))}
                     </select>
                   </div>

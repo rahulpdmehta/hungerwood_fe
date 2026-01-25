@@ -59,7 +59,7 @@ const Profile = () => {
                     Profile
                 </h2>
                 <div className="flex w-12 items-center justify-end max-h-[40px]">
-                    <button className="flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-zinc-800 text-[#181411] dark:text-white shadow-md border border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow">
+                    <button className="flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-zinc-800 text-[#181411] dark:text-white">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>
                 </div>
@@ -72,7 +72,7 @@ const Profile = () => {
                         {/* Avatar with Gradient Border */}
                         <div className="relative p-1 rounded-full bg-gradient-to-tr from-[#7f4f13] to-[#887263] shadow-lg">
                             <div
-                                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-[#f8f7f6] dark:border-[#211811] shadow-md"
+                                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-20 w-20 border-2 border-[#f8f7f6] dark:border-[#211811] shadow-md"
                                 style={{
                                     backgroundImage:
                                         `url("${user?.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=B45309&color=fff&size=200`}")`,
@@ -80,19 +80,17 @@ const Profile = () => {
                             ></div>
                         </div>
                         <div className="flex flex-col items-center justify-center">
-                            <p className="text-[#181411] dark:text-white text-[24px] font-bold leading-tight tracking-[-0.015em] text-center">
-                                {user?.name || 'Rahul Sharma'}
+                            <p className="text-[#181411] dark:text-white text-md font-bold leading-tight tracking-[-0.015em] text-center">
+                                {user?.name}
                             </p>
                             <p className="text-[#887263] dark:text-[#a18a7c] text-base font-medium leading-normal text-center">
-                                {user?.phone || '+91 98765 43210'}
+                                {user?.phone} | {user?.email}
                             </p>
-                            <p className="text-[#887263] dark:text-[#a18a7c] text-sm font-normal leading-normal text-center">
-                                {user?.email || 'rahul.gaya@hungerwood.com'}
-                            </p>
+                
                             {/* Edit Profile Button */}
                             <Link
                                 to="/edit-profile"
-                                className="mt-4 flex items-center gap-2 px-6 py-2.5 bg-[#7f4f13] text-white rounded-xl hover:bg-[#b35614] transition-all shadow-md border-2 border-[#7f4f13] hover:shadow-lg"
+                                className="mt-4 flex items-center gap-2 px-4 py-2 bg-[#7f4f13] text-white rounded-xl hover:bg-[#b35614] transition-all shadow-md border-2 border-[#7f4f13] hover:shadow-lg"
                             >
                                 <span className="material-symbols-outlined text-lg">edit</span>
                                 <span className="text-sm font-semibold">Edit Profile</span>

@@ -1,12 +1,29 @@
 import api from './api';
 
-// Helper to transform _id to id for frontend consistency
+// Helper to transform _id to id for frontend consistency and preserve category
 const transformItem = (item) => {
   if (!item) return item;
-  return {
-    ...item,
-    id: item._id || item.id,
+  const { _id, ...rest } = item;
+  const transformed = {
+    ...rest,
+    id: _id || item.id,
   };
+  
+  // Ensure category is preserved - handle both populated object and string
+  if (item.category) {
+    if (typeof item.category === 'object' && item.category.name) {
+      // Category is populated object
+      transformed.category = item.category;
+    } else if (typeof item.category === 'string') {
+      // Category is a string name
+      transformed.category = { name: item.category };
+    }
+  } else {
+    // No category, set default
+    transformed.category = { name: 'All', slug: 'all' };
+  }
+  
+  return transformed;
 };
 
 const transformItems = (items) => {

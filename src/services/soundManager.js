@@ -42,35 +42,35 @@ class SoundManager {
   init() {
     if (this.initialized) return;
 
-    // Define all sounds
+    // Define all sounds (only .mp3 files are available)
     this.sounds = {
       success: new Howl({
-        src: ['/sounds/success.mp3', '/sounds/success.ogg'],
+        src: ['/sounds/success.mp3'],
         volume: this.volume,
         preload: true,
       }),
       orderPlaced: new Howl({
-        src: ['/sounds/order-placed.mp3', '/sounds/order-placed.ogg'],
+        src: ['/sounds/order-placed.mp3'],
         volume: this.volume,
         preload: true,
       }),
       walletCredit: new Howl({
-        src: ['/sounds/coin.mp3', '/sounds/coin.ogg'],
+        src: ['/sounds/coin.mp3'],
         volume: this.volume,
         preload: true,
       }),
       addToCart: new Howl({
-        src: ['/sounds/pop.mp3', '/sounds/pop.ogg'],
+        src: ['/sounds/pop.mp3'],
         volume: this.volume * 0.8, // Quieter for frequent action
         preload: true,
       }),
       statusUpdate: new Howl({
-        src: ['/sounds/notification.mp3', '/sounds/notification.ogg'],
+        src: ['/sounds/notification.mp3'],
         volume: this.volume * 0.7,
         preload: true,
       }),
       reward: new Howl({
-        src: ['/sounds/reward.mp3', '/sounds/reward.ogg'],
+        src: ['/sounds/reward.mp3'],
         volume: this.volume,
         preload: true,
       }),

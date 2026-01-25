@@ -11,6 +11,7 @@ import DataTable from '../../components/admin/DataTable';
 import StatusBadge from '../../components/admin/StatusBadge';
 import { adminOrderService } from '../../services/admin.service';
 import { formatDate, formatTime, formatDateTime } from '../../utils/dateFormatter';
+import { API_BASE_URL } from '../../utils/constants';
 
 const ORDER_STATUS_OPTIONS = [
   'RECEIVED',
@@ -47,6 +48,81 @@ const AdminOrders = () => {
     loadOrders();
   }, [statusFilter]);
 
+  // Set up SSE listeners for all orders to get real-time updates
+  useEffect(() => {
+    if (orders.length === 0) return;
+
+    // Create SSE connections for each order
+    const eventSources = new Map();
+    
+    orders.forEach(order => {
+      const orderId = order.orderId || order.id || order._id;
+      if (!orderId || orderId === 'undefined') return;
+
+      try {
+        const url = `${API_BASE_URL}/orders/${orderId}/stream`;
+        
+        const eventSource = new EventSource(url);
+        eventSources.set(orderId, eventSource);
+
+        eventSource.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            
+            if (data.type === 'statusUpdate') {
+              // Update the order in the list
+              setOrders(prevOrders => 
+                prevOrders.map(o => {
+                  const oId = o.orderId || o.id || o._id;
+                  if (oId === data.orderId || oId === orderId) {
+                    return {
+                      ...o,
+                      status: data.status,
+                      statusHistory: data.statusHistory,
+                      updatedAt: data.updatedAt
+                    };
+                  }
+                  return o;
+                })
+              );
+
+              // Update selected order if it matches
+              if (selectedOrder) {
+                const selectedId = selectedOrder.orderId || selectedOrder.id || selectedOrder._id;
+                if (selectedId === data.orderId || selectedId === orderId) {
+                  setSelectedOrder(prev => ({
+                    ...prev,
+                    status: data.status,
+                    statusHistory: data.statusHistory,
+                    updatedAt: data.updatedAt
+                  }));
+                }
+              }
+            }
+          } catch (error) {
+            console.error('Error parsing SSE message:', error);
+          }
+        };
+
+        eventSource.onerror = (error) => {
+          console.error(`SSE error for order ${orderId}:`, error);
+          // Don't close on error, let it reconnect automatically
+        };
+      } catch (error) {
+        console.error(`Failed to create SSE connection for order ${orderId}:`, error);
+      }
+    });
+
+    // Cleanup on unmount or when orders change
+    return () => {
+      eventSources.forEach((eventSource, orderId) => {
+        eventSource.close();
+        console.log(`Closed SSE connection for order ${orderId}`);
+      });
+      eventSources.clear();
+    };
+  }, [orders.map(o => o.orderId || o.id || o._id).join(','), selectedOrder]); // Re-run when order IDs change
+
   // Note: dateFilter is applied client-side, no need to reload from server
 
   const loadOrders = async () => {
@@ -55,11 +131,24 @@ const AdminOrders = () => {
       const params = statusFilter ? { status: statusFilter } : {};
       const response = await adminOrderService.getAll(params);
       console.log('🔄 Orders response:', response);
-      // Normalize legacy 'pending' status to 'RECEIVED'
-      const normalizedOrders = (response || []).map(order => ({
-        ...order,
-        status: order.status === 'pending' ? 'RECEIVED' : order.status
-      }));
+      
+      // Handle response structure - could be array or object with orders property
+      const ordersArray = Array.isArray(response) ? response : (response?.orders || response?.data || []);
+      
+      // Normalize legacy 'pending' status to 'RECEIVED' and extract customer info
+      const normalizedOrders = ordersArray.map(order => {
+        // Ensure orderId is preserved (backend uses orderId, not id)
+        const orderId = order.orderId || order.id || order._id;
+        return {
+          ...order,
+          orderId, // Ensure orderId is always present
+          id: order.id || order._id || order.orderId, // Also set id for compatibility
+          status: order.status === 'pending' ? 'RECEIVED' : order.status,
+          // Extract customer info from populated user object
+          customerName: order.customerName || order.user?.name || 'Unknown',
+          customerPhone: order.customerPhone || order.user?.phone || 'N/A'
+        };
+      });
 
       setOrders(normalizedOrders);
     } catch (error) {
@@ -117,9 +206,9 @@ const AdminOrders = () => {
     const query = searchQuery.toLowerCase().trim();
 
     return orders.filter(order => {
-      const orderId = (order.orderNumber || order._id || '').toLowerCase();
-      const customerName = (order.customerName || '').toLowerCase();
-      const customerPhone = (order.customerPhone || '').toLowerCase();
+      const orderId = (order.orderId || order.orderNumber || order.id || '').toLowerCase();
+      const customerName = (order.customerName || order.user?.name || '').toLowerCase();
+      const customerPhone = (order.customerPhone || order.user?.phone || '').toLowerCase();
 
       return orderId.includes(query) ||
         customerName.includes(query) ||
@@ -182,18 +271,65 @@ const AdminOrders = () => {
 
   const handleStatusChange = async (orderId, newStatus) => {
     try {
-      await adminOrderService.updateStatus(orderId, newStatus);
-      toast.success(`Order status updated to ${newStatus}`);
-      loadOrders();
+      // Ensure we have a valid orderId
+      if (!orderId) {
+        console.error('Order ID is missing:', orderId);
+        toast.error('Order ID is missing');
+        return;
+      }
+      
+      // Optimistically update the local state immediately
+      setOrders(prevOrders => 
+        prevOrders.map(order => {
+          const currentOrderId = order.orderId || order.id || order._id;
+          if (currentOrderId === orderId) {
+            return {
+              ...order,
+              status: newStatus,
+              // Update status history if it exists
+              statusHistory: order.statusHistory ? [
+                ...order.statusHistory,
+                {
+                  status: newStatus,
+                  timestamp: new Date().toISOString(),
+                  updatedBy: 'admin'
+                }
+              ] : order.statusHistory
+            };
+          }
+          return order;
+        })
+      );
 
       // Update selected order if it's open in details modal
-      if (selectedOrder && selectedOrder._id === orderId) {
-        const response = await adminOrderService.getById(orderId);
-        setSelectedOrder(response.data);
+      const currentOrderId = selectedOrder?.orderId || selectedOrder?.id || selectedOrder?._id;
+      if (selectedOrder && currentOrderId === orderId) {
+        setSelectedOrder(prev => ({
+          ...prev,
+          status: newStatus,
+          statusHistory: prev.statusHistory ? [
+            ...prev.statusHistory,
+            {
+              status: newStatus,
+              timestamp: new Date().toISOString(),
+              updatedBy: 'admin'
+            }
+          ] : prev.statusHistory
+        }));
       }
+      
+      // Make the API call
+      await adminOrderService.updateStatus(orderId, newStatus);
+      toast.success(`Order status updated to ${newStatus.replace(/_/g, ' ')}`);
+      
+      // Reload orders to ensure consistency with backend
+      loadOrders();
     } catch (error) {
       console.error('Failed to update order status:', error);
       toast.error(error.response?.data?.message || 'Failed to update order status');
+      
+      // Revert optimistic update on error
+      loadOrders();
     }
   };
 
@@ -203,12 +339,14 @@ const AdminOrders = () => {
 
   const columns = [
     {
-      key: 'orderNumber',
+      key: 'orderId',
       label: 'Order #',
       sortable: true,
       render: (row) => (
         <div>
-          <p className="font-medium text-gray-900">{row.orderNumber || `#${row._id?.slice(-6)}`}</p>
+          <p className="font-medium text-gray-900">
+            {row.orderId ? `#${row.orderId}` : row.orderNumber || (row.id ? `#${row.id.slice(-6)}` : '#N/A')}
+          </p>
           <p className="text-xs text-gray-500">
             {formatDate(row.createdAt, 'D MMM, YYYY')}
           </p>
@@ -224,8 +362,8 @@ const AdminOrders = () => {
       sortable: true,
       render: (row) => (
         <div>
-          <p className="font-medium text-gray-900">{row.customerName || 'Unknown'}</p>
-          <p className="text-xs text-gray-500">{row.customerPhone || 'N/A'}</p>
+          <p className="font-medium text-gray-900">{row.customerName || row.user?.name || 'Unknown'}</p>
+          <p className="text-xs text-gray-500">{row.customerPhone || row.user?.phone || 'N/A'}</p>
         </div>
       )
     },
@@ -272,7 +410,7 @@ const AdminOrders = () => {
           {getAllowedNextStatuses(row.status).length > 0 && (
             <select
               value={row.status}
-              onChange={(e) => handleStatusChange(row._id, e.target.value)}
+              onChange={(e) => handleStatusChange(row.orderId || row.id || row._id, e.target.value)}
               className="text-sm px-2 py-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
             >
               <option value={row.status} disabled>Change Status</option>
@@ -495,7 +633,7 @@ const AdminOrders = () => {
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <div>
                 <h3 className="text-xl font-semibold text-gray-900">
-                  Order {selectedOrder.orderNumber || `#${selectedOrder._id?.slice(-6)}`}
+                  Order {selectedOrder.orderId ? `#${selectedOrder.orderId}` : selectedOrder.orderNumber || (selectedOrder.id ? `#${selectedOrder.id.slice(-6)}` : '#N/A')}
                 </h3>
                 <p className="text-sm text-gray-500 mt-1">
                   {formatDateTime(selectedOrder.createdAt)}
@@ -629,7 +767,7 @@ const AdminOrders = () => {
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Update Status</h4>
                   <select
                     value={selectedOrder.status}
-                    onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
+                    onChange={(e) => handleStatusChange(selectedOrder.orderId || selectedOrder.id || selectedOrder._id, e.target.value)}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                   >
                     <option value={selectedOrder.status} disabled>
