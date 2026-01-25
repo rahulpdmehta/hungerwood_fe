@@ -1,7 +1,7 @@
 const DietToggle = ({ value, onChange }) => {
     return (
         <div className="flex px-4 py-4">
-            <div className="flex h-10 w-full items-center justify-center rounded-md bg-gray-200 dark:bg-gray-800 p-0.5 border-2 border-gray-300 dark:border-gray-700 shadow-sm">
+            <div className="flex h-10 w-full items-center justify-center rounded-md bg-gray-200 dark:bg-gray-800 p-0 border-0 border-none dark:border-none shadow-sm">
                 {/* <label
                     className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-md px-2 ${value === 'All'
                         ? 'bg-white dark:bg-gray-700 shadow-sm text-black'

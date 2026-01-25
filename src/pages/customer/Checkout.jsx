@@ -178,19 +178,19 @@ const Checkout = () => {
       // Call backend API to create order
       const response = await orderService.createOrder(orderData);
       
-      // Extract order ID
-      const orderId = response.data?.id || response.data?.data?.id;
+      // Extract order ID - use orderId field from response
+      const orderId = response.data?.orderId || response.data?.data?.orderId || response.data?.id || response.data?.data?.id;
       
       if (!orderId) {
-        console.error('Order created but no ID returned:', response.data);
+        console.error('Order created but no orderId returned:', response.data);
         throw new Error('Order was created but could not retrieve order ID. Please check your orders.');
       }
       
-      console.log('✅ Order created with ID:', orderId);
+      console.log('✅ Order created with orderId:', orderId);
 
       // 🎉 Trigger order placed animation and sound
       animations.orderPlaced({
-        orderNumber: response.data.orderNumber || orderId,
+        orderNumber: response.data.orderId || response.data.orderNumber || orderId,
         totalAmount: totalPayable,
         orderType,
       });

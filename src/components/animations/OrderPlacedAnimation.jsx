@@ -65,7 +65,7 @@ const OrderPlacedAnimation = () => {
             >
               {/* Success Icon */}
               <motion.div
-                className="w-32 h-32 mx-auto mb-4 flex items-center justify-center"
+                className="w-14 h-14 mx-auto mb-4 flex items-center justify-center"
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{
@@ -81,7 +81,7 @@ const OrderPlacedAnimation = () => {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, duration: 0.3 }}
-                    className="w-28 h-28 rounded-full bg-gradient-to-br from-[#7f4f13] to-[#ff8c42] flex items-center justify-center shadow-2xl"
+                    className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00860c] to-[#259a30] flex items-center justify-center shadow-2xl"
                   >
                     {/* Checkmark Icon */}
                     <motion.span
@@ -89,7 +89,7 @@ const OrderPlacedAnimation = () => {
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.4, type: 'spring', stiffness: 200 }}
                       className="material-symbols-outlined text-white"
-                      style={{ fontSize: '64px', fontWeight: 'bold' }}
+                      style={{ fontSize: '2rem', fontWeight: 'bold' }}
                     >
                       check_circle
                     </motion.span>
@@ -116,10 +116,10 @@ const OrderPlacedAnimation = () => {
                 transition={{ delay: 0.3 }}
                 className="text-center"
               >
-                <h2 className="text-2xl font-bold text-[#7f4f13] mb-2">
+                <h2 className="text-xl font-bold text-[#7f4f13] mb-2">
                   Order Placed Successfully!
                 </h2>
-                <p className="text-[#887263] dark:text-gray-400 mb-4">
+                <p className="text-sm text-[#887263] dark:text-gray-400 mb-4">
                   Your delicious meal is on its way
                 </p>
                 {orderData?.orderNumber && (

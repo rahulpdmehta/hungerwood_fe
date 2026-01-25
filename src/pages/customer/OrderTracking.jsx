@@ -2,47 +2,67 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import BackButton from '@components/common/BackButton';
 import { orderService } from '@services/order.service';
-import { useOrderSSE } from '@hooks/useOrderSSE';
+import { useOrderPolling } from '@hooks/useOrderPolling';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { formatDate, formatTime as formatTimeUtil } from '@utils/dateFormatter';
+import { useAnimation } from '@/contexts/AnimationContext';
+import { toast } from 'react-hot-toast';
 
 const OrderTracking = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Use SSE hook for real-time updates
-  const { orderData: sseOrderData, isConnected, error: sseError } = useOrderSSE(id);
-
   // State for order data
   const [order, setOrder] = useState(location.state?.order || {});
-  const [loading, setLoading] = useState(!location.state?.order && !sseOrderData);
   const previousStatus = useRef(order.status);
+  const { animations } = useAnimation();
 
-  // Update order when SSE data arrives
+  // Use polling hook for order status updates
+  const { orderData: pollingOrderData, isLoading: pollingLoading, error: pollingError, refreshOrder, isRefreshing } = useOrderPolling(id, order?.status);
+
+  // Update order when polling data arrives and show notifications
   useEffect(() => {
-    if (sseOrderData) {
-      console.log('📦 Updating order from SSE data:', sseOrderData);
-      console.log('🍽️ SSE Order items:', sseOrderData?.items);
+    if (pollingOrderData) {
+      console.log('📦 Updating order from polling data:', pollingOrderData);
+      console.log('🍽️ Polling Order items:', pollingOrderData?.items);
 
-      // Note: Status change notifications are now handled globally by GlobalOrderStatusListener
-      // This ensures notifications appear on all pages, not just order tracking
-      if (sseOrderData.status && sseOrderData.status !== previousStatus.current) {
-        console.log(`🎬 Status changed: ${previousStatus.current} → ${sseOrderData.status}`);
-        previousStatus.current = sseOrderData.status;
+      // Track status changes and show notifications
+      if (pollingOrderData.status && pollingOrderData.status !== previousStatus.current && previousStatus.current) {
+        const oldStatus = previousStatus.current;
+        const newStatus = pollingOrderData.status;
+        
+        console.log(`🎬 Status changed: ${oldStatus} → ${newStatus}`);
+        
+        // Format status for display
+        const formattedStatus = newStatus.replace(/_/g, ' ').toLowerCase()
+          .replace(/\b\w/g, l => l.toUpperCase());
+        
+        // Show toast notification
+        toast.success(`Order status updated: ${formattedStatus}`, {
+          icon: '🔔',
+          duration: 4000
+        });
+
+        // Trigger animation notification
+        animations.orderStatus(newStatus);
+        
+        previousStatus.current = newStatus;
+      } else if (pollingOrderData.status && !previousStatus.current) {
+        // First time setting status (initial load)
+        previousStatus.current = pollingOrderData.status;
       }
 
-      setOrder(sseOrderData);
-      setLoading(false);
+      setOrder(pollingOrderData);
     }
-  }, [sseOrderData]);
+  }, [pollingOrderData, animations]);
 
-  // Fallback: Fetch order if SSE hasn't provided data yet
+  // Initial fetch if no order data from location state
   useEffect(() => {
-    if (!location.state?.order && !sseOrderData && id) {
+    if (!location.state?.order && !pollingOrderData && id) {
       fetchOrder();
     }
-  }, [id, sseOrderData]);
+  }, [id, pollingOrderData]);
 
   const fetchOrder = async () => {
     try {
@@ -67,10 +87,11 @@ const OrderTracking = () => {
       console.error('Failed to fetch order:', error);
       // Set empty order to show error state
       setOrder({});
-    } finally {
-      setLoading(false);
     }
   };
+
+  // Determine loading state
+  const loading = !location.state?.order && !pollingOrderData && !order?.id && pollingLoading;
 
   // Get data from order
   const orderData = location.state || {};
@@ -87,7 +108,7 @@ const OrderTracking = () => {
     : Array.isArray(orderData.items)
       ? orderData.items
       : [];
-  const orderNumber = order.orderNumber || `HW${id}`;
+  const orderNumber = order.orderId || id;
   const orderStatus = order.status || 'preparing';
 
   // Show loading state
@@ -144,7 +165,7 @@ const OrderTracking = () => {
     return statusMap[status] ?? 0;
   };
 
-  // Update currentStep when order status changes (from SSE or initial load)
+  // Update currentStep when order status changes (from polling or initial load)
   useEffect(() => {
     if (order?.status) {
       const step = getStepFromStatus(order.status);
@@ -284,34 +305,27 @@ const OrderTracking = () => {
           </p>
           <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight">Track Order</h2>
         </div>
-        <button
-          onClick={handleHelp}
-          className="text-[#7f4f13] text-sm font-bold hover:underline absolute right-4"
-        >
-          Help
-        </button>
+        <div className="flex items-center gap-2 absolute right-4">
+          
+          <button
+            onClick={handleHelp}
+            className="text-[#7f4f13] text-sm font-bold hover:underline"
+          >
+            Help
+          </button>
+        </div>
       </div>
 
       <main className="flex-1 px-4 pt-6">
-        {/* Real-time Connection Indicator */}
-        {/* {isConnected && (
-          <div className="flex items-center justify-center gap-2 mb-4 px-4 py-2 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-            <span className="text-green-700 dark:text-green-400 text-xs font-medium">
-              Live updates active
-            </span>
-          </div>
-        )} */}
-
-        {/* SSE Error */}
+        {/* Polling Error */}
         <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3 text-center">Order #{orderNumber}</h3>
-        {sseError && (
+        {pollingError && (
           <div className="flex items-center justify-center gap-2 mb-4 px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
             <span className="material-symbols-outlined text-yellow-600 dark:text-yellow-400 text-sm">
               warning
             </span>
             <span className="text-yellow-700 dark:text-yellow-400 text-xs font-medium">
-              {sseError}
+              {pollingError}
             </span>
           </div>
         )}
@@ -381,7 +395,19 @@ const OrderTracking = () => {
 
         {/* Order Timeline */}
         {order?.status !== 'CANCELLED' ? (
-          <div className="mb-8">
+          <div className=" relative z-10 mb-8 bg-white dark:bg-[#2d221a] rounded-xl p-6 shadow-md border border-[#f4f2f0] dark:border-[#3d2e24]">
+            <button
+            onClick={refreshOrder}
+            disabled={isRefreshing}
+            className={`h-10 w-10 bg-white dark:bg-[#2d221a] rounded-full flex items-center justify-center border border-[#f4f2f0] dark:border-[#3d2e24] shadow-md text-[#7f4f13] hover:text-[#7f4f13]/80 transition-all absolute top-[-10px] right-[-10px] ${
+              isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
+            title="Refresh order status"
+          >
+            <span className={`material-symbols-outlined ${isRefreshing ? 'animate-spin' : ''}`}>
+              refresh
+            </span>
+          </button>
             {orderSteps.map((step, index) => (
               <div key={step.index} className="flex items-start gap-4 mb-0 last:mb-0">
                 {/* Icon Column */}

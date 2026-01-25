@@ -39,14 +39,15 @@ const Orders = () => {
 
   // Handle order card click
   const handleOrderClick = (order) => {
-    navigate(`/orders/${order.id}`, {
+    const orderId = order.orderId || order.id;
+    navigate(`/orders/${orderId}`, {
       state: { order }
     });
   };
 
   const handleReorder = (order) => {
     // In real app: Add items to cart and navigate
-    alert(`Reordering order #${order.orderNumber || order.id}`);
+    alert(`Reordering order #${order.orderId || order.orderNumber || order.id}`);
     navigate('/menu');
   };
 
@@ -370,7 +371,7 @@ const Orders = () => {
         ) : (
           <div className="space-y-1 mt-2">
             {ordersToDisplay.map((order) => (
-              <div key={order.id} className="px-4 py-2">
+              <div key={order.orderId || order.id} className="px-4 py-2">
                 <div
                   onClick={() => handleOrderClick(order)}
                   className="flex items-start gap-4 rounded-xl shadow-md border-2 border-[#e5e0dc] dark:border-[#3d2e24] bg-white dark:bg-[#2d2118] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow p-4"
@@ -398,9 +399,9 @@ const Orders = () => {
                       >
                         {order.status}
                       </span>
-                      {/* <span className="text-[#887263] dark:text-[#b09d90] text-xs font-medium ml-auto">
-                        #{order.orderNumber || order.id}
-                      </span> */}
+                      <span className="text-[#887263] dark:text-[#b09d90] text-xs font-medium ml-auto">
+                        #{order.orderId || order.orderNumber || order.id}
+                      </span>
                     </div>
 
                     {/* Restaurant Name */}
