@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import logov2 from '@assets/images/logo_v2.png';
+
 
 const SplashScreen = ({ onFinish }) => {
   const [progress, setProgress] = useState(0);
@@ -39,34 +41,34 @@ const SplashScreen = ({ onFinish }) => {
   }, [onFinish]);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex flex-col text-white items-center justify-center animate-fadeIn bg-[#543918]">
       {/* Panda Chef Logo */}
-      <div className="mb-8 animate-slideUp">
-        <div className="cm-panda-logo max-w-[200px]">
-          <img src="/logo_1.jpeg" alt="HungerWood Panda Chef" className="w-full h-full object-contain" />
+      <div className="animate-slideUp">
+        <div className="cm-panda-logo max-w-[150px]">
+          <img src={logov2} alt="HungerWood Panda Chef" className="w-full h-full object-contain" />
         </div>
       </div>
 
       {/* Brand Name */}
       <div className="text-center mb-8 animate-slideUp" style={{ animationDelay: '0.1s' }}>
-        <h2 className="text-text-primary text-4xl font-bold">HungerWood</h2>
-        <p className="text-gray-600 text-lg tracking-wider uppercase font-medium">
+        {/* <h2 className="text-text-primary text-4xl font-bold text-white">HungerWood</h2> */}
+        <p className="text-gray-600 text-md tracking-wider uppercase font-medium text-white">
           Taste the Wild, Feel the Wood
         </p>
       </div>
 
       {/* Loading Section */}
-      <div className="w-80 max-w-[90%] animate-slideUp" style={{ animationDelay: '0.2s' }}>
+      <div className="w-80 max-w-[90%] fixed bottom-10 left-[50%] translate-x-[-50%]" style={{ animationDelay: '0.2s' }}>
         {/* Loading Text */}
         <div className="flex items-center justify-between mb-3">
-          <p className="text-text-primary font-medium">Brewing fresh flavors...</p>
-          <span className="text-primary-dark font-bold">{Math.round(progress)}%</span>
+          <p className="text-text-primary font-medium text-white text-sm">Brewing fresh flavors...</p>
+          <span className="text-primary-dark font-bold text-white text-sm">{Math.round(progress)}%</span>
         </div>
 
         {/* Progress Bar */}
-        <div className="w-full h-2 bg-primary-100 rounded-full overflow-hidden shadow-inner">
+        <div className="w-full h-1.5 bg-primary-100 rounded-full overflow-hidden shadow-inner">
           <div
-            className="h-full bg-gradient-to-r from-primary via-primary-dark to-cta rounded-full transition-all duration-300 ease-out shadow-lg"
+            className="h-full bg-gradient-to-r from-white via-white to-white rounded-full transition-all duration-300 ease-out shadow-lg"
             style={{ width: `${progress}%` }}
           >
             <div className="h-full w-full bg-gradient-to-r from-transparent via-white to-transparent opacity-30 animate-pulse"></div>
@@ -76,7 +78,7 @@ const SplashScreen = ({ onFinish }) => {
         {/* Location */}
         <div className="flex items-center justify-center mt-6 text-text-secondary">
           <svg
-            className="w-5 h-5 mr-2 text-primary"
+            className="w-5 h-5 mr-2 text-white"
             fill="currentColor"
             viewBox="0 0 20 20"
           >
@@ -86,7 +88,7 @@ const SplashScreen = ({ onFinish }) => {
               clipRule="evenodd"
             />
           </svg>
-          <span className="font-medium">{location}</span>
+          <span className="font-medium text-white">{location}</span>
         </div>
       </div>
 

@@ -339,7 +339,7 @@ const Addresses = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleEdit(address)}
-                      className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
                     >
                       <span className="material-symbols-outlined text-text-secondary text-xl">
                         edit

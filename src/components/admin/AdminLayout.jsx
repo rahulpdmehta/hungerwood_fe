@@ -117,7 +117,7 @@ const AdminLayout = ({ children }) => {
           </div>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium transition-colors"
+            className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-gray-200 hover:bg-gray-200 rounded-lg text-gray-700 text-sm font-medium transition-colors"
           >
             <LogOut size={16} />
             <span>Logout</span>

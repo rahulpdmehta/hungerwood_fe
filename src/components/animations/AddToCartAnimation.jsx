@@ -82,7 +82,7 @@ const AddToCartAnimation = () => {
             className="fixed z-[9997] pointer-events-none"
           >
             {/* Flying Item Visual */}
-            <div className="w-16 h-16 rounded-lg bg-[#cf6317] shadow-lg flex items-center justify-center">
+            <div className="w-16 h-16 rounded-lg bg-[#543918] shadow-lg flex items-center justify-center">
               {anim.item?.image ? (
                 <img 
                   src={anim.item.image} 

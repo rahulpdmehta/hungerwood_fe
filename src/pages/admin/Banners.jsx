@@ -24,7 +24,7 @@ const AdminBanners = () => {
         subtitle: '',
         description: '',
         badge: '',
-        badgeColor: '#cf6317',
+        badgeColor: '#543918',
         image: '',
         backgroundColor: 'linear-gradient(135deg, #181411 0%, #2d221a 100%)',
         textColor: '#ffffff',
@@ -66,7 +66,7 @@ const AdminBanners = () => {
             subtitle: '',
             description: '',
             badge: 'NEW OFFER',
-            badgeColor: '#cf6317',
+            badgeColor: '#543918',
             image: '',
             backgroundColor: 'linear-gradient(135deg, #181411 0%, #2d221a 100%)',
             textColor: '#ffffff',
@@ -223,7 +223,7 @@ const AdminBanners = () => {
                             ? isValid
                                 ? 'bg-green-100 text-green-700'
                                 : 'bg-yellow-100 text-yellow-700'
-                            : 'bg-gray-100 text-gray-700'
+                            : 'bg-gray-200 text-gray-700'
                             }`}>
                             {row.enabled ? (isValid ? 'Active' : 'Scheduled') : 'Disabled'}
                         </span>
@@ -247,7 +247,7 @@ const AdminBanners = () => {
                     <button
                         onClick={() => handleToggleStatus(row)}
                         className={`px-3 py-1 text-xs font-medium rounded transition-colors ${row.enabled
-                            ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                            ? 'bg-gray-200 text-gray-700 hover:bg-gray-200'
                             : 'bg-green-100 text-green-700 hover:bg-green-200'
                             }`}
                     >

@@ -59,7 +59,7 @@ const Cart = () => {
           </p>
           <button
             onClick={() => navigate('/menu')}
-            className="bg-[#cf6317] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#cf6317]/90 transition-colors"
+            className="bg-[#543918] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#543918]/90 transition-colors"
           >
             Browse Menu
           </button>
@@ -85,7 +85,7 @@ const Cart = () => {
             <h3 className="text-lg font-bold">Items in Cart</h3>
             <span
               onClick={handleAddMore}
-              className="text-sm text-[#cf6317] font-semibold cursor-pointer hover:underline"
+              className="text-sm text-[#543918] font-semibold cursor-pointer hover:underline"
             >
               Add more
             </span>
@@ -99,7 +99,7 @@ const Cart = () => {
             >
               <div className="flex items-center gap-4 flex-1">
                 <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 border border-gray-100 dark:border-gray-800"
+                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 border-2 border-gray-200 dark:border-gray-700 shadow-sm"
                   style={{ backgroundImage: `url("${item.image}")` }}
                 ></div>
                 <div className="flex flex-col justify-center">
@@ -135,7 +135,7 @@ const Cart = () => {
                   <span className="text-sm font-bold w-4 text-center">{item.quantity}</span>
                   <button
                     onClick={() => incrementQuantity(item.id)}
-                    className="text-base font-bold flex h-6 w-6 items-center justify-center rounded-full text-[#cf6317] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                    className="text-base font-bold flex h-6 w-6 items-center justify-center rounded-full text-[#543918] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
                   >
                     +
                   </button>
@@ -149,13 +149,13 @@ const Cart = () => {
         <div className="px-4 py-2">
           <label className="flex flex-col w-full">
             <div className="flex items-center gap-2 pb-2">
-              <span className="material-symbols-outlined text-[#cf6317] text-lg">edit_note</span>
+              <span className="material-symbols-outlined text-[#543918] text-lg">edit_note</span>
               <p className="text-[#181411] dark:text-white text-base font-bold">Cooking Instructions</p>
             </div>
             <textarea
               value={cookingInstructions}
               onChange={(e) => setCookingInstructions(e.target.value)}
-              className="form-input flex w-full resize-none overflow-hidden rounded-xl text-[#181411] dark:text-white focus:outline-0 focus:ring-1 focus:ring-[#cf6317] border border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 min-h-24 placeholder:text-[#887263] p-[15px] text-sm font-normal leading-normal transition-all"
+              className="form-input flex w-full resize-none overflow-hidden rounded-xl text-[#181411] dark:text-white focus:outline-0 focus:ring-2 focus:ring-[#543918] border-2 border-gray-200 dark:border-gray-700 bg-white dark:bg-white/5 min-h-24 placeholder:text-[#887263] p-[15px] text-sm font-normal leading-normal transition-all shadow-sm"
               placeholder="e.g. Make it extra spicy, no onions etc."
             />
           </label>
@@ -198,11 +198,11 @@ const Cart = () => {
         </div>
 
         {/* Cancellation Policy */}
-        <div className="mx-4 mt-6 p-4 bg-[#cf6317]/5 dark:bg-[#cf6317]/10 rounded-xl border border-[#cf6317]/10">
+        <div className="mx-4 mt-6 p-4 bg-[#543918]/5 dark:bg-[#543918]/10 rounded-xl border-2 border-[#543918]/20 shadow-md">
           <div className="flex gap-3">
-            <span className="material-symbols-outlined text-[#cf6317]">verified_user</span>
+            <span className="material-symbols-outlined text-[#543918]">verified_user</span>
             <div>
-              <p className="text-xs font-bold text-[#cf6317] mb-1">Safety & Quality Assured</p>
+              <p className="text-xs font-bold text-[#543918] mb-1">Safety & Quality Assured</p>
               <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed uppercase tracking-tight">
                 Orders cannot be cancelled once accepted by the kitchen to avoid food waste.
               </p>
@@ -222,7 +222,7 @@ const Cart = () => {
           </div>
           <button
             onClick={handleCheckout}
-            className="flex-1 bg-[#cf6317] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#cf6317]/90 active:scale-95 transition-all shadow-lg shadow-[#cf6317]/25"
+            className="flex-1 bg-[#543918] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#543918]/90 active:scale-95 transition-all shadow-lg shadow-[#543918]/25"
           >
             <span>Proceed to Checkout</span>
             <span className="material-symbols-outlined">chevron_right</span>

@@ -91,7 +91,7 @@ const Referral = () => {
       {/* Header */}
       <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] justify-between shadow-sm">
         <BackButton
-          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"
         />
         <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
@@ -129,7 +129,7 @@ const Referral = () => {
 
           {/* Total Referrals */}
           <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] text-center">
-            <p className="text-2xl font-bold text-[#cf6317] mb-1">
+            <p className="text-2xl font-bold text-[#543918] mb-1">
               {totalReferrals}
             </p>
             <p className="text-xs text-[#887263] dark:text-gray-400">
@@ -154,19 +154,19 @@ const Referral = () => {
             Your Referral Code
           </h3>
 
-          <div className="bg-gradient-to-r from-[#fef9f5] to-white dark:from-[#211811] dark:to-[#2d221a] rounded-xl p-4 border-2 border-dashed border-[#cf6317]/30 mb-4">
+          <div className="bg-gradient-to-r from-[#fef9f5] to-white dark:from-[#211811] dark:to-[#2d221a] rounded-xl p-4 border-2 border-dashed border-[#543918]/30 mb-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-[#887263] dark:text-gray-400 mb-1">
                   Share this code
                 </p>
-                <p className="text-2xl font-bold text-[#cf6317] tracking-wider font-mono">
+                <p className="text-2xl font-bold text-[#543918] tracking-wider font-mono">
                   {displayReferralCode || 'Loading...'}
                 </p>
               </div>
               <button
                 onClick={handleCopyCode}
-                className="w-12 h-12 bg-[#cf6317] text-white rounded-xl flex items-center justify-center shadow-md hover:bg-[#cf6317]/90 active:scale-95 transition-all"
+                className="w-12 h-12 bg-[#543918] text-white rounded-xl flex items-center justify-center shadow-md hover:bg-[#543918]/90 active:scale-95 transition-all"
               >
                 <span className="material-symbols-outlined">
                   {copied ? 'check' : 'content_copy'}
@@ -232,7 +232,7 @@ const Referral = () => {
 
             <button
               onClick={() => handleShare('more')}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
             >
               <div className="w-10 h-10 bg-gray-500 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-white text-lg">
@@ -260,7 +260,7 @@ const Referral = () => {
               >
                 {/* Left: Avatar + Info */}
                 <div className="flex items-center gap-3">
-                  {/* <div className="w-10 h-10 bg-gradient-to-br from-[#cf6317] to-[#b85515] rounded-full flex items-center justify-center">
+                  {/* <div className="w-10 h-10 bg-gradient-to-br from-[#543918] to-[#b85515] rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
                       {friend.name.charAt(0)}
                     </span>

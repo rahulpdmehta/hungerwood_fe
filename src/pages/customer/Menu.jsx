@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import useCartStore from '@store/useCartStore';
-import useMenuStore from '@store/useMenuStore';
-import useSmartMenuSync from '@hooks/useSmartMenuSync';
+import { useMenuItems, useCategories } from '@hooks/useMenuQueries';
 import BottomNavBar from '@components/layout/BottomNavBar';
 import FloatingCartButton from '@components/layout/FloatingCartButton';
 import MenuItemCard from '@components/food/MenuItemCard';
@@ -11,52 +10,29 @@ import CategoryTabsBar from '@components/food/CategoryTabsBar';
 import DietToggle from '@components/food/DietToggle';
 import SearchBar from '@components/common/SearchBar';
 import BackButton from '@components/common/BackButton';
+import { MenuSkeleton, CategorySkeleton } from '@components/common/Loader';
 
 const Menu = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { addItem } = useCartStore();
-  const {
-    categories: storeCategories,
-    items: storeItems,
-    fetchCategories,
-    fetchItems,
-    loading: storeLoading
-  } = useMenuStore();
+
+  // React Query hooks for data fetching
+  const { data: menuItems = [], isLoading: itemsLoading, error: itemsError } = useMenuItems();
+  const { data: categoriesData = [], isLoading: categoriesLoading } = useCategories();
 
   const [activeCategory, setActiveCategory] = useState('All');
   const [dietFilter, setDietFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-  const [categories, setCategories] = useState(['All']);
-  const [allMenuItems, setAllMenuItems] = useState([]);
 
-  // Enable smart menu sync
-  useSmartMenuSync();
-
-  // Load menu data from store (with caching)
-  useEffect(() => {
-    loadMenuData();
-  }, []);
-
-  const loadMenuData = async () => {
-    try {
-      // Use smart fetch (checks version first)
-      const [categoriesData, itemsData] = await Promise.all([
-        fetchCategories(),
-        useMenuStore.getState().fetchItemsSmart() // Use smart fetch
-      ]);
-
-      if (categoriesData && categoriesData.length > 0) {
-        setCategories(['All', ...categoriesData.map(c => c.name)]);
-      }
-      if (itemsData && itemsData.length > 0) {
-        setAllMenuItems(itemsData);
-      }
-    } catch (error) {
-      console.error('Failed to load menu:', error);
+  // Transform categories data for UI
+  const categories = useMemo(() => {
+    if (categoriesData && categoriesData.length > 0) {
+      return ['All', ...categoriesData.map(c => c.name || c)];
     }
-  };
+    return ['All'];
+  }, [categoriesData]);
 
   // Check for search query param and open search if search=true
   useEffect(() => {
@@ -75,9 +51,14 @@ const Menu = () => {
   }, [location.search]);
 
   // Today's Specials - filter from menu items
-  const specials = allMenuItems
-    .filter(item => item.isSpecial || item.isBestSeller)
-    .slice(0, 4);
+  const specials = useMemo(() => {
+    return menuItems
+      .filter(item => item.isSpecial || item.isBestSeller || item.bestseller)
+      .slice(0, 4);
+  }, [menuItems]);
+
+  // Loading state
+  const isLoading = itemsLoading || categoriesLoading;
 
   // Fallback menu items (in case API fails)
   const fallbackMenuItems = [
@@ -249,7 +230,7 @@ const Menu = () => {
   ];
 
   // Use API data if available, otherwise use fallback
-  const menuItems = allMenuItems.length > 0 ? allMenuItems : fallbackMenuItems;
+  const displayMenuItems = menuItems.length > 0 ? menuItems : fallbackMenuItems;
 
   const handleAddToCart = (item) => {
     addItem({
@@ -271,7 +252,8 @@ const Menu = () => {
   };
 
   // Filter items based on category, diet preference, and search
-  const filteredItems = menuItems.filter((item) => {
+  const filteredItems = useMemo(() => {
+    return displayMenuItems.filter((item) => {
     // Category filter - handle both string and object category
     const categoryName = typeof item.category === 'string' ? item.category : item.category?.name;
     const matchesCategory = categoryName === activeCategory || activeCategory === 'All';
@@ -285,25 +267,26 @@ const Menu = () => {
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCategory && matchesDiet && matchesSearch;
-  });
+      return matchesCategory && matchesDiet && matchesSearch;
+    });
+  }, [displayMenuItems, activeCategory, dietFilter, searchQuery]);
 
   return (
     <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
       {/* Top Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#211811]/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
+      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#211811]/80 backdrop-blur-md border-b-2 border-gray-200 dark:border-gray-700 shadow-md">
         <div className="flex items-center p-4 pb-2 justify-between">
           <BackButton to="/" variant="minimal" />
           <div className="flex-1 text-center">
             <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight">
               HungerWood
             </h2>
-            <p className="text-[10px] text-[#cf6317] font-bold uppercase tracking-widest">Gaya, Bihar</p>
+            <p className="text-[10px] text-[#543918] font-bold uppercase tracking-widest">Gaya, Bihar</p>
           </div>
           <div className="flex w-10 items-center justify-end">
             <button
               onClick={toggleSearch}
-              className="flex cursor-pointer items-center justify-center rounded-full h-10 w-10 bg-transparent text-[#181411] dark:text-white"
+              className="flex cursor-pointer items-center justify-center rounded-full h-10 w-10 bg-white dark:bg-zinc-800 text-[#181411] dark:text-white shadow-md border border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow"
             >
               <span className="material-symbols-outlined">{showSearch ? 'close' : 'search'}</span>
             </button>
@@ -314,36 +297,44 @@ const Menu = () => {
         <SearchBar isOpen={showSearch} value={searchQuery} onChange={setSearchQuery} />
 
         {/* Category Tabs Component */}
-        <CategoryTabsBar
-          categories={categories}
-          activeCategory={activeCategory}
-          onCategoryChange={(category) => {
-            setDietFilter('All');
-            setActiveCategory(category);
-          }}
-        />
+        {categoriesLoading ? (
+          <CategorySkeleton />
+        ) : (
+          <CategoryTabsBar
+            categories={categories}
+            activeCategory={activeCategory}
+            onCategoryChange={(category) => {
+              setDietFilter('All');
+              setActiveCategory(category);
+            }}
+          />
+        )}
       </nav>
 
       {/* Main Content */}
       <main className="pb-2">
         {/* Today's Specials */}
-        <div className="px-4 pt-4">
-          <h3 className="text-gray-900 dark:text-white text-base font-bold mb-3">Today's Specials</h3>
-          <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
-            <div className="flex flex-row items-start justify-start gap-4">
-              {specials.map((special) => (
-                <SpecialItemCard key={special.id} item={special} />
-              ))}
+        {!isLoading && specials.length > 0 && (
+          <div className="px-4 pt-4">
+            <h3 className="text-gray-900 dark:text-white text-base font-bold mb-3">Today's Specials</h3>
+            <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
+              <div className="flex flex-row items-start justify-start gap-4">
+                {specials.map((special) => (
+                  <SpecialItemCard key={special.id} item={special} />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Diet Toggle Component */}
         <DietToggle value={dietFilter} onChange={setDietFilter} />
 
         {/* Menu Items List */}
         <div className="space-y-4 px-4">
-          {filteredItems.length === 0 ? (
+          {isLoading ? (
+            <MenuSkeleton count={6} />
+          ) : filteredItems.length === 0 ? (
             <div className="text-center py-16">
               <span className="material-symbols-outlined text-gray-300 dark:text-gray-700 text-6xl mb-4">
                 search_off
@@ -357,7 +348,7 @@ const Menu = () => {
             </div>
           ) : (
             filteredItems.map((item) => (
-              <MenuItemCard key={item.id} item={item} onAddToCart={handleAddToCart} />
+              <MenuItemCard key={item.id || item._id} item={item} onAddToCart={handleAddToCart} />
             ))
           )}
         </div>

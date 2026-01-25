@@ -6,7 +6,7 @@
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
-const ConfettiAnimation = ({ trigger = false, type = 'full', colors = ['#cf6317', '#f8b84e', '#ff6b6b'] }) => {
+const ConfettiAnimation = ({ trigger = false, type = 'full', colors = ['#543918', '#f8b84e', '#ff6b6b'] }) => {
   useEffect(() => {
     if (!trigger) return;
 

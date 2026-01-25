@@ -81,7 +81,7 @@ const OrderPlacedAnimation = () => {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, duration: 0.3 }}
-                    className="w-28 h-28 rounded-full bg-gradient-to-br from-[#cf6317] to-[#ff8c42] flex items-center justify-center shadow-2xl"
+                    className="w-28 h-28 rounded-full bg-gradient-to-br from-[#543918] to-[#ff8c42] flex items-center justify-center shadow-2xl"
                   >
                     {/* Checkmark Icon */}
                     <motion.span
@@ -104,7 +104,7 @@ const OrderPlacedAnimation = () => {
                       repeat: Infinity,
                       repeatDelay: 0.5
                     }}
-                    className="absolute inset-0 rounded-full border-4 border-[#cf6317]"
+                    className="absolute inset-0 rounded-full border-4 border-[#543918]"
                   />
                 </div>
               </motion.div>
@@ -116,7 +116,7 @@ const OrderPlacedAnimation = () => {
                 transition={{ delay: 0.3 }}
                 className="text-center"
               >
-                <h2 className="text-2xl font-bold text-[#cf6317] mb-2">
+                <h2 className="text-2xl font-bold text-[#543918] mb-2">
                   Order Placed Successfully!
                 </h2>
                 <p className="text-[#887263] dark:text-gray-400 mb-4">

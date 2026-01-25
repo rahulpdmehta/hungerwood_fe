@@ -232,7 +232,7 @@ const Checkout = () => {
       {/* TopAppBar */}
       <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] justify-between">
         <BackButton
-          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"
         />
         <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
@@ -243,10 +243,10 @@ const Checkout = () => {
       <main className="flex-1 pb-40">
         {/* Segmented Buttons - Order Type */}
         <div className="px-4 py-6">
-          <div className="flex h-12 flex-1 items-center justify-center rounded-xl bg-white dark:bg-[#2d221a] p-1 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+          <div className="flex h-12 flex-1 items-center justify-center rounded-xl bg-white dark:bg-[#2d221a] p-1 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
             <label
               className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold transition-all ${orderType === 'Dine-in'
-                ? 'bg-[#cf6317] text-white'
+                ? 'bg-[#543918] text-white'
                 : 'text-[#887263] dark:text-gray-400'
                 }`}
             >
@@ -262,7 +262,7 @@ const Checkout = () => {
             </label>
             <label
               className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold transition-all ${orderType === 'Takeaway'
-                ? 'bg-[#cf6317] text-white'
+                ? 'bg-[#543918] text-white'
                 : 'text-[#887263] dark:text-gray-400'
                 }`}
             >
@@ -278,7 +278,7 @@ const Checkout = () => {
             </label>
             <label
               className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold transition-all ${orderType === 'Delivery'
-                ? 'bg-[#cf6317] text-white'
+                ? 'bg-[#543918] text-white'
                 : 'text-[#887263] dark:text-gray-400'
                 }`}
             >
@@ -305,25 +305,25 @@ const Checkout = () => {
             </div>
             <div className="px-4 mb-6">
               {loadingAddresses ? (
-                <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+                <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
                   <p className="text-text-secondary text-sm">Loading addresses...</p>
                 </div>
               ) : !selectedAddress ? (
-                <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+                <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
                   <p className="text-text-secondary text-sm mb-3">No saved addresses found</p>
                   <button
                     onClick={handleChangeAddress}
-                    className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#cf6317] text-white text-sm font-bold transition-colors hover:bg-[#cf6317]/90"
+                    className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#543918] text-white text-sm font-bold transition-colors hover:bg-[#543918]/90"
                   >
                     Add Address
                   </button>
                 </div>
               ) : (
-                <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+                <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex flex-[2_2_0px] flex-col gap-3">
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#cf6317] text-xl">
+                        <span className="material-symbols-outlined text-[#543918] text-xl">
                           {selectedAddress.label === 'Home' ? 'home' : selectedAddress.label === 'Office' ? 'work' : 'location_on'}
                         </span>
                         <p className="text-[#181411] dark:text-white text-base font-bold leading-tight">
@@ -335,7 +335,7 @@ const Checkout = () => {
                       </p>
                       <button
                         onClick={handleChangeAddress}
-                        className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#cf6317]/10 text-[#cf6317] text-sm font-bold transition-colors hover:bg-[#cf6317]/20 w-fit"
+                        className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#543918]/10 text-[#543918] text-sm font-bold transition-colors hover:bg-[#543918]/20 w-fit"
                       >
                         Change
                       </button>
@@ -361,7 +361,7 @@ const Checkout = () => {
           </h3>
         </div>
         <div className="px-4 space-y-3 mb-8">
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl border border-[#f4f2f0] dark:border-[#3d2e24] overflow-hidden">
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl border-2 border-[#f4f2f0] dark:border-[#3d2e24] overflow-hidden shadow-md">
             {items.map((item, index) => (
               <div
                 key={item.id || index}
@@ -423,7 +423,7 @@ const Checkout = () => {
           </h3>
         </div>
         <div className="px-4 space-y-3 mb-8">
-          <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer group">
+          <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border-2 border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer group shadow-md hover:shadow-lg transition-all">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
                 <span className="material-symbols-outlined">account_balance_wallet</span>
@@ -439,7 +439,7 @@ const Checkout = () => {
               value="upi"
               checked={paymentMethod === 'upi'}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-5 h-5 text-[#cf6317] border-gray-300 focus:ring-[#cf6317]"
+              className="w-5 h-5 text-[#543918] border-gray-300 focus:ring-[#543918]"
             />
           </label>
           <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer">
@@ -458,14 +458,14 @@ const Checkout = () => {
               value="CASH"
               checked={paymentMethod === 'CASH'}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-5 h-5 text-[#cf6317] border-gray-300 focus:ring-[#cf6317]"
+              className="w-5 h-5 text-[#543918] border-gray-300 focus:ring-[#543918]"
             />
           </label>
         </div>
 
         {/* Bill Details */}
         <div className="px-4">
-          <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl border border-[#f4f2f0] dark:border-[#3d2e24] space-y-3">
+          <div className="bg-white dark:bg-[#2d221a] p-4 rounded-xl border-2 border-[#f4f2f0] dark:border-[#3d2e24] space-y-3 shadow-md">
             <div className="flex justify-between text-sm">
               <span className="text-[#887263] dark:text-gray-400">Item Total</span>
               <span className="font-medium">₹{itemTotal.toFixed(2)}</span>
@@ -482,7 +482,7 @@ const Checkout = () => {
             </div>
             <div className="pt-3 border-t border-[#f4f2f0] dark:border-[#3d2e24] flex justify-between">
               <span className="font-bold">Total Payable</span>
-              <span className="font-bold text-[#cf6317]">₹{totalPayable.toFixed(2)}</span>
+              <span className="font-bold text-[#543918]">₹{totalPayable.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -497,7 +497,7 @@ const Checkout = () => {
           </div>
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-[#cf6317] flex items-center gap-1 text-sm font-bold"
+            className="text-[#543918] flex items-center gap-1 text-sm font-bold"
           >
             View Details{' '}
             <span className="material-symbols-outlined text-sm">
@@ -507,7 +507,7 @@ const Checkout = () => {
         </div>
         <button
           onClick={handlePlaceOrder}
-          className="w-full bg-[#cf6317] hover:bg-[#cf6317]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+          className="w-full bg-[#543918] hover:bg-[#543918]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
         >
           Place Order
           <span className="material-symbols-outlined">arrow_forward</span>

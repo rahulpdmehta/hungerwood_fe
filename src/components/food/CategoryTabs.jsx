@@ -17,7 +17,7 @@ const CategoryTabs = () => {
                 ${
                   selectedCategory === category
                     ? 'bg-primary-600 text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-200'
                 }
               `}
             >

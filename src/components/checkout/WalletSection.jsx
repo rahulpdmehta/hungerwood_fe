@@ -94,7 +94,7 @@ const WalletSection = ({
                     </div>
 
                     {/* Add Money Button */}
-                    <button className="px-4 py-2 bg-[#cf6317]/20 text-[#cf6317] rounded-lg text-sm font-semibold hover:bg-[#cf6317]/30 transition-colors">
+                    <button className="px-4 py-2 bg-[#543918]/20 text-[#543918] rounded-lg text-sm font-semibold hover:bg-[#543918]/30 transition-colors">
                         Add Money
                     </button>
                 </div>
@@ -117,7 +117,7 @@ const WalletSection = ({
                         {/* Wallet Icon */}
                         <div className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-300 ${isWalletEnabled
                             ? 'bg-gradient-to-br from-green-400 to-green-500 shadow-lg shadow-green-200 dark:shadow-green-900/40'
-                            : 'bg-gray-100 dark:bg-gray-700'
+                            : 'bg-gray-200 dark:bg-gray-700'
                             }`}>
                             <span className={`material-symbols-outlined text-2xl transition-colors ${isWalletEnabled ? 'text-white' : 'text-gray-400'
                                 }`}>
@@ -168,7 +168,7 @@ const WalletSection = ({
                                 <button
                                     onClick={handleDecrement}
                                     disabled={walletAmount <= 0}
-                                    className="w-12 h-12 rounded-xl bg-[#cf6317]/10 text-[#cf6317] font-bold text-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#cf6317]/20 active:scale-95 transition-all shadow-sm"
+                                    className="w-12 h-12 rounded-xl bg-[#543918]/10 text-[#543918] font-bold text-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#543918]/20 active:scale-95 transition-all shadow-sm"
                                     aria-label="Decrease amount"
                                 >
                                     <span className="material-symbols-outlined">remove</span>
@@ -177,7 +177,7 @@ const WalletSection = ({
                                 {/* Amount Display */}
                                 <div className="flex-1 max-w-[140px]">
                                     <div className="bg-white dark:bg-[#211811] rounded-xl p-2 text-center border-2 border-green-400 dark:border-green-600 shadow-inner">
-                                        <div className="text-md font-bold text-[#cf6317] tracking-tight">
+                                        <div className="text-md font-bold text-[#543918] tracking-tight">
                                             ₹{walletAmount}
                                         </div>
                                     </div>
@@ -187,7 +187,7 @@ const WalletSection = ({
                                 <button
                                     onClick={handleIncrement}
                                     disabled={walletAmount >= maxUsableAmount}
-                                    className="w-12 h-12 rounded-xl bg-[#cf6317]/10 text-[#cf6317] font-bold text-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#cf6317]/20 active:scale-95 transition-all shadow-sm"
+                                    className="w-12 h-12 rounded-xl bg-[#543918]/10 text-[#543918] font-bold text-xl flex items-center justify-center disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#543918]/20 active:scale-95 transition-all shadow-sm"
                                     aria-label="Increase amount"
                                 >
                                     <span className="material-symbols-outlined">add</span>
@@ -270,13 +270,13 @@ const WalletSection = ({
                     </div>
 
                     {/* Final Payable Amount */}
-                    <div className="border-t-2 border-[#cf6317]/20 pt-4">
+                    <div className="border-t-2 border-[#543918]/20 pt-4">
                         <div className="flex items-center justify-between">
                             <div>
                                 <p className="text-xs text-[#887263] dark:text-gray-400 uppercase tracking-wider mb-1">
                                     Amount Payable
                                 </p>
-                                <p className="text-2xl font-bold text-[#cf6317] tracking-tight">
+                                <p className="text-2xl font-bold text-[#543918] tracking-tight">
                                     ₹{orderTotal - walletAmount}
                                 </p>
                             </div>

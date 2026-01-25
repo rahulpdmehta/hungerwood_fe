@@ -5,8 +5,7 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+import { API_BASE_URL } from '@utils/constants';
 
 /**
  * Custom hook to subscribe to real-time order status updates via SSE
@@ -52,7 +51,8 @@ export const useOrderSSE = (orderId) => {
         }
 
         try {
-            const url = `${API_BASE_URL}/api/orders/${orderId}/stream`;
+            // API_BASE_URL already includes /api, so we don't need to add it again
+            const url = `${API_BASE_URL}/orders/${orderId}/stream`;
             console.log('🔗 Connecting to SSE:', url);
 
             const eventSource = new EventSource(url);

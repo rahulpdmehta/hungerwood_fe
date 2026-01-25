@@ -18,24 +18,24 @@ const Profile = () => {
             icon: 'location_on',
             label: 'Saved Addresses',
             path: '/addresses',
-            iconBg: 'bg-[#cf6317]/10',
-            iconColor: 'text-[#cf6317]',
+            iconBg: 'bg-[#543918]/10',
+            iconColor: 'text-[#543918]',
         },
         {
             id: 'history',
             icon: 'history',
             label: 'Order History',
             path: '/orders',
-            iconBg: 'bg-[#cf6317]/10',
-            iconColor: 'text-[#cf6317]',
+            iconBg: 'bg-[#543918]/10',
+            iconColor: 'text-[#543918]',
         },
         {
             id: 'settings',
             icon: 'settings',
             label: 'App Settings',
             path: '/settings',
-            iconBg: 'bg-[#cf6317]/10',
-            iconColor: 'text-[#cf6317]',
+            iconBg: 'bg-[#543918]/10',
+            iconColor: 'text-[#543918]',
         },
     ];
 
@@ -53,13 +53,13 @@ const Profile = () => {
     return (
         <div className="relative flex min-h-screen w-full flex-col bg-[#f8f7f6] dark:bg-[#211811] pb-20">
             {/* Top App Bar */}
-            <div className="flex items-center bg-[#f8f7f6] dark:bg-[#211811] p-4  justify-between sticky top-0 z-10">
+            <div className="flex items-center bg-[#f8f7f6] dark:bg-[#211811] p-4 justify-between sticky top-0 z-10 border-b-2 border-gray-200 dark:border-gray-700 shadow-md">
                 <BackButton className="w-12 h-12 shrink-0  max-h-[40px] max-w-[40px]" onClick={() => navigate('/')} />
                 <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
                     Profile
                 </h2>
                 <div className="flex w-12 items-center justify-end max-h-[40px]">
-                    <button className="flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-transparent text-[#181411] dark:text-white">
+                    <button className="flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-zinc-800 text-[#181411] dark:text-white shadow-md border border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow">
                         <span className="material-symbols-outlined">notifications</span>
                     </button>
                 </div>
@@ -70,9 +70,9 @@ const Profile = () => {
                 <div className="flex w-full flex-col gap-4 items-center">
                     <div className="flex gap-4 flex-col items-center">
                         {/* Avatar with Gradient Border */}
-                        <div className="relative p-1 rounded-full bg-gradient-to-tr from-[#cf6317] to-[#887263]">
+                        <div className="relative p-1 rounded-full bg-gradient-to-tr from-[#543918] to-[#887263] shadow-lg">
                             <div
-                                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-[#f8f7f6] dark:border-[#211811]"
+                                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-[#f8f7f6] dark:border-[#211811] shadow-md"
                                 style={{
                                     backgroundImage:
                                         `url("${user?.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=B45309&color=fff&size=200`}")`,
@@ -92,7 +92,7 @@ const Profile = () => {
                             {/* Edit Profile Button */}
                             <Link
                                 to="/edit-profile"
-                                className="mt-4 flex items-center gap-2 px-6 py-2.5 bg-[#cf6317] text-white rounded-xl hover:bg-[#b35614] transition-colors shadow-sm"
+                                className="mt-4 flex items-center gap-2 px-6 py-2.5 bg-[#543918] text-white rounded-xl hover:bg-[#b35614] transition-all shadow-md border-2 border-[#543918] hover:shadow-lg"
                             >
                                 <span className="material-symbols-outlined text-lg">edit</span>
                                 <span className="text-sm font-semibold">Edit Profile</span>
@@ -108,15 +108,15 @@ const Profile = () => {
                 <h3 className="text-[#181411] dark:text-white text-sm font-bold uppercase tracking-wider px-2 pb-2 pt-6 opacity-60">
                     Account Settings
                 </h3>
-                <div className="bg-white dark:bg-[#2d221a] rounded-xl overflow-hidden">
+                <div className="bg-white dark:bg-[#2d221a] rounded-xl overflow-hidden shadow-md border-2 border-gray-200 dark:border-gray-700">
                     {accountSettings.map((item, index) => (
                         <Link
                             key={item.id}
                             to={item.path}
                             className={`flex items-center gap-4 px-4 min-h-16 justify-between cursor-pointer ${index < accountSettings.length - 1
-                                ? 'border-b border-[#f8f7f6] dark:border-[#211811]/50'
+                                ? 'border-b-2 border-gray-200 dark:border-gray-700'
                                 : ''
-                                } active:bg-gray-50 dark:active:bg-white/5`}
+                                } active:bg-gray-50 dark:active:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors`}
                         >
                             <div className="flex items-center gap-4">
                                 <div
@@ -139,13 +139,13 @@ const Profile = () => {
                 <h3 className="text-[#181411] dark:text-white text-sm font-bold uppercase tracking-wider px-2 pb-2 pt-8 opacity-60">
                     Support
                 </h3>
-                <div className="bg-white dark:bg-[#2d221a] rounded-xl overflow-hidden">
+                <div className="bg-white dark:bg-[#2d221a] rounded-xl overflow-hidden shadow-md border-2 border-gray-200 dark:border-gray-700">
                     {/* Help & Support */}
                     {supportItems.map((item) => (
                         <Link
                             key={item.id}
                             to={item.path}
-                            className="flex items-center gap-4 px-4 min-h-16 justify-between cursor-pointer border-b border-[#f8f7f6] dark:border-[#211811]/50 active:bg-gray-50 dark:active:bg-white/5"
+                            className="flex items-center gap-4 px-4 min-h-16 justify-between cursor-pointer border-b-2 border-gray-200 dark:border-gray-700 active:bg-gray-50 dark:active:bg-white/5 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
                             <div className="flex items-center gap-4">
                                 <div
@@ -181,7 +181,7 @@ const Profile = () => {
             {/* Footer Info */}
             <div className="flex flex-col items-center justify-center pb-4 pt-4">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[#cf6317] font-bold">HungerWood</span>
+                    <span className="text-[#543918] font-bold">HungerWood</span>
                     <span className="text-[#887263]">•</span>
                     <span className="text-[#887263] font-medium">Gaya, Bihar</span>
                 </div>

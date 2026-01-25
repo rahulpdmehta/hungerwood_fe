@@ -45,7 +45,7 @@ const BottomNavBar = () => {
                     <Link
                         key={item.id}
                         to={item.path}
-                        className={`flex flex-col items-center gap-1 ${active ? 'text-[#cf6317]' : 'text-[#887263]'
+                        className={`flex flex-col items-center gap-1 ${active ? 'text-[#543918]' : 'text-[#887263]'
                             }`}
                     >
                         <span

@@ -31,7 +31,7 @@ const PriceDisplay = ({
     return (
         <div className={`flex items-center gap-2 ${className}`}>
             {/* Discounted Price */}
-            <span className={`text-[#cf6317] ${sizeClasses[size]} font-bold`}>
+            <span className={`text-[#543918] ${sizeClasses[size]} font-bold`}>
                 ₹{discountedPrice}
             </span>
 

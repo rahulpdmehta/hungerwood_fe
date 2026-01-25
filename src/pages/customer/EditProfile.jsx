@@ -172,7 +172,7 @@ const EditProfile = () => {
                         <label className="block text-sm font-semibold text-text-primary mb-2 uppercase tracking-wide">
                             Phone Number
                         </label>
-                        <div className="w-full bg-gray-100 border-2 border-gray-200 rounded-xl px-4 py-3 text-text-secondary">
+                        <div className="w-full bg-gray-200 border-2 border-gray-200 rounded-xl px-4 py-3 text-text-secondary">
                             {user?.phone || 'Not available'}
                         </div>
                         <p className="text-xs text-text-tertiary mt-2">

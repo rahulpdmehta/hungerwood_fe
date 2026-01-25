@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import AppRoutes from '@/routes/AppRoutes';
 import SplashScreen from '@components/common/SplashScreen';
 import useAuthStore from '@store/useAuthStore';
 import { AnimationProvider } from '@/contexts/AnimationContext';
 import AnimationContainer from '@components/animations/AnimationContainer';
+import { menuService } from '@services/menu.service';
+import { menuKeys } from '@utils/queryKeys';
 
 function AppContent() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthStore();
   const [showSplash, setShowSplash] = useState(true);
   const [isReady, setIsReady] = useState(false);
@@ -48,6 +52,27 @@ function AppContent() {
   const handleSplashFinish = () => {
     // Mark splash as shown for this session
     sessionStorage.setItem('splashShown', 'true');
+
+    // Prefetch menu data for better UX
+    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    
+    queryClient.prefetchQuery({
+      queryKey: menuKeys.items(),
+      queryFn: async () => {
+        const response = await menuService.getAllItems();
+        return response?.data || response || [];
+      },
+      staleTime: oneDay, // Cache for entire day
+    });
+
+    queryClient.prefetchQuery({
+      queryKey: menuKeys.categories(),
+      queryFn: async () => {
+        const response = await menuService.getCategories();
+        return response?.data || response || [];
+      },
+      staleTime: oneDay, // Cache for entire day
+    });
 
     // Add fade out animation
     setShowSplash(false);

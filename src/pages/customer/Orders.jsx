@@ -1,40 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '@components/layout/BottomNavBar';
 import BackButton from '@components/common/BackButton';
-import { orderService } from '@services/order.service';
+import { useOrders } from '@hooks/useOrderQueries';
+import { OrderSkeleton } from '@components/common/Loader';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { formatDate, formatTime } from '@utils/dateFormatter';
 
 const Orders = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [orders, setOrders] = useState([]);
+  
+  // React Query hook for fetching orders
+  const { data: orders = [], isLoading: loading } = useOrders();
 
   // Filter and sort states
-  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'completed', 'cancelled'
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'past' (cancelled/completed), 'active' (all others)
   const [dateFilter, setDateFilter] = useState('all'); // 'all', 'today', 'week', 'month'
   const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
   const [showFilters, setShowFilters] = useState(false);
-
-  // Load orders from API
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
-  const loadOrders = async () => {
-    setLoading(true);
-    try {
-      const response = await orderService.getMyOrders();
-      setOrders(response.data);
-    } catch (error) {
-      console.error('Failed to load orders:', error);
-      // Set fallback data
-      setOrders(fallbackOrders);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   // Helper to format order items for display
   const formatOrderItems = (items) => {
@@ -103,30 +86,32 @@ const Orders = () => {
   ];
 
   // Use API data if available, otherwise use fallback
-  const allOrders = orders.length > 0 ? orders : fallbackOrders;
+  const allOrders = useMemo(() => {
+    return orders.length > 0 ? orders : fallbackOrders;
+  }, [orders]);
 
   // Filter by status
+  // 'all' = show all orders
+  // 'past' = cancelled or completed/delivered orders
+  // 'active' = all other orders (out_for_delivery, preparing, confirmed, pending, etc.)
   const filterByStatus = (orders) => {
-    if (statusFilter === 'all') return orders;
+    if (statusFilter === 'all') {
+      return orders; // Show all orders
+    }
+
+    if (statusFilter === 'past') {
+      // Show cancelled, completed, or delivered orders
+      return orders.filter(order => {
+        const status = (order.status || '').toLowerCase();
+        return status === 'cancelled' || status === 'completed' || status === 'delivered';
+      });
+    }
 
     if (statusFilter === 'active') {
+      // Show all orders that are NOT cancelled, completed, or delivered
       return orders.filter(order => {
         const status = (order.status || '').toLowerCase();
-        return status !== 'completed' && status !== 'delivered' && status !== 'cancelled';
-      });
-    }
-
-    if (statusFilter === 'completed') {
-      return orders.filter(order => {
-        const status = (order.status || '').toLowerCase();
-        return status === 'completed' || status === 'delivered';
-      });
-    }
-
-    if (statusFilter === 'cancelled') {
-      return orders.filter(order => {
-        const status = (order.status || '').toLowerCase();
-        return status === 'cancelled';
+        return status !== 'cancelled' && status !== 'completed' && status !== 'delivered';
       });
     }
 
@@ -174,19 +159,26 @@ const Orders = () => {
   ordersToDisplay = filterByDate(ordersToDisplay);
   ordersToDisplay = sortByDate(ordersToDisplay);
 
-  // Count active filters
+  // Count active filters (excluding status filter since it's now a tab)
   const activeFiltersCount =
-    (statusFilter !== 'all' ? 1 : 0) +
     (dateFilter !== 'all' ? 1 : 0);
 
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-[#887263] dark:text-gray-400">Loading orders...</p>
-        </div>
+      <div className="relative flex min-h-screen w-full flex-col bg-[#f8f7f6] dark:bg-[#211811]">
+        <nav className="sticky top-0 z-50 bg-[#f8f7f6]/80 dark:bg-[#211811]/80 backdrop-blur-md border-b border-[#e5e0dc] dark:border-[#3d2e24]">
+          <div className="flex items-center p-4 justify-between max-w-md mx-auto">
+            <BackButton to="/" />
+            <h1 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">
+              Order History
+            </h1>
+          </div>
+        </nav>
+        <main className="max-w-md mx-auto pb-20 w-full">
+          <OrderSkeleton count={5} />
+        </main>
+        <BottomNavBar />
       </div>
     );
   }
@@ -195,11 +187,56 @@ const Orders = () => {
     <div className="relative flex min-h-screen w-full flex-col bg-[#f8f7f6] dark:bg-[#211811]">
       {/* Top Navigation Bar */}
       <nav className="sticky top-0 z-50 bg-[#f8f7f6]/80 dark:bg-[#211811]/80 backdrop-blur-md border-b border-[#e5e0dc] dark:border-[#3d2e24]">
-        <div className="flex items-center p-4 justify-between max-w-md mx-auto">
-          <BackButton to="/" />
-          <h1 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">
-            Order History
-          </h1>
+        <div className="max-w-md mx-auto">
+          <div className="flex items-center p-4 justify-between">
+            <BackButton to="/" />
+            <h1 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">
+              Order History
+            </h1>
+          </div>
+          
+          {/* Tabs: All, Past Orders, and Active */}
+          <div className="flex items-center gap-6 px-4 pb-3 border-b-2 border-[#e5e0dc] dark:border-[#3d2e24]">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`relative pb-2 text-sm font-semibold transition-colors ${
+                statusFilter === 'all'
+                  ? 'text-[#181411] dark:text-white'
+                  : 'text-[#887263] dark:text-gray-400'
+              }`}
+            >
+              All
+              {statusFilter === 'all' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#543918]"></span>
+              )}
+            </button>
+            <button
+              onClick={() => setStatusFilter('past')}
+              className={`relative pb-2 text-sm font-semibold transition-colors ${
+                statusFilter === 'past'
+                  ? 'text-[#181411] dark:text-white'
+                  : 'text-[#887263] dark:text-gray-400'
+              }`}
+            >
+              Past Orders
+              {statusFilter === 'past' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#543918]"></span>
+              )}
+            </button>
+            <button
+              onClick={() => setStatusFilter('active')}
+              className={`relative pb-2 text-sm font-semibold transition-colors ${
+                statusFilter === 'active'
+                  ? 'text-[#181411] dark:text-white'
+                  : 'text-[#887263] dark:text-gray-400'
+              }`}
+            >
+              Active
+              {statusFilter === 'active' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#543918]"></span>
+              )}
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -211,16 +248,16 @@ const Orders = () => {
             {/* Filter Button */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2d221a] border border-[#e5e0dc] dark:border-[#3d2e24] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2d221a] border-2 border-[#e5e0dc] dark:border-[#3d2e24] rounded-lg shadow-md hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
             >
-              <span className="material-symbols-outlined text-[#cf6317] text-xl">
+              <span className="material-symbols-outlined text-[#543918] text-xl">
                 tune
               </span>
               <span className="text-sm font-medium text-[#181411] dark:text-white">
                 Filters
               </span>
               {activeFiltersCount > 0 && (
-                <span className="ml-1 bg-[#cf6317] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="ml-1 bg-[#543918] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
@@ -229,9 +266,9 @@ const Orders = () => {
             {/* Sort Button */}
             <button
               onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2d221a] border border-[#e5e0dc] dark:border-[#3d2e24] rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2d221a] border-2 border-[#e5e0dc] dark:border-[#3d2e24] rounded-lg shadow-md hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
             >
-              <span className="material-symbols-outlined text-[#cf6317] text-xl">
+              <span className="material-symbols-outlined text-[#543918] text-xl">
                 {sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward'}
               </span>
               <span className="text-sm font-medium text-[#181411] dark:text-white">
@@ -242,27 +279,8 @@ const Orders = () => {
 
           {/* Filter Panel */}
           {showFilters && (
-            <div className="mt-3 bg-white dark:bg-[#2d221a] border border-[#e5e0dc] dark:border-[#3d2e24] rounded-xl p-4 space-y-4">
-              {/* Status Filter */}
-              <div>
-                <label className="text-sm font-bold text-[#181411] dark:text-white mb-2 block">
-                  Status
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {['all', 'active', 'completed', 'cancelled'].map((status) => (
-                    <button
-                      key={status}
-                      onClick={() => setStatusFilter(status)}
-                      className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${statusFilter === status
-                        ? 'bg-[#cf6317] text-white'
-                        : 'bg-gray-100 dark:bg-gray-800 text-[#887263] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
-                        }`}
-                    >
-                      {status.charAt(0).toUpperCase() + status.slice(1)}
-                    </button>
-                  ))}
-                </div>
-              </div>
+            <div className="mt-3 bg-white dark:bg-[#2d221a] border-2 border-[#e5e0dc] dark:border-[#3d2e24] rounded-xl p-4 space-y-4 shadow-lg">
+              {/* Date Filter Only - Status is now handled by tabs */}
 
               {/* Date Filter */}
               <div>
@@ -280,8 +298,8 @@ const Orders = () => {
                       key={date.value}
                       onClick={() => setDateFilter(date.value)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${dateFilter === date.value
-                        ? 'bg-[#cf6317] text-white'
-                        : 'bg-gray-100 dark:bg-gray-800 text-[#887263] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                        ? 'bg-[#543918] text-white'
+                        : 'bg-gray-200 dark:bg-gray-800 text-[#887263] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                         }`}
                     >
                       {date.label}
@@ -294,12 +312,11 @@ const Orders = () => {
               {activeFiltersCount > 0 && (
                 <button
                   onClick={() => {
-                    setStatusFilter('all');
                     setDateFilter('all');
                   }}
-                  className="w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 text-[#cf6317] font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-800 text-[#543918] font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
-                  Clear All Filters
+                  Clear Filters
                 </button>
               )}
             </div>
@@ -335,17 +352,16 @@ const Orders = () => {
             {activeFiltersCount > 0 ? (
               <button
                 onClick={() => {
-                  setStatusFilter('all');
                   setDateFilter('all');
                 }}
-                className="bg-[#cf6317] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#cf6317]/90 transition-colors"
+                className="bg-[#543918] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#543918]/90 transition-colors"
               >
                 Clear Filters
               </button>
             ) : (
               <button
                 onClick={() => navigate('/menu')}
-                className="bg-[#cf6317] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#cf6317]/90 transition-colors"
+                className="bg-[#543918] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#543918]/90 transition-colors"
               >
                 Browse Menu
               </button>
@@ -357,20 +373,23 @@ const Orders = () => {
               <div key={order.id} className="px-4 py-2">
                 <div
                   onClick={() => handleOrderClick(order)}
-                  className="flex flex-col items-stretch justify-start rounded-xl shadow-sm border border-[#e5e0dc] dark:border-[#3d2e24] bg-white dark:bg-[#2d2118] overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  className="flex items-start gap-4 rounded-xl shadow-md border-2 border-[#e5e0dc] dark:border-[#3d2e24] bg-white dark:bg-[#2d2118] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow p-4"
                 >
-                  {/* Order Image */}
-                  {/* <div
-                    className="w-full bg-center bg-no-repeat aspect-[16/6] bg-cover"
-                    style={{ backgroundImage: `url("${order.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80'}")` }}
-                  ></div> */}
+                  {/* Order Image - Left Column */}
+                  <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-800">
+                    <img
+                      src={order.image || order.items?.[0]?.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80'}
+                      alt={order.items?.[0]?.name || 'Order'}
+                      className="w-full h-full object-cover"    
+                    />
+                  </div>  
 
-                  {/* Order Details */}
-                  <div className="flex w-full flex-col gap-1 py-4 px-4">
-                    {/* Status and ID */}
-                    <div className="flex justify-between items-center mb-1">
+                  {/* Order Details - Right Column */}
+                  <div className="flex-1 flex flex-col gap-2 min-w-0">
+                    {/* Status and Order ID - Top Row */}
+                    <div className="flex items-center justify-between gap-2">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.status?.toLowerCase() === 'completed' || order.status?.toLowerCase() === 'delivered'
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${order.status?.toLowerCase() === 'completed' || order.status?.toLowerCase() === 'delivered'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                           : order.status?.toLowerCase() === 'cancelled'
                             ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
@@ -379,68 +398,46 @@ const Orders = () => {
                       >
                         {order.status}
                       </span>
-                      <span className="text-[#887263] dark:text-[#b09d90] text-xs font-medium">
-                        {order.createdAt && formatDate(order.createdAt, 'D MMM, YYYY')}
-                        {order.createdAt && ' • '}
-                        {order.createdAt && formatTime(order.createdAt)}
-                      </span>
-                      <span className="text-[#887263] dark:text-[#b09d90] text-xs font-medium">
+                      {/* <span className="text-[#887263] dark:text-[#b09d90] text-xs font-medium ml-auto">
                         #{order.orderNumber || order.id}
-                      </span>
+                      </span> */}
                     </div>
 
                     {/* Restaurant Name */}
-                    {/* <p className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight">
-                      {order.restaurant || 'HungerWood'}
+                    {/* <p className="text-[#181411] dark:text-white text-base font-bold leading-tight">
+                      {order.restaurant || 'HungerWood Gaya'}
                     </p> */}
 
-                    {/* Menu Items List */}
-                    <div className="flex flex-col gap-2 mt-2 mb-3">
-                      {Array.isArray(order.items) ? (
-                        order.items.map((item, index) => (
-                          <div key={index} className="flex items-center gap-2 text-sm">
-                            <span className="text-[#887263] dark:text-[#b09d90] font-medium">
-                              {item.quantity}x
+                    {/* Menu Items - Truncated */}
+                    <div className="flex-1">
+                      {Array.isArray(order.items) && order.items.length > 0 ? (
+                        <p className="text-[#887263] dark:text-[#b09d90] text-sm font-normal line-clamp-2">
+                          {order.items.slice(0, 2).map((item, idx) => (
+                            <span key={idx}>
+                              {item.quantity}x {item.name || 'Menu Item'}
+                              {idx < Math.min(order.items.length - 1, 1) ? ', ' : ''}
                             </span>
-                            <span className="text-[#181411] dark:text-white flex-1">
-                              {item.name || 'Menu Item'}
-                            </span>
-                            <PriceDisplay
-                              price={item.price || 0}
-                              discount={item.discount || 0}
-                              size="sm"
-                            />
-                          </div>
-                        ))
+                          ))}
+                          {order.items.length > 2 && '...'}
+                        </p>
                       ) : (
                         <p className="text-[#887263] dark:text-[#b09d90] text-sm font-normal">
-                          {order.items}
+                          {typeof order.items === 'string' ? order.items : formatOrderItems(order.items)}
                         </p>
                       )}
                     </div>
 
-                    {/* Total and View Details Button */}
-                    <div className="flex items-center gap-3 justify-between mt-2 pt-3 border-t border-gray-100 dark:border-gray-800">
-                      <div className="flex flex-col gap-0.5">
+                    {/* Date, Price and Reorder Button - Bottom Row */}
+                    <div className="flex items-center justify-between gap-3 pt-0 border-t border-gray-100 dark:border-gray-800">
+                      <div className="flex flex-col gap-0.5 min-w-0">
                         <p className="text-[#887263] dark:text-[#b09d90] text-xs font-normal">
-                          {formatOrderItems(order.items)}
+                          {order.createdAt ? formatDate(order.createdAt, 'D MMM, YYYY') : order.date || 'N/A'}
                         </p>
-                        <p className="text-[#cf6317] text-lg font-bold leading-normal">
+                        <p className="text-[#543918] text-base font-bold leading-normal">
                           ₹{order.totalAmount || order.total}
                         </p>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOrderClick(order);
-                        }}
-                        className="flex min-w-[110px] cursor-pointer items-center justify-center gap-1 rounded-lg h-9 px-4 text-sm font-semibold transition-colors bg-[#cf6317] hover:bg-[#cf6317]/90 text-white"
-                      >
-                        <span className="truncate">View Details</span>
-                        <span className="material-symbols-outlined text-lg">
-                          arrow_forward
-                        </span>
-                      </button>
+                      
                     </div>
                   </div>
                 </div>
@@ -454,7 +451,7 @@ const Orders = () => {
           <div className="px-4 py-6 text-center">
             <button
               onClick={handleShowOlder}
-              className="text-[#cf6317] text-sm font-bold tracking-wide py-2 px-6 border border-[#cf6317]/30 rounded-full hover:bg-[#cf6317]/5 transition-colors"
+              className="text-[#543918] text-sm font-bold tracking-wide py-2 px-6 border-2 border-[#543918]/30 rounded-full hover:bg-[#543918]/5 hover:shadow-md transition-all"
             >
               Show Older Orders
             </button>

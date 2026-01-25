@@ -1,30 +1,25 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useCartStore from '@store/useCartStore';
-import useMenuStore from '@store/useMenuStore';
-import useWalletStore from '@store/useWalletStore';
+import { useMenuItems } from '@hooks/useMenuQueries';
+import { useWalletBalance } from '@hooks/useWalletQueries';
+import { useActiveBanners } from '@hooks/useBannerQueries';
 import BottomNavBar from '@components/layout/BottomNavBar';
 import FloatingCartButton from '@components/layout/FloatingCartButton';
+import { BannerSkeleton } from '@components/common/Loader';
 import logo from '@assets/images/logo_1.jpeg';
-import * as bannerService from '@services/banner.service';
 
 const Home = () => {
   const navigate = useNavigate();
   const { totalItems, totalPrice, addItem } = useCartStore();
-  const { fetchItems } = useMenuStore();
-  const { balance: walletBalance, fetchBalance } = useWalletStore();
-  const [loading, setLoading] = useState(true);
-  const [bestSellers, setBestSellers] = useState([]);
+
+  // React Query hooks for data fetching
+  const { data: menuItems = [], isLoading: itemsLoading } = useMenuItems();
+  const { data: walletBalance = 0, isLoading: walletLoading } = useWalletBalance();
+  const { data: activeBanners = [], isLoading: bannersLoading } = useActiveBanners();
+
   const [showWalletPill, setShowWalletPill] = useState(true);
   const [showWalletTooltip, setShowWalletTooltip] = useState(false);
-  const [activeBanners, setActiveBanners] = useState([]);
-
-  // Load data from store (with caching)
-  useEffect(() => {
-    loadBestSellers();
-    loadWalletBalance();
-    loadBanners();
-  }, []);
 
   // Auto-hide wallet pill after 10 seconds
   useEffect(() => {
@@ -37,41 +32,14 @@ const Home = () => {
     }
   }, [walletBalance, showWalletPill]);
 
-  const loadWalletBalance = async () => {
-    try {
-      console.log('🔄 Loading wallet balance from Home page (force refresh)...');
-      await fetchBalance(true); // Force refresh to get latest balance
-      console.log('✅ Wallet balance loaded');
-    } catch (error) {
-      console.error('❌ Failed to load wallet balance:', error);
-    }
-  };
+  // Filter best sellers from menu items
+  const bestSellers = useMemo(() => {
+    return menuItems
+      .filter(item => item.isBestSeller || item.bestseller)
+      .slice(0, 6);
+  }, [menuItems]);
 
-  const loadBanners = async () => {
-    try {
-      const banners = await bannerService.getActiveBanners();
-      setActiveBanners(banners);
-      console.log('✅ Loaded active banners:', banners.length);
-    } catch (error) {
-      console.error('❌ Failed to load banners:', error);
-      // Set empty array on error so the page still works
-      setActiveBanners([]);
-    }
-  };
-
-  const loadBestSellers = async () => {
-    setLoading(true);
-    try {
-      // Fetch from store (will use cache if valid - 5 min)
-      const items = await fetchItems();
-      const bestSellerItems = items.filter(item => item.isBestSeller || item.bestseller).slice(0, 6);
-      setBestSellers(bestSellerItems);
-    } catch (error) {
-      console.error('Failed to load best sellers:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const isLoading = itemsLoading || walletLoading || bannersLoading;
 
   // Cuisines
   const cuisines = [
@@ -119,13 +87,13 @@ const Home = () => {
             <img
               src={logo}
               alt="HungerWood Logo"
-              className="w-12 h-12 rounded-full object-cover shadow-sm border-2 border-[#cf6317]/20"
+              className="w-12 h-12 rounded-full object-cover shadow-md border-2 border-[#543918]/30 dark:border-[#543918]/40"
             />
             <div className="text-left">
               <h1 className="text-lg font-bold text-[#181411] dark:text-white tracking-tight">
                 HungerWood
               </h1>
-              <p className="text-[10px] text-[#cf6317] font-bold uppercase tracking-widest">
+              <p className="text-[10px] text-[#543918] font-bold uppercase tracking-widest">
                 Gaya, Bihar
               </p>
             </div>
@@ -135,7 +103,7 @@ const Home = () => {
           <div className="flex items-center gap-3">
             {/* Wallet Icon */}
             <button
-              className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-sm"
+              className="relative w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-md border border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow"
               aria-label="Wallet"
               onClick={() => navigate('/wallet')}
               onMouseEnter={() => setShowWalletTooltip(true)}
@@ -146,7 +114,7 @@ const Home = () => {
               </span>
 
               {/* Balance Badge */}
-              {walletBalance > 0 && (
+              {!walletLoading && walletBalance > 0 && (
                 <div className="absolute -bottom-1 -right-1 bg-green-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full shadow-md">
                   ₹{walletBalance}
                 </div>
@@ -163,7 +131,7 @@ const Home = () => {
 
             {/* Search Icon */}
             <button
-              className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-sm"
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-md border border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow"
               aria-label="Search"
               onClick={() => navigate('/menu?search=true')}
             >
@@ -174,9 +142,9 @@ const Home = () => {
       </header>
 
       {/* Wallet Balance Pill (Dismissible) */}
-      {walletBalance > 0 && showWalletPill && (
+      {!walletLoading && walletBalance > 0 && showWalletPill && (
         <div className="px-4 mt-2 animate-slideDown">
-          <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border border-green-200 dark:border-green-700 rounded-xl p-3 flex items-center justify-between shadow-sm">
+          <div className="bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-2 border-green-200 dark:border-green-700 rounded-xl p-3 flex items-center justify-between shadow-md">
             <div className="flex items-center gap-2 flex-1">
               <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-lg">
                 account_balance_wallet
@@ -207,11 +175,13 @@ const Home = () => {
       {/* Promotional Carousel */}
       <div className="mt-2">
         <div className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 gap-4">
-          {activeBanners.length > 0 ? (
-            activeBanners.map((banner) => (
+          {bannersLoading ? (
+            <BannerSkeleton />
+          ) : activeBanners.length > 0 ? (
+            activeBanners.map((banner, index) => (
               <div
-                key={banner.id}
-                className="snap-center shrink-0 w-[85%] aspect-[2/1] rounded-xl relative overflow-hidden cursor-pointer"
+                key={banner.id || banner._id || `banner-${index}`}
+                className="snap-center shrink-0 w-[85%] aspect-[2/1] rounded-xl relative overflow-hidden cursor-pointer shadow-lg border border-gray-200 dark:border-zinc-700 hover:shadow-xl transition-shadow"
                 onClick={() => banner.ctaLink && navigate(banner.ctaLink)}
               >
                 <img
@@ -246,7 +216,7 @@ const Home = () => {
             ))
           ) : (
             // Fallback banner if no active banners
-            <div className="snap-center shrink-0 w-[85%] aspect-[2/1] rounded-xl relative overflow-hidden bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center">
+            <div className="snap-center shrink-0 w-[85%] aspect-[2/1] rounded-xl relative overflow-hidden bg-gradient-to-r from-orange-500 to-orange-600 flex items-center justify-center shadow-lg border border-orange-400">
               <div className="text-center text-white p-5">
                 <h3 className="text-2xl font-extrabold">Welcome to HungerWood</h3>
                 <p className="text-sm mt-2">Gaya's Premium Dining Experience</p>
@@ -260,7 +230,7 @@ const Home = () => {
       <div className="px-4 mt-4">
         <button
           onClick={() => navigate('/referral')}
-          className="w-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-200 dark:border-green-700 rounded-xl p-3 flex items-center justify-between shadow-sm hover:shadow-md transition-shadow group"
+          className="w-full bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-emerald-900/30 border-2 border-green-200 dark:border-green-700 rounded-xl p-3 flex items-center justify-between shadow-md hover:shadow-lg transition-shadow group"
         >
           {/* Left: Icon & Text */}
           <div className="flex items-center gap-3 flex-1">
@@ -292,7 +262,7 @@ const Home = () => {
 
       {/* Restaurant Info Card */}
       <div className="px-4 mt-6">
-        <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 dark:border-zinc-700">
+        <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-lg border-2 border-gray-200 dark:border-zinc-700">
           <div className="flex justify-between items-start mb-2">
             <div>
               <h2 className="text-xl font-extrabold text-[#181411] dark:text-white">HungerWood</h2>
@@ -314,7 +284,7 @@ const Home = () => {
               <span className="text-xs font-bold text-green-600">Open Now</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="material-symbols-outlined text-[#cf6317] text-lg">payments</span>
+              <span className="material-symbols-outlined text-[#543918] text-lg">payments</span>
               <span className="text-xs font-semibold">₹400 for two</span>
             </div>
             <div className="flex items-center gap-1">
@@ -334,15 +304,19 @@ const Home = () => {
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">Authentic flavors from around the world</p>
           </div>
-          <button className="text-[#cf6317] text-xs font-bold" onClick={() => navigate('/menu')}>View All</button>
+          <button className="text-[#543918] text-xs font-bold" onClick={() => navigate('/menu')}>View All</button>
         </div>
         <div className="grid grid-cols-2 gap-3 px-4">
           {cuisines.map((cuisine) => (
-            <button key={cuisine.id} className="relative aspect-square rounded-xl overflow-hidden group" onClick={() => navigate(`/menu?category=${cuisine.name}`)} >
+            <button 
+              key={cuisine.id} 
+              className="relative aspect-square rounded-xl overflow-hidden group shadow-md border-2 border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow" 
+              onClick={() => navigate(`/menu?category=${cuisine.name}`)}
+            >
               <img src={cuisine.image} alt={cuisine.name} className="absolute inset-0 w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
               <div className="absolute bottom-3 left-3">
-                <p className="text-white text-sm font-bold">{cuisine.name}</p>
+                <p className="text-white text-sm font-bold drop-shadow-lg">{cuisine.name}</p>
               </div>
             </button>
           ))}
@@ -358,22 +332,37 @@ const Home = () => {
           </div>
         </div>
         <div className="flex overflow-x-auto scrollbar-hide gap-4 px-4 pb-4">
-          {bestSellers.map((item) => {
+          {isLoading ? (
+            <div className="flex gap-4">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="min-w-[180px] bg-white dark:bg-zinc-800 rounded-xl shadow-md border-2 border-gray-200 dark:border-zinc-700 overflow-hidden animate-pulse">
+                  <div className="h-32 bg-gray-200 dark:bg-gray-700"></div>
+                  <div className="p-3 space-y-2">
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            bestSellers.map((item, index) => {
             // Handle both API format (isVeg) and fallback format (veg)
             const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
+            const itemId = item.id || item._id || `best-seller-${index}`;
 
             return (
               <div
-                key={item.id}
-                onClick={() => navigate(`/menu/${item.id}`)}
-                className="min-w-[180px] bg-white dark:bg-zinc-800 rounded-xl shadow-sm border border-gray-100 dark:border-zinc-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                key={itemId}
+                onClick={() => navigate(`/menu/${itemId}`)}
+                className="min-w-[180px] bg-white dark:bg-zinc-800 rounded-xl shadow-md border-2 border-gray-200 dark:border-zinc-700 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <div className="h-32 bg-cover bg-center relative">
                   <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                   {item.favorite && (
                     <div className="absolute top-2 right-2 bg-white/90 backdrop-blur p-1 rounded-full shadow-sm">
                       <span
-                        className="material-symbols-outlined text-[#cf6317] text-sm leading-none"
+                        className="material-symbols-outlined text-[#543918] text-sm leading-none"
                         style={{ fontVariationSettings: '"FILL" 1' }}
                       >
                         favorite
@@ -396,7 +385,7 @@ const Home = () => {
                         e.stopPropagation();
                         handleAddToCart(item);
                       }}
-                      className="bg-[#cf6317]/10 text-[#cf6317] px-3 py-1 rounded text-xs font-extrabold border border-[#cf6317]/20 hover:bg-[#cf6317] hover:text-white transition-colors"
+                      className="bg-[#543918]/10 text-[#543918] px-3 py-1 rounded text-xs font-extrabold border border-[#543918]/20 hover:bg-[#543918] hover:text-white transition-colors"
                     >
                       ADD
                     </button>
@@ -404,7 +393,7 @@ const Home = () => {
                 </div>
               </div>
             );
-          })}
+          }))}
         </div>
       </div>
 

@@ -67,7 +67,7 @@ const ReferralSuccessAnimation = () => {
                     opacity: 0.5,
                   } : {}}
                   transition={{ duration: 0.6, type: 'spring' }}
-                  className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-8 bg-gradient-to-br from-[#cf6317] to-[#f8b84e] rounded-t-lg border-4 border-[#cf6317]"
+                  className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-8 bg-gradient-to-br from-[#543918] to-[#f8b84e] rounded-t-lg border-4 border-[#543918]"
                   style={{ transformOrigin: 'bottom center' }}
                 >
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-1 bg-[#f8b84e]" />
@@ -77,7 +77,7 @@ const ReferralSuccessAnimation = () => {
                 <motion.div
                   animate={giftOpened ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 0.6, delay: 0.3 }}
-                  className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gradient-to-br from-[#cf6317] to-[#f8b84e] rounded-lg border-4 border-[#cf6317] flex items-center justify-center"
+                  className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-gradient-to-br from-[#543918] to-[#f8b84e] rounded-lg border-4 border-[#543918] flex items-center justify-center"
                 >
                   <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-1 h-full bg-[#f8b84e]" />
                   <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-full h-1 bg-[#f8b84e]" />
@@ -116,7 +116,7 @@ const ReferralSuccessAnimation = () => {
                     transition={{ delay: 0.5 }}
                     className="text-center"
                   >
-                    <h2 className="text-2xl font-bold text-[#cf6317] mb-2">
+                    <h2 className="text-2xl font-bold text-[#543918] mb-2">
                       Referral Reward! 🎉
                     </h2>
                     <p className="text-[#887263] dark:text-gray-400 mb-4">
@@ -126,7 +126,7 @@ const ReferralSuccessAnimation = () => {
                       <p className="text-sm text-[#887263] dark:text-gray-400 mb-1">
                         Credited to Wallet
                       </p>
-                      <p className="text-xl font-bold text-[#cf6317]">
+                      <p className="text-xl font-bold text-[#543918]">
                         +₹{reward?.amount || 0}
                       </p>
                     </div>

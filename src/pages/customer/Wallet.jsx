@@ -4,56 +4,32 @@
  * Design: Warm, wooden, friendly with transaction history
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackButton from '@components/common/BackButton';
-import useWalletStore from '@store/useWalletStore';
+import { useWalletBalance, useWalletTransactions } from '@hooks/useWalletQueries';
 import { formatDateTime } from '@utils/dateFormatter';
 
 const Wallet = () => {
   const navigate = useNavigate();
-  const {
-    balance,
-    transactions: storeTransactions,
-    loading,
-    fetchBalance,
-    fetchTransactions
-  } = useWalletStore();
+
+  // React Query hooks for wallet data
+  const { data: balance = 0, isLoading: balanceLoading } = useWalletBalance();
+  const { data: transactions = [], isLoading: transactionsLoading } = useWalletTransactions();
 
   const [activeFilter, setActiveFilter] = useState('all');
-  const [transactions, setTransactions] = useState([]);
 
-  // Load wallet data on mount
-  useEffect(() => {
-    loadWalletData();
-  }, []);
-
-  // Update local transactions when store changes
-  useEffect(() => {
-    console.log('🔄 Store transactions changed:', storeTransactions);
-    setTransactions(storeTransactions);
-  }, [storeTransactions]);
-
-  const loadWalletData = async () => {
-    try {
-      console.log('🔄 Loading wallet data (force refresh)...');
-      await Promise.all([
-        fetchBalance(true), // Force refresh, bypass cache
-        fetchTransactions(true), // Force refresh, bypass cache
-      ]);
-      console.log('✅ Wallet data loaded successfully');
-    } catch (error) {
-      console.error('❌ Failed to load wallet data:', error);
-    }
-  };
+  const isLoading = balanceLoading || transactionsLoading;
 
   // Filter transactions
-  const filteredTransactions = transactions.filter((txn) => {
-    if (activeFilter === 'all') return true;
-    if (activeFilter === 'credits') return txn.type.toLowerCase() === 'credit';
-    if (activeFilter === 'debits') return txn.type.toLowerCase() === 'debit';
-    return true;
-  });
+  const filteredTransactions = useMemo(() => {
+    return transactions.filter((txn) => {
+      if (activeFilter === 'all') return true;
+      if (activeFilter === 'credits') return txn.type?.toLowerCase() === 'credit';
+      if (activeFilter === 'debits') return txn.type?.toLowerCase() === 'debit';
+      return true;
+    });
+  }, [transactions, activeFilter]);
 
   const handleBack = () => {
     navigate(-1);
@@ -62,9 +38,9 @@ const Wallet = () => {
   return (
     <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
       {/* Header */}
-      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] justify-between shadow-sm">
+      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b-2 border-[#f4f2f0] dark:border-[#3d2e24] justify-between shadow-md">
         <BackButton
-          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-100 dark:hover:bg-gray-800"
+          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"
         />
         <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
@@ -74,7 +50,7 @@ const Wallet = () => {
 
       <div className="max-w-md mx-auto px-4 py-6">
         {/* Wallet Balance Card */}
-        <div className="bg-gradient-to-br from-green-400 to-green-600 dark:from-green-600 dark:to-green-800 rounded-3xl p-6 shadow-xl mb-6">
+        <div className="bg-gradient-to-br from-green-400 to-green-600 dark:from-green-600 dark:to-green-800 rounded-3xl p-6 shadow-2xl border-2 border-green-300 dark:border-green-700 mb-6">
           <div className="flex flex-col items-center text-center">
             {/* Wallet Icon */}
             <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 shadow-lg">
@@ -90,7 +66,7 @@ const Wallet = () => {
 
             {/* Balance Amount */}
             <h1 className="text-white text-5xl font-bold tracking-tight mb-2">
-              {loading ? '...' : `₹${balance}`}
+              {isLoading ? '...' : `₹${balance}`}
             </h1>
 
             {/* Subtext */}
@@ -105,7 +81,7 @@ const Wallet = () => {
           {/* Refer & Earn Button */}
           <button
             onClick={() => navigate('/referral')}
-            className="bg-gradient-to-br from-[#cf6317] to-[#b85515] text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 flex flex-col items-center gap-2"
+            className="bg-gradient-to-br from-[#543918] to-[#b85515] text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 flex flex-col items-center gap-2"
           >
             <span className="material-symbols-outlined text-2xl">
               card_giftcard
@@ -116,9 +92,9 @@ const Wallet = () => {
           {/* Wallet Info Button */}
           <button
             onClick={() => navigate('/wallet/info')}
-            className="bg-white dark:bg-[#2d221a] border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-[#181411] dark:text-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all active:scale-95 flex flex-col items-center gap-2"
+            className="bg-white dark:bg-[#2d221a] border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-[#181411] dark:text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 flex flex-col items-center gap-2"
           >
-            <span className="material-symbols-outlined text-2xl text-[#cf6317]">
+            <span className="material-symbols-outlined text-2xl text-[#543918]">
               info
             </span>
             <span className="text-sm font-bold">Wallet Info</span>
@@ -130,7 +106,7 @@ const Wallet = () => {
           <button
             onClick={() => setActiveFilter('all')}
             className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${activeFilter === 'all'
-              ? 'bg-[#cf6317] text-white shadow-md'
+              ? 'bg-[#543918] text-white shadow-md'
               : 'bg-white dark:bg-[#2d221a] text-[#887263] dark:text-gray-400 border border-[#f4f2f0] dark:border-[#3d2e24]'
               }`}
           >
@@ -163,12 +139,30 @@ const Wallet = () => {
           </h3>
 
           {/* Transaction List */}
-          {filteredTransactions.length > 0 ? (
+          {isLoading ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <div
+                  key={i}
+                  className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] animate-pulse"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-xl"></div>
+                    <div className="flex-1 space-y-2">
+                      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+                      <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                    </div>
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-16"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredTransactions.length > 0 ? (
             <div className="space-y-3">
               {filteredTransactions.map((txn) => (
                 <div
                   key={txn.id}
-                  className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] flex items-center gap-4"
+                  className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] flex items-center gap-4 hover:shadow-lg transition-shadow"
                 >
                   {/* Icon */}
                   <div
@@ -216,9 +210,9 @@ const Wallet = () => {
             </div>
           ) : (
             /* Empty State */
-            <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-12 text-center shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+            <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-12 text-center shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
               {/* Illustration Placeholder */}
-              <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+              <div className="w-24 h-24 mx-auto mb-6 bg-gray-200 dark:bg-gray-800 rounded-full flex items-center justify-center">
                 <span className="material-symbols-outlined text-gray-400 text-5xl">
                   receipt_long
                 </span>
@@ -233,7 +227,7 @@ const Wallet = () => {
 
               <button
                 onClick={() => navigate('/menu')}
-                className="bg-[#cf6317] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-[#cf6317]/90 transition-colors"
+                className="bg-[#543918] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-[#543918]/90 transition-colors"
               >
                 Place your first order
               </button>
@@ -242,7 +236,7 @@ const Wallet = () => {
         </div>
 
         {/* Trust Message */}
-        <div className="mt-8 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-xl p-4 flex items-start gap-3">
+        <div className="mt-8 bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-700 rounded-xl p-4 flex items-start gap-3 shadow-md">
           <span className="material-symbols-outlined text-green-600 dark:text-green-400 text-lg mt-0.5">
             verified_user
           </span>

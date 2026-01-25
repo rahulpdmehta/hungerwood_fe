@@ -105,7 +105,7 @@ const ImageUploader = ({ value, onChange, label = 'Image' }) => {
       {mode === 'upload' && (
         <div className="space-y-2">
           <div className="flex items-center justify-center w-full">
-            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+            <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-200">
               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                 <Upload className="w-8 h-8 mb-2 text-gray-400" />
                 <p className="mb-2 text-sm text-gray-500">
@@ -132,7 +132,7 @@ const ImageUploader = ({ value, onChange, label = 'Image' }) => {
       {/* Image Preview */}
       {previewUrl && (
         <div className="relative">
-          <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
+          <div className="relative w-full h-48 bg-gray-200 rounded-lg overflow-hidden">
             <img
               src={previewUrl}
               alt="Preview"
@@ -144,7 +144,7 @@ const ImageUploader = ({ value, onChange, label = 'Image' }) => {
             <button
               type="button"
               onClick={clearImage}
-              className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors"
+              className="absolute top-2 right-2 p-1.5 bg-white rounded-full shadow-lg hover:bg-gray-200 transition-colors"
             >
               <X size={16} className="text-gray-600" />
             </button>

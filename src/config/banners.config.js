@@ -30,7 +30,7 @@ export const TOP_CAROUSEL_BANNERS = [
     subtitle: 'on Starters',
     description: 'Valid on orders above ₹499',
     badge: 'LIMITED OFFER',
-    badgeColor: '#cf6317', // HungerWood orange
+    badgeColor: '#543918', // HungerWood orange
     image: 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=800&q=80',
     backgroundColor: 'linear-gradient(135deg, #181411 0%, #2d221a 100%)',
     textColor: '#ffffff',

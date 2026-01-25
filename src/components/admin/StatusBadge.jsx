@@ -20,11 +20,11 @@ const StatusBadge = ({ status, type = 'order' }) => {
       delivered: 'bg-green-100 text-green-700',
       cancelled: 'bg-red-100 text-red-700'
     };
-    return styles[status] || 'bg-gray-100 text-gray-700';
+    return styles[status] || 'bg-gray-200 text-gray-700';
   };
 
   const getCategoryStatusStyle = (status) => {
-    return status ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700';
+    return status ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-700';
   };
 
   const getAvailabilityStyle = (status) => {
@@ -37,7 +37,7 @@ const StatusBadge = ({ status, type = 'order' }) => {
       USER: 'bg-blue-100 text-blue-700',
       CUSTOMER: 'bg-blue-100 text-blue-700'
     };
-    return styles[role?.toUpperCase()] || 'bg-gray-100 text-gray-700';
+    return styles[role?.toUpperCase()] || 'bg-gray-200 text-gray-700';
   };
 
   const formatStatus = (status) => {
@@ -64,7 +64,7 @@ const StatusBadge = ({ status, type = 'order' }) => {
       case 'user':
         return getUserRoleStyle(status);
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-gray-200 text-gray-700';
     }
   };
 

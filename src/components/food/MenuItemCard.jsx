@@ -20,7 +20,7 @@ const MenuItemCard = ({ item, onAddToCart }) => {
     return (
         <div
             onClick={handleCardClick}
-            className="flex items-center gap-4 bg-white dark:bg-gray-900 p-3 rounded-2xl shadow-sm border border-gray-50 dark:border-gray-800 cursor-pointer hover:shadow-md transition-shadow"
+            className="flex items-center gap-4 bg-white dark:bg-gray-900 p-3 rounded-2xl shadow-md border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-shadow"
         >
             <div
                 className="bg-center bg-no-repeat aspect-square bg-cover rounded-xl w-24 h-24 shrink-0"
@@ -56,7 +56,7 @@ const MenuItemCard = ({ item, onAddToCart }) => {
                     />
                     <button
                         onClick={handleAddClick}
-                        className="flex min-w-[70px] cursor-pointer items-center justify-center rounded-lg h-8 px-3 bg-[#cf6317]/10 text-[#cf6317] border border-[#cf6317]/20 text-xs font-bold hover:bg-[#cf6317] hover:text-white transition-colors"
+                        className="flex min-w-[70px] cursor-pointer items-center justify-center rounded-lg h-8 px-3 bg-[#543918]/10 text-[#543918] border border-[#543918]/20 text-xs font-bold hover:bg-[#543918] hover:text-white transition-colors"
                     >
                         <span className="truncate">+ Add</span>
                     </button>
