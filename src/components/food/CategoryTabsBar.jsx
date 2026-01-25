@@ -7,7 +7,7 @@ const CategoryTabsBar = ({ categories, activeCategory, onCategoryChange }) => {
                         key={category}
                         onClick={() => onCategoryChange(category)}
                         className={`flex flex-col items-center justify-center border-b-2 ${activeCategory === category
-                            ? 'border-[#543918] text-[#543918]'
+                            ? 'border-[#7f4f13] text-[#7f4f13]'
                             : 'border-transparent text-gray-500 dark:text-gray-400'
                             } pb-3 pt-3 shrink-0 transition-colors`}
                     >

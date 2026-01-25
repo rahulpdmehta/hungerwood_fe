@@ -207,7 +207,7 @@ const Orders = () => {
             >
               All
               {statusFilter === 'all' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#543918]"></span>
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7f4f13]"></span>
               )}
             </button>
             <button
@@ -220,7 +220,7 @@ const Orders = () => {
             >
               Past Orders
               {statusFilter === 'past' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#543918]"></span>
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7f4f13]"></span>
               )}
             </button>
             <button
@@ -233,7 +233,7 @@ const Orders = () => {
             >
               Active
               {statusFilter === 'active' && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#543918]"></span>
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#7f4f13]"></span>
               )}
             </button>
           </div>
@@ -250,14 +250,14 @@ const Orders = () => {
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2d221a] border-2 border-[#e5e0dc] dark:border-[#3d2e24] rounded-lg shadow-md hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
             >
-              <span className="material-symbols-outlined text-[#543918] text-xl">
+              <span className="material-symbols-outlined text-[#7f4f13] text-xl">
                 tune
               </span>
               <span className="text-sm font-medium text-[#181411] dark:text-white">
                 Filters
               </span>
               {activeFiltersCount > 0 && (
-                <span className="ml-1 bg-[#543918] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                <span className="ml-1 bg-[#7f4f13] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                   {activeFiltersCount}
                 </span>
               )}
@@ -268,7 +268,7 @@ const Orders = () => {
               onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
               className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#2d221a] border-2 border-[#e5e0dc] dark:border-[#3d2e24] rounded-lg shadow-md hover:shadow-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
             >
-              <span className="material-symbols-outlined text-[#543918] text-xl">
+              <span className="material-symbols-outlined text-[#7f4f13] text-xl">
                 {sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward'}
               </span>
               <span className="text-sm font-medium text-[#181411] dark:text-white">
@@ -298,7 +298,7 @@ const Orders = () => {
                       key={date.value}
                       onClick={() => setDateFilter(date.value)}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${dateFilter === date.value
-                        ? 'bg-[#543918] text-white'
+                        ? 'bg-[#7f4f13] text-white'
                         : 'bg-gray-200 dark:bg-gray-800 text-[#887263] dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
                         }`}
                     >
@@ -314,7 +314,7 @@ const Orders = () => {
                   onClick={() => {
                     setDateFilter('all');
                   }}
-                  className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-800 text-[#543918] font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-800 text-[#7f4f13] font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                 >
                   Clear Filters
                 </button>
@@ -354,14 +354,14 @@ const Orders = () => {
                 onClick={() => {
                   setDateFilter('all');
                 }}
-                className="bg-[#543918] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#543918]/90 transition-colors"
+                className="bg-[#7f4f13] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#7f4f13]/90 transition-colors"
               >
                 Clear Filters
               </button>
             ) : (
               <button
                 onClick={() => navigate('/menu')}
-                className="bg-[#543918] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#543918]/90 transition-colors"
+                className="bg-[#7f4f13] text-white font-bold py-3 px-8 rounded-xl hover:bg-[#7f4f13]/90 transition-colors"
               >
                 Browse Menu
               </button>
@@ -433,7 +433,7 @@ const Orders = () => {
                         <p className="text-[#887263] dark:text-[#b09d90] text-xs font-normal">
                           {order.createdAt ? formatDate(order.createdAt, 'D MMM, YYYY') : order.date || 'N/A'}
                         </p>
-                        <p className="text-[#543918] text-base font-bold leading-normal">
+                        <p className="text-[#7f4f13] text-base font-bold leading-normal">
                           ₹{order.totalAmount || order.total}
                         </p>
                       </div>
@@ -451,7 +451,7 @@ const Orders = () => {
           <div className="px-4 py-6 text-center">
             <button
               onClick={handleShowOlder}
-              className="text-[#543918] text-sm font-bold tracking-wide py-2 px-6 border-2 border-[#543918]/30 rounded-full hover:bg-[#543918]/5 hover:shadow-md transition-all"
+              className="text-[#7f4f13] text-sm font-bold tracking-wide py-2 px-6 border-2 border-[#7f4f13]/30 rounded-full hover:bg-[#7f4f13]/5 hover:shadow-md transition-all"
             >
               Show Older Orders
             </button>

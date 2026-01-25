@@ -18,24 +18,24 @@ const Profile = () => {
             icon: 'location_on',
             label: 'Saved Addresses',
             path: '/addresses',
-            iconBg: 'bg-[#543918]/10',
-            iconColor: 'text-[#543918]',
+            iconBg: 'bg-[#7f4f13]/10',
+            iconColor: 'text-[#7f4f13]',
         },
         {
             id: 'history',
             icon: 'history',
             label: 'Order History',
             path: '/orders',
-            iconBg: 'bg-[#543918]/10',
-            iconColor: 'text-[#543918]',
+            iconBg: 'bg-[#7f4f13]/10',
+            iconColor: 'text-[#7f4f13]',
         },
         {
             id: 'settings',
             icon: 'settings',
             label: 'App Settings',
             path: '/settings',
-            iconBg: 'bg-[#543918]/10',
-            iconColor: 'text-[#543918]',
+            iconBg: 'bg-[#7f4f13]/10',
+            iconColor: 'text-[#7f4f13]',
         },
     ];
 
@@ -70,7 +70,7 @@ const Profile = () => {
                 <div className="flex w-full flex-col gap-4 items-center">
                     <div className="flex gap-4 flex-col items-center">
                         {/* Avatar with Gradient Border */}
-                        <div className="relative p-1 rounded-full bg-gradient-to-tr from-[#543918] to-[#887263] shadow-lg">
+                        <div className="relative p-1 rounded-full bg-gradient-to-tr from-[#7f4f13] to-[#887263] shadow-lg">
                             <div
                                 className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-32 w-32 border-4 border-[#f8f7f6] dark:border-[#211811] shadow-md"
                                 style={{
@@ -92,7 +92,7 @@ const Profile = () => {
                             {/* Edit Profile Button */}
                             <Link
                                 to="/edit-profile"
-                                className="mt-4 flex items-center gap-2 px-6 py-2.5 bg-[#543918] text-white rounded-xl hover:bg-[#b35614] transition-all shadow-md border-2 border-[#543918] hover:shadow-lg"
+                                className="mt-4 flex items-center gap-2 px-6 py-2.5 bg-[#7f4f13] text-white rounded-xl hover:bg-[#b35614] transition-all shadow-md border-2 border-[#7f4f13] hover:shadow-lg"
                             >
                                 <span className="material-symbols-outlined text-lg">edit</span>
                                 <span className="text-sm font-semibold">Edit Profile</span>
@@ -181,7 +181,7 @@ const Profile = () => {
             {/* Footer Info */}
             <div className="flex flex-col items-center justify-center pb-4 pt-4">
                 <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[#543918] font-bold">HungerWood</span>
+                    <span className="text-[#7f4f13] font-bold">HungerWood</span>
                     <span className="text-[#887263]">•</span>
                     <span className="text-[#887263] font-medium">Gaya, Bihar</span>
                 </div>

@@ -197,7 +197,7 @@ const ItemDetails = () => {
                 key={level}
                 onClick={() => setSpiceLevel(level)}
                 className={`flex-1 py-3 px-4 rounded-lg border-2 font-bold text-center transition-all shadow-sm ${spiceLevel === level
-                  ? 'border-[#543918] bg-[#543918]/10 text-[#543918] shadow-md'
+                  ? 'border-[#7f4f13] bg-[#7f4f13]/10 text-[#7f4f13] shadow-md'
                   : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:shadow-md'
                   }`}
               >
@@ -214,14 +214,14 @@ const ItemDetails = () => {
             {addons.map((addon) => (
               <label
                 key={addon.id}
-                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-800 cursor-pointer hover:border-[#543918]/50 transition-colors"
+                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-800 cursor-pointer hover:border-[#7f4f13]/50 transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     checked={selectedAddons.includes(addon.id)}
                     onChange={() => toggleAddon(addon.id)}
-                    className="size-5 rounded border-gray-300 text-[#543918] focus:ring-[#543918]"
+                    className="size-5 rounded border-gray-300 text-[#7f4f13] focus:ring-[#7f4f13]"
                   />
                   <span className="font-medium">{addon.name}</span>
                 </div>
@@ -239,14 +239,14 @@ const ItemDetails = () => {
           <button
             onClick={() => handleQuantityChange(-1)}
             disabled={quantity <= 1}
-            className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#543918] shadow-sm disabled:opacity-50"
+            className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#7f4f13] shadow-sm disabled:opacity-50"
           >
             <span className="material-symbols-outlined">remove</span>
           </button>
           <span className="text-lg font-bold px-2">{quantity}</span>
           <button
             onClick={() => handleQuantityChange(1)}
-            className="flex size-10 items-center justify-center rounded-full bg-[#543918] text-white shadow-sm"
+            className="flex size-10 items-center justify-center rounded-full bg-[#7f4f13] text-white shadow-sm"
           >
             <span className="material-symbols-outlined">add</span>
           </button>
@@ -255,7 +255,7 @@ const ItemDetails = () => {
         {/* Add to Cart CTA */}
         <button
           onClick={handleAddToCart}
-          className="flex-1 bg-[#543918] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#543918] hover:shadow-2xl active:scale-95 transition-all"
+          className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
         >
           <span className="material-symbols-outlined">shopping_basket</span>
           Add to Cart

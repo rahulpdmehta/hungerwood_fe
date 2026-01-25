@@ -20,7 +20,7 @@ import AdminLayout from '../../components/admin/AdminLayout';
 import { dashboardService } from '../../services/admin.service';
 import { formatChartDate } from '../../utils/dateFormatter';
 
-const COLORS = ['#543918', '#f97316', '#fb923c', '#fdba74', '#fed7aa'];
+const COLORS = ['#7f4f13', '#f97316', '#fb923c', '#fdba74', '#fed7aa'];
 
 const DATE_FILTERS = [
   { label: 'Last 7 Days', value: 7 },
@@ -229,7 +229,7 @@ const Dashboard = () => {
                   labelFormatter={formatChartDate}
                   formatter={(value) => [value, 'Orders']}
                 />
-                <Line type="monotone" dataKey="count" stroke="#543918" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="count" stroke="#7f4f13" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -315,7 +315,7 @@ const Dashboard = () => {
                 <XAxis type="number" />
                 <YAxis dataKey="name" type="category" width={100} />
                 <Tooltip formatter={(value) => [value, 'Sales']} />
-                <Bar dataKey="sales" fill="#543918" />
+                <Bar dataKey="sales" fill="#7f4f13" />
               </BarChart>
             </ResponsiveContainer>
           </div>

@@ -15,8 +15,12 @@ export const useWalletBalance = () => {
     queryKey: walletKeys.balance(),
     queryFn: async () => {
       const response = await walletService.getWalletBalance();
-      // Service returns { balance: ... } structure
-      return response?.balance || response || 0;
+      // Service returns { balance: ..., currency: ... } structure
+      // Extract just the balance number
+      if (typeof response === 'object' && response !== null) {
+        return typeof response.balance === 'number' ? response.balance : 0;
+      }
+      return typeof response === 'number' ? response : 0;
     },
     staleTime: 2 * 60 * 1000, // 2 minutes (balance changes frequently)
     gcTime: 5 * 60 * 1000, // 5 minutes

@@ -72,7 +72,7 @@ const WalletCreditAnimation = () => {
               }}
               className="absolute w-12 h-12"
             >
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#f8b84e] to-[#543918] shadow-lg flex items-center justify-center">
+              <div className="w-full h-full rounded-full bg-gradient-to-br from-[#f8b84e] to-[#7f4f13] shadow-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">₹</span>
               </div>
             </motion.div>
@@ -92,7 +92,7 @@ const WalletCreditAnimation = () => {
               transition={{ delay: 0.7 }}
               className="text-center"
             >
-              <span className="material-symbols-outlined text-5xl text-[#543918] mb-2">
+              <span className="material-symbols-outlined text-5xl text-[#7f4f13] mb-2">
                 account_balance_wallet
               </span>
               <p className="text-sm text-[#887263] dark:text-gray-400 mb-1">
@@ -107,7 +107,7 @@ const WalletCreditAnimation = () => {
                   stiffness: 300,
                   damping: 10 
                 }}
-                className="text-3xl font-bold text-[#543918]"
+                className="text-3xl font-bold text-[#7f4f13]"
               >
                 +₹{amount}
               </motion.p>

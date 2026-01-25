@@ -45,11 +45,11 @@ const BottomNavBar = () => {
                     <Link
                         key={item.id}
                         to={item.path}
-                        className={`flex flex-col items-center gap-1 ${active ? 'text-[#543918]' : 'text-[#887263]'
+                        className={`flex flex-col items-center gap-1 ${active ? 'text-[#7f4f13]' : 'text-[#887263]'
                             }`}
                     >
                         <span
-                            className="material-symbols-outlined"
+                            className="material-symbols-outlined text-[24px]"
                             style={active ? { fontVariationSettings: '"FILL" 1' } : {}}
                         >
                             {item.icon}

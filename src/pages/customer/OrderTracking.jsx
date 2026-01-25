@@ -95,7 +95,7 @@ const OrderTracking = () => {
     return (
       <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#543918] mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7f4f13] mx-auto mb-4"></div>
           <p className="text-[#887263]">Loading order details...</p>
         </div>
       </div>
@@ -114,7 +114,7 @@ const OrderTracking = () => {
           </p>
           <button
             onClick={() => navigate('/orders')}
-            className="bg-[#543918] hover:bg-[#543918]/90 text-white font-bold py-3 px-6 rounded-xl transition-all"
+            className="bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-3 px-6 rounded-xl transition-all"
           >
             View All Orders
           </button>
@@ -285,7 +285,7 @@ const OrderTracking = () => {
         </div>
         <button
           onClick={handleHelp}
-          className="text-[#543918] text-sm font-bold hover:underline absolute right-4"
+          className="text-[#7f4f13] text-sm font-bold hover:underline absolute right-4"
         >
           Help
         </button>
@@ -338,7 +338,7 @@ const OrderTracking = () => {
             </>
           ) : (
             <>
-              <h3 className="text-[#543918] text-xl font-bold mb-2">
+              <h3 className="text-[#7f4f13] text-xl font-bold mb-2">
                 {order?.status === 'COMPLETED'
                   ? 'Order Delivered!'
                   : order?.status === 'OUT_FOR_DELIVERY'
@@ -365,7 +365,7 @@ const OrderTracking = () => {
         {/* Timer Display */}
         {/* <div className="flex gap-4 mb-8 justify-center">
           <div className="flex-1 max-w-[140px] bg-white dark:bg-[#2d221a] rounded-xl p-4 text-center shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
-            <div className="text-[#543918] text-xl font-bold mb-1">{minutes}</div>
+            <div className="text-[#7f4f13] text-xl font-bold mb-1">{minutes}</div>
             <div className="text-[#887263] dark:text-gray-400 text-xs font-bold uppercase tracking-wider">
               Minutes
             </div>
@@ -387,9 +387,9 @@ const OrderTracking = () => {
                 <div className="flex flex-col items-center pt-1">
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${step.index < currentStep
-                      ? 'bg-[#543918] text-white'
+                      ? 'bg-[#7f4f13] text-white'
                       : step.index === currentStep
-                        ? 'bg-[#543918] text-white'
+                        ? 'bg-[#7f4f13] text-white'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-400'
                       }`}
                   >
@@ -400,7 +400,7 @@ const OrderTracking = () => {
                   {index < orderSteps.length - 1 && (
                     <div
                       className={`w-0.5 h-12 ${step.index < currentStep
-                        ? 'bg-[#543918]'
+                        ? 'bg-[#7f4f13]'
                         : 'bg-gray-200 dark:bg-gray-700'
                         }`}
                     ></div>
@@ -421,12 +421,12 @@ const OrderTracking = () => {
                       {step.title}
                     </h3>
                     {step.index === currentStep && (
-                      <span className="w-2 h-2 rounded-full bg-[#543918] animate-pulse"></span>
+                      <span className="w-2 h-2 rounded-full bg-[#7f4f13] animate-pulse"></span>
                     )}
                   </div>
                   <p
                     className={`text-sm ${step.index === currentStep
-                      ? 'text-[#543918] italic font-medium'
+                      ? 'text-[#7f4f13] italic font-medium'
                       : 'text-[#887263] dark:text-gray-400'
                       }`}
                   >
@@ -469,7 +469,7 @@ const OrderTracking = () => {
                 <h4 className="text-[#181411] dark:text-white font-bold text-base mb-1">HungerWood Gaya</h4>
                 <p className="text-[#887263] dark:text-gray-400 text-sm">Order #{orderNumber}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-[#543918]/10 flex items-center justify-center text-[#543918]">
+              <div className="w-10 h-10 rounded-lg bg-[#7f4f13]/10 flex items-center justify-center text-[#7f4f13]">
                 <span className="material-symbols-outlined">restaurant</span>
               </div>
             </div>
@@ -528,7 +528,7 @@ const OrderTracking = () => {
             <>
               <button
                 onClick={handleCallRestaurant}
-                className="flex-1 bg-[#543918] hover:bg-[#543918]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+                className="flex-1 bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined">call</span>
                 Call Restaurant
@@ -590,7 +590,7 @@ const OrderTracking = () => {
             <div className="border-t border-[#f4f2f0] dark:border-[#3d2e24] pt-3">
               <div className="flex items-center justify-between">
                 <span className="text-[#181411] dark:text-white font-bold text-base">Total Amount</span>
-                <span className="text-[#543918] text-2xl font-bold">₹{totalPayable.toFixed(2)}</span>
+                <span className="text-[#7f4f13] text-2xl font-bold">₹{totalPayable.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -600,8 +600,8 @@ const OrderTracking = () => {
         {orderType === 'Delivery' && (
           <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#543918]/10 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[#543918]">location_on</span>
+              <div className="w-10 h-10 rounded-full bg-[#7f4f13]/10 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[#7f4f13]">location_on</span>
               </div>
               <div>
                 <p className="text-[#887263] dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">

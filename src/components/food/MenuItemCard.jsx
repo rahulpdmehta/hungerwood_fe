@@ -56,7 +56,7 @@ const MenuItemCard = ({ item, onAddToCart }) => {
                     />
                     <button
                         onClick={handleAddClick}
-                        className="flex min-w-[70px] cursor-pointer items-center justify-center rounded-lg h-8 px-3 bg-[#543918]/10 text-[#543918] border border-[#543918]/20 text-xs font-bold hover:bg-[#543918] hover:text-white transition-colors"
+                        className="flex min-w-[70px] cursor-pointer items-center justify-center rounded-lg h-8 px-3 bg-[#7f4f13]/10 text-[#7f4f13] border border-[#7f4f13]/20 text-xs font-bold hover:bg-[#7f4f13] hover:text-white transition-colors"
                     >
                         <span className="truncate">+ Add</span>
                     </button>

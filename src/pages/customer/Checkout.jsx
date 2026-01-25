@@ -246,7 +246,7 @@ const Checkout = () => {
           <div className="flex h-12 flex-1 items-center justify-center rounded-xl bg-white dark:bg-[#2d221a] p-1 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
             <label
               className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold transition-all ${orderType === 'Dine-in'
-                ? 'bg-[#543918] text-white'
+                ? 'bg-[#7f4f13] text-white'
                 : 'text-[#887263] dark:text-gray-400'
                 }`}
             >
@@ -262,7 +262,7 @@ const Checkout = () => {
             </label>
             <label
               className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold transition-all ${orderType === 'Takeaway'
-                ? 'bg-[#543918] text-white'
+                ? 'bg-[#7f4f13] text-white'
                 : 'text-[#887263] dark:text-gray-400'
                 }`}
             >
@@ -278,7 +278,7 @@ const Checkout = () => {
             </label>
             <label
               className={`flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 text-sm font-semibold transition-all ${orderType === 'Delivery'
-                ? 'bg-[#543918] text-white'
+                ? 'bg-[#7f4f13] text-white'
                 : 'text-[#887263] dark:text-gray-400'
                 }`}
             >
@@ -313,7 +313,7 @@ const Checkout = () => {
                   <p className="text-text-secondary text-sm mb-3">No saved addresses found</p>
                   <button
                     onClick={handleChangeAddress}
-                    className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#543918] text-white text-sm font-bold transition-colors hover:bg-[#543918]/90"
+                    className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#7f4f13] text-white text-sm font-bold transition-colors hover:bg-[#7f4f13]/90"
                   >
                     Add Address
                   </button>
@@ -323,7 +323,7 @@ const Checkout = () => {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex flex-[2_2_0px] flex-col gap-3">
                       <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[#543918] text-xl">
+                        <span className="material-symbols-outlined text-[#7f4f13] text-xl">
                           {selectedAddress.label === 'Home' ? 'home' : selectedAddress.label === 'Office' ? 'work' : 'location_on'}
                         </span>
                         <p className="text-[#181411] dark:text-white text-base font-bold leading-tight">
@@ -335,7 +335,7 @@ const Checkout = () => {
                       </p>
                       <button
                         onClick={handleChangeAddress}
-                        className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#543918]/10 text-[#543918] text-sm font-bold transition-colors hover:bg-[#543918]/20 w-fit"
+                        className="flex min-w-[84px] cursor-pointer items-center justify-center rounded-lg h-9 px-4 bg-[#7f4f13]/10 text-[#7f4f13] text-sm font-bold transition-colors hover:bg-[#7f4f13]/20 w-fit"
                       >
                         Change
                       </button>
@@ -439,7 +439,7 @@ const Checkout = () => {
               value="upi"
               checked={paymentMethod === 'upi'}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-5 h-5 text-[#543918] border-gray-300 focus:ring-[#543918]"
+              className="w-5 h-5 text-[#7f4f13] border-gray-300 focus:ring-[#7f4f13]"
             />
           </label>
           <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer">
@@ -458,7 +458,7 @@ const Checkout = () => {
               value="CASH"
               checked={paymentMethod === 'CASH'}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-5 h-5 text-[#543918] border-gray-300 focus:ring-[#543918]"
+              className="w-5 h-5 text-[#7f4f13] border-gray-300 focus:ring-[#7f4f13]"
             />
           </label>
         </div>
@@ -482,7 +482,7 @@ const Checkout = () => {
             </div>
             <div className="pt-3 border-t border-[#f4f2f0] dark:border-[#3d2e24] flex justify-between">
               <span className="font-bold">Total Payable</span>
-              <span className="font-bold text-[#543918]">₹{totalPayable.toFixed(2)}</span>
+              <span className="font-bold text-[#7f4f13]">₹{totalPayable.toFixed(2)}</span>
             </div>
           </div>
         </div>
@@ -497,7 +497,7 @@ const Checkout = () => {
           </div>
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-[#543918] flex items-center gap-1 text-sm font-bold"
+            className="text-[#7f4f13] flex items-center gap-1 text-sm font-bold"
           >
             View Details{' '}
             <span className="material-symbols-outlined text-sm">
@@ -507,7 +507,7 @@ const Checkout = () => {
         </div>
         <button
           onClick={handlePlaceOrder}
-          className="w-full bg-[#543918] hover:bg-[#543918]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+          className="w-full bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
         >
           Place Order
           <span className="material-symbols-outlined">arrow_forward</span>

@@ -38,7 +38,7 @@ const WalletUIShowcase = () => {
       <div className="bg-white dark:bg-[#2d221a] border-b border-[#f4f2f0] dark:border-[#3d2e24] sticky top-0 z-50 shadow-sm">
         <div className="max-w-md mx-auto px-4 py-4">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-[#543918] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[#7f4f13] rounded-xl flex items-center justify-center">
               <span className="material-symbols-outlined text-white">palette</span>
             </div>
             <div>
@@ -59,7 +59,7 @@ const WalletUIShowcase = () => {
                 onClick={() => setState(s.id)}
                 className={`px-4 py-2 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                   state === s.id
-                    ? 'bg-[#543918] text-white shadow-lg'
+                    ? 'bg-[#7f4f13] text-white shadow-lg'
                     : 'bg-white dark:bg-[#3d2e24] text-[#887263] dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-[#4d3e34]'
                 }`}
               >
@@ -75,7 +75,7 @@ const WalletUIShowcase = () => {
         {/* Design Info Card */}
         <div className="bg-white dark:bg-[#2d221a] rounded-2xl p-5 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
           <div className="flex items-start gap-3">
-            <span className="material-symbols-outlined text-[#543918] text-2xl">
+            <span className="material-symbols-outlined text-[#7f4f13] text-2xl">
               design_services
             </span>
             <div>
@@ -83,7 +83,7 @@ const WalletUIShowcase = () => {
                 Design Principles
               </h3>
               <ul className="space-y-1 text-sm text-[#887263] dark:text-gray-400">
-                <li>• Warm wood-brown palette (#543918)</li>
+                <li>• Warm wood-brown palette (#7f4f13)</li>
                 <li>• Smooth transitions & animations</li>
                 <li>• Touch-friendly 44px+ tap targets</li>
                 <li>• Clear visual hierarchy</li>
@@ -129,7 +129,7 @@ const WalletUIShowcase = () => {
             </div>
 
             <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
-              <span className="material-symbols-outlined text-[#543918] text-2xl mb-2">
+              <span className="material-symbols-outlined text-[#7f4f13] text-2xl mb-2">
                 payments
               </span>
               <p className="text-xs font-semibold text-[#181411] dark:text-white mb-1">
@@ -173,8 +173,8 @@ const WalletUIShowcase = () => {
           </h3>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <div className="w-full h-12 bg-[#543918] rounded-lg mb-2 shadow-inner"></div>
-              <p className="text-xs font-mono text-[#887263] dark:text-gray-400">#543918</p>
+              <div className="w-full h-12 bg-[#7f4f13] rounded-lg mb-2 shadow-inner"></div>
+              <p className="text-xs font-mono text-[#887263] dark:text-gray-400">#7f4f13</p>
               <p className="text-xs text-[#887263] dark:text-gray-400">Wood Brown</p>
             </div>
             <div>

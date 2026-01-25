@@ -81,7 +81,7 @@ const Wallet = () => {
           {/* Refer & Earn Button */}
           <button
             onClick={() => navigate('/referral')}
-            className="bg-gradient-to-br from-[#543918] to-[#b85515] text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 flex flex-col items-center gap-2"
+            className="bg-gradient-to-br from-[#7f4f13] to-[#b85515] text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 flex flex-col items-center gap-2"
           >
             <span className="material-symbols-outlined text-2xl">
               card_giftcard
@@ -94,7 +94,7 @@ const Wallet = () => {
             onClick={() => navigate('/wallet/info')}
             className="bg-white dark:bg-[#2d221a] border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-[#181411] dark:text-white rounded-xl p-4 shadow-md hover:shadow-lg transition-all active:scale-95 flex flex-col items-center gap-2"
           >
-            <span className="material-symbols-outlined text-2xl text-[#543918]">
+            <span className="material-symbols-outlined text-2xl text-[#7f4f13]">
               info
             </span>
             <span className="text-sm font-bold">Wallet Info</span>
@@ -106,7 +106,7 @@ const Wallet = () => {
           <button
             onClick={() => setActiveFilter('all')}
             className={`px-4 py-2 rounded-full text-xs font-bold transition-all ${activeFilter === 'all'
-              ? 'bg-[#543918] text-white shadow-md'
+              ? 'bg-[#7f4f13] text-white shadow-md'
               : 'bg-white dark:bg-[#2d221a] text-[#887263] dark:text-gray-400 border border-[#f4f2f0] dark:border-[#3d2e24]'
               }`}
           >
@@ -227,7 +227,7 @@ const Wallet = () => {
 
               <button
                 onClick={() => navigate('/menu')}
-                className="bg-[#543918] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-[#543918]/90 transition-colors"
+                className="bg-[#7f4f13] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-md hover:bg-[#7f4f13]/90 transition-colors"
               >
                 Place your first order
               </button>

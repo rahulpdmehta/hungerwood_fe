@@ -29,7 +29,12 @@ const Menu = () => {
   // Transform categories data for UI
   const categories = useMemo(() => {
     if (categoriesData && categoriesData.length > 0) {
-      return ['All', ...categoriesData.map(c => c.name || c)];
+      // Handle both string and object categories
+      const categoryNames = categoriesData.map(c => {
+        if (typeof c === 'string') return c;
+        return c.name || c.title || String(c);
+      });
+      return ['All', ...categoryNames];
     }
     return ['All'];
   }, [categoriesData]);
@@ -254,18 +259,32 @@ const Menu = () => {
   // Filter items based on category, diet preference, and search
   const filteredItems = useMemo(() => {
     return displayMenuItems.filter((item) => {
-    // Category filter - handle both string and object category
-    const categoryName = typeof item.category === 'string' ? item.category : item.category?.name;
-    const matchesCategory = categoryName === activeCategory || activeCategory === 'All';
+      // Category filter - handle multiple formats:
+      // 1. String: "Tandoor"
+      // 2. Object with name: { name: "Tandoor", slug: "tandoor" }
+      // 3. Object with _id: { _id: "...", name: "Tandoor" }
+      let categoryName = null;
+      if (typeof item.category === 'string') {
+        categoryName = item.category;
+      } else if (item.category && typeof item.category === 'object') {
+        categoryName = item.category.name || item.category.title || null;
+      }
+      
+      // Normalize category names for comparison (trim and case-insensitive)
+      const normalizedCategoryName = categoryName ? categoryName.trim() : '';
+      const normalizedActiveCategory = activeCategory.trim();
+      const matchesCategory = 
+        activeCategory === 'All' || 
+        normalizedCategoryName.toLowerCase() === normalizedActiveCategory.toLowerCase();
 
-    // Diet filter - handle both 'veg' and 'isVeg' properties
-    const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
-    const matchesDiet = dietFilter === 'All' ? true : dietFilter === 'Veg' ? isVeg : !isVeg;
+      // Diet filter - handle both 'veg' and 'isVeg' properties
+      const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
+      const matchesDiet = dietFilter === 'All' ? true : dietFilter === 'Veg' ? isVeg : !isVeg;
 
-    // Search filter
-    const matchesSearch = searchQuery === '' ||
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      // Search filter
+      const matchesSearch = searchQuery === '' ||
+        item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description?.toLowerCase().includes(searchQuery.toLowerCase());
 
       return matchesCategory && matchesDiet && matchesSearch;
     });
@@ -281,7 +300,7 @@ const Menu = () => {
             <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight">
               HungerWood
             </h2>
-            <p className="text-[10px] text-[#543918] font-bold uppercase tracking-widest">Gaya, Bihar</p>
+            <p className="text-[10px] text-[#7f4f13] font-bold uppercase tracking-widest">Gaya, Bihar</p>
           </div>
           <div className="flex w-10 items-center justify-end">
             <button
@@ -319,8 +338,8 @@ const Menu = () => {
             <h3 className="text-gray-900 dark:text-white text-base font-bold mb-3">Today's Specials</h3>
             <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
               <div className="flex flex-row items-start justify-start gap-4">
-                {specials.map((special) => (
-                  <SpecialItemCard key={special.id} item={special} />
+                {specials.map((special, index) => (
+                  <SpecialItemCard key={special.id || special._id || `special-${index}`} item={special} />
                 ))}
               </div>
             </div>
@@ -347,8 +366,8 @@ const Menu = () => {
               </p>
             </div>
           ) : (
-            filteredItems.map((item) => (
-              <MenuItemCard key={item.id || item._id} item={item} onAddToCart={handleAddToCart} />
+            filteredItems.map((item, index) => (
+              <MenuItemCard key={item.id || item._id || `menu-item-${index}`} item={item} onAddToCart={handleAddToCart} />
             ))
           )}
         </div>

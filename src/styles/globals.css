@@ -29,7 +29,7 @@
     font-family: 'Material Symbols Outlined';
     font-weight: normal;
     font-style: normal;
-    font-size: 24px;
+    font-size: 1.5rem;
     line-height: 1;
     letter-spacing: normal;
     text-transform: none;
@@ -296,4 +296,30 @@
 
 body.no-floating-cart {
   padding-bottom: 60px !important;
+}
+
+body {
+  background: #fff;
+}
+
+div#root > .animate-fadeIn > div {
+  background: transparent !important;
+}
+
+#root:after {
+  background-image: url(/src/assets/images/mask.png);
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-size: 100%;
+  z-index: -1;
+  filter: invert(1);
+  opacity: 0.5;
+}
+
+html {
+  font-size: 15px;
 }

@@ -129,7 +129,7 @@ const Referral = () => {
 
           {/* Total Referrals */}
           <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] text-center">
-            <p className="text-2xl font-bold text-[#543918] mb-1">
+            <p className="text-2xl font-bold text-[#7f4f13] mb-1">
               {totalReferrals}
             </p>
             <p className="text-xs text-[#887263] dark:text-gray-400">
@@ -154,19 +154,19 @@ const Referral = () => {
             Your Referral Code
           </h3>
 
-          <div className="bg-gradient-to-r from-[#fef9f5] to-white dark:from-[#211811] dark:to-[#2d221a] rounded-xl p-4 border-2 border-dashed border-[#543918]/30 mb-4">
+          <div className="bg-gradient-to-r from-[#fef9f5] to-white dark:from-[#211811] dark:to-[#2d221a] rounded-xl p-4 border-2 border-dashed border-[#7f4f13]/30 mb-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-[#887263] dark:text-gray-400 mb-1">
                   Share this code
                 </p>
-                <p className="text-2xl font-bold text-[#543918] tracking-wider font-mono">
+                <p className="text-2xl font-bold text-[#7f4f13] tracking-wider font-mono">
                   {displayReferralCode || 'Loading...'}
                 </p>
               </div>
               <button
                 onClick={handleCopyCode}
-                className="w-12 h-12 bg-[#543918] text-white rounded-xl flex items-center justify-center shadow-md hover:bg-[#543918]/90 active:scale-95 transition-all"
+                className="w-12 h-12 bg-[#7f4f13] text-white rounded-xl flex items-center justify-center shadow-md hover:bg-[#7f4f13]/90 active:scale-95 transition-all"
               >
                 <span className="material-symbols-outlined">
                   {copied ? 'check' : 'content_copy'}
@@ -260,7 +260,7 @@ const Referral = () => {
               >
                 {/* Left: Avatar + Info */}
                 <div className="flex items-center gap-3">
-                  {/* <div className="w-10 h-10 bg-gradient-to-br from-[#543918] to-[#b85515] rounded-full flex items-center justify-center">
+                  {/* <div className="w-10 h-10 bg-gradient-to-br from-[#7f4f13] to-[#b85515] rounded-full flex items-center justify-center">
                     <span className="text-white font-bold text-sm">
                       {friend.name.charAt(0)}
                     </span>
