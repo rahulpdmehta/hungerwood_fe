@@ -38,7 +38,7 @@ const BottomNavBar = () => {
     };
 
     return (
-        <div className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-[#211811]/90 backdrop-blur-lg border-t border-gray-200 dark:border-white/10 px-6 py-3 flex justify-between items-center z-50">
+        <div className="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-[#211811]/90 backdrop-blur-lg border-t border-gray-200 dark:border-white/10 px-6 py-3 pb-5 flex justify-between items-center z-50">
             {navItems.map((item) => {
                 const active = isActive(item.path);
                 return (

@@ -1,6 +1,6 @@
 const RestaurantInfoCard = () => {
   return (
-    <div className="px-4 mt-6">
+    <div className="px-4 mt-4">
       <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-lg border-2 border-gray-200 dark:border-zinc-700">
         <div className="flex justify-between items-start mb-2">
           <div>

@@ -6,7 +6,7 @@ import { MenuSkeleton } from '@components/common/Loader';
 
 const BestSellersSection = () => {
   const navigate = useNavigate();
-  const { addItem } = useCartStore();
+  const { addItem, getItemQuantity, incrementQuantity, decrementQuantity, removeItem } = useCartStore();
   const { data: menuItems = [], isLoading: itemsLoading } = useMenuItems();
 
   // Filter best sellers from menu items
@@ -21,22 +21,43 @@ const BestSellersSection = () => {
       id: item.id,
       name: item.name,
       price: item.price,
+      discount: item.discount || 0,
       quantity: 1,
       image: item.image,
     });
   };
 
+  const handleIncrement = (item, e) => {
+    e.stopPropagation();
+    const quantity = getItemQuantity(item.id);
+    if (quantity === 0) {
+      handleAddToCart(item);
+    } else {
+      incrementQuantity(item.id);
+    }
+  };
+
+  const handleDecrement = (item, e) => {
+    e.stopPropagation();
+    const quantity = getItemQuantity(item.id);
+    if (quantity > 1) {
+      decrementQuantity(item.id);
+    } else if (quantity === 1) {
+      removeItem(item.id);
+    }
+  };
+
   return (
-    <div className="mt-8 mb-2">
-      <div className="px-4 flex justify-between items-end mb-4">
+    <div className="mt-4 mb-2">
+      <div className="px-4 flex justify-between items-end mb-2">
         <div>
           <h3 className="text-lg font-extrabold tracking-tight text-[#181411] dark:text-white">Best Sellers</h3>
           <p className="text-xs text-gray-500 dark:text-gray-400">Most loved dishes in Gaya</p>
         </div>
       </div>
-      <div className="flex overflow-x-auto scrollbar-hide gap-4 px-4 pb-4">
+      <div className="flex overflow-x-auto scrollbar-hide gap-2 px-4 pb-4">
         {itemsLoading ? (
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             {[1, 2, 3].map((i) => (
               <div key={i} className="min-w-[180px] bg-white dark:bg-zinc-800 rounded-xl shadow-md border-2 border-gray-200 dark:border-zinc-700 overflow-hidden animate-pulse">
                 <div className="h-32 bg-gray-200 dark:bg-gray-700"></div>
@@ -83,15 +104,36 @@ const BestSellersSection = () => {
                   <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">{item.description}</p>
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-sm font-bold text-[#181411] dark:text-white">₹{item.price}</span>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleAddToCart(item);
-                      }}
-                      className="bg-[#7f4f13]/10 text-[#7f4f13] px-3 py-1 rounded text-xs font-extrabold border border-[#7f4f13]/20 hover:bg-[#7f4f13] hover:text-white transition-colors"
-                    >
-                      ADD
-                    </button>
+                    {(() => {
+                      const quantity = getItemQuantity(item.id);
+                      return quantity > 0 ? (
+                        <div className="flex items-center gap-1.5 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded border border-gray-200 dark:border-gray-700">
+                          <button
+                            onClick={(e) => handleDecrement(item, e)}
+                            className="text-xs font-bold flex h-6 w-6 items-center justify-center rounded-l hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                          >
+                            -
+                          </button>
+                          <span className="text-xs font-bold w-4 text-center">{quantity}</span>
+                          <button
+                            onClick={(e) => handleIncrement(item, e)}
+                            className="text-xs font-bold flex h-6 w-6 items-center justify-center rounded-r text-[#7f4f13] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                          >
+                            +
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAddToCart(item);
+                          }}
+                          className="bg-[#7f4f13]/10 text-[#7f4f13] px-3 py-1 rounded text-xs font-extrabold border border-[#7f4f13]/20 hover:bg-[#7f4f13] hover:text-white transition-colors"
+                        >
+                          ADD
+                        </button>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>

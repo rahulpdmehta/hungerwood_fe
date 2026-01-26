@@ -28,23 +28,23 @@ const CuisineGrid = () => {
   ];
 
   return (
-    <div className="mt-8">
-      <div className="px-4 flex justify-between items-end mb-4">
+    <div className="mt-4 px-4">
+      <div className=" flex justify-between items-end mb-2">
         <div>
           <h3 className="text-lg font-extrabold tracking-tight text-[#181411] dark:text-white">
             Explore Cuisines
           </h3>
           <p className="text-xs text-gray-500 dark:text-gray-400">Authentic flavors from around the world</p>
         </div>
-        <button className="text-[#7f4f13] text-xs font-bold" onClick={() => navigate('/menu')}>
+        <button className="text-[#7f4f13] text-sm font-bold" onClick={() => navigate('/menu')}>
           View All
         </button>
       </div>
-      <div className="grid grid-cols-2 gap-3 px-4">
+      <div className="grid grid-cols-2 gap-1 px-0 rounded-xl overflow-hidden">
         {cuisines.map((cuisine) => (
           <button
             key={cuisine.id}
-            className="relative aspect-square rounded-xl overflow-hidden group shadow-md border-2 border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow"
+            className="relative aspect-square overflow-hidden group shadow-md hover:shadow-lg transition-shadow"
             onClick={() => navigate(`/menu?category=${cuisine.name}`)}
           >
             <img src={cuisine.image} alt={cuisine.name} className="absolute inset-0 w-full h-full object-cover" />

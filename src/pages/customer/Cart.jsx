@@ -94,7 +94,7 @@ const Cart = () => {
           {/* Cart Items */}
           {items.map((item) => (
             <div
-              key={item._id || item.id}
+              key={item.id || item._id}
               className="flex items-center gap-4 bg-white dark:bg-[#2d221a] rounded-xl p-2 mb-2 border-2 border-gray-200 dark:border-gray-700 shadow-md last:mb-0"
             >
               <div className="flex items-center gap-4 flex-1">
@@ -118,7 +118,7 @@ const Cart = () => {
                   />
                 </div>
               </div>
-              <div className="shrink-0">
+              <div className="shrink-0 flex items-center gap-2">
                 <div className="flex items-center gap-3 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 p-1 rounded-full px-3 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
                   <button
                     onClick={() => {
@@ -140,6 +140,13 @@ const Cart = () => {
                     +
                   </button>
                 </div>
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800"
+                  title="Delete item"
+                >
+                  <span className="material-symbols-outlined text-lg">delete</span>
+                </button>
               </div>
             </div>
           ))}

@@ -299,7 +299,7 @@ body.no-floating-cart {
 }
 
 body {
-  background: #fff;
+  background: #99867917;
 }
 
 div#root > .animate-fadeIn > div {
@@ -318,6 +318,7 @@ div#root > .animate-fadeIn > div {
   z-index: -1;
   filter: invert(1) blur(2px);
   opacity: 1;
+  visibility: hidden;
 }
 
 html {

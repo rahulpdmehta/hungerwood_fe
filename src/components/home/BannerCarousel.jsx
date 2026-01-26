@@ -8,7 +8,7 @@ const BannerCarousel = () => {
 
   return (
     <div className="mt-2">
-      <div className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 gap-4">
+      <div className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 gap-2">
         {bannersLoading ? (
           <BannerSkeleton />
         ) : activeBanners.length > 0 ? (

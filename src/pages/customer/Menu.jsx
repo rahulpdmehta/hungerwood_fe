@@ -338,7 +338,7 @@ const Menu = () => {
             <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
               <div className="flex flex-row items-start justify-start gap-4">
                 {specials.map((special, index) => (
-                  <SpecialItemCard key={special._id || special.id || `special-${index}`} item={special} />
+                  <SpecialItemCard key={special.id || special._id || `special-${index}`} item={special} />
                 ))}
               </div>
             </div>

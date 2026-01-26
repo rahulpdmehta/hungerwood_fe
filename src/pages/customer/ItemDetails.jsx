@@ -9,13 +9,12 @@ import PriceDisplay from '@components/common/PriceDisplay';
 const ItemDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addItem } = useCartStore();
+  const { addItem, getItemQuantity, incrementQuantity, decrementQuantity, removeItem } = useCartStore();
 
   // React Query hook for fetching menu item
   const { data: item, isLoading: loading, error } = useMenuItem(id);
 
   // State
-  const [quantity, setQuantity] = useState(1);
   const [spiceLevel, setSpiceLevel] = useState('Low');
   const [selectedAddons, setSelectedAddons] = useState([]);
   const [isFavorite, setIsFavorite] = useState(false);
@@ -35,6 +34,10 @@ const ItemDetails = () => {
 
   // Use API data if available, otherwise use fallback
   const displayItem = item || fallbackItem;
+  
+  // Get current quantity from cart
+  const cartQuantity = getItemQuantity(displayItem?.id);
+  const quantity = cartQuantity > 0 ? cartQuantity : 1;
 
   // Add-ons configuration
   const addons = [
@@ -64,9 +67,24 @@ const ItemDetails = () => {
   };
 
   const handleQuantityChange = (change) => {
+    if (!displayItem?.id) return;
+    
     const newQuantity = quantity + change;
     if (newQuantity >= 1) {
-      setQuantity(newQuantity);
+      if (cartQuantity === 0 && newQuantity === 1) {
+        // First time adding to cart
+        handleAddToCart();
+      } else if (newQuantity === 0) {
+        // Remove from cart
+        removeItem(displayItem.id);
+      } else if (cartQuantity > 0) {
+        // Update existing cart item
+        if (change > 0) {
+          incrementQuantity(displayItem.id);
+        } else {
+          decrementQuantity(displayItem.id);
+        }
+      }
     }
   };
 
@@ -91,12 +109,14 @@ const ItemDetails = () => {
   };
 
   const handleAddToCart = () => {
+    if (!displayItem?.id) return;
+    
     addItem({
       id: displayItem.id,
       name: displayItem.name,
       price: calculateTotalPrice(),
       discount: displayItem.discount || 0,
-      quantity: quantity,
+      quantity: 1,
       image: displayItem.image,
       customizations: {
         spiceLevel,
@@ -106,7 +126,6 @@ const ItemDetails = () => {
         }),
       },
     });
-    navigate('/cart');
   };
 
   if (loading) {
@@ -238,7 +257,7 @@ const ItemDetails = () => {
           <button
             onClick={() => handleQuantityChange(-1)}
             disabled={quantity <= 1}
-            className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#7f4f13] shadow-md border-2 border-gray-200 dark:border-gray-600 disabled:opacity-50"
+            className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#7f4f13] shadow-md border-2 border-gray-200 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="material-symbols-outlined">remove</span>
           </button>
@@ -251,14 +270,24 @@ const ItemDetails = () => {
           </button>
         </div>
 
-        {/* Add to Cart CTA */}
-        <button
-          onClick={handleAddToCart}
-          className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
-        >
-          <span className="material-symbols-outlined">shopping_basket</span>
-          Add to Cart
-        </button>
+        {/* Add to Cart / Update Cart CTA */}
+        {cartQuantity > 0 ? (
+          <button
+            onClick={() => navigate('/cart')}
+            className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
+          >
+            <span className="material-symbols-outlined">shopping_basket</span>
+            View Cart ({cartQuantity})
+          </button>
+        ) : (
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
+          >
+            <span className="material-symbols-outlined">shopping_basket</span>
+            Add to Cart
+          </button>
+        )}
       </div>
     </div>
   );

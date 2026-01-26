@@ -4,13 +4,33 @@ import { formatCurrency } from '@utils/helpers';
 import Button from '@components/common/Button';
 
 const FoodCard = ({ item }) => {
-  const { addItem, getItemQuantity } = useCartStore();
+  const { addItem, getItemQuantity, incrementQuantity, decrementQuantity, removeItem } = useCartStore();
   const quantity = getItemQuantity(item.id);
 
   const handleAddToCart = e => {
     e.preventDefault();
     e.stopPropagation();
     addItem(item);
+  };
+
+  const handleIncrement = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (quantity === 0) {
+      addItem(item);
+    } else {
+      incrementQuantity(item.id);
+    }
+  };
+
+  const handleDecrement = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (quantity > 1) {
+      decrementQuantity(item.id);
+    } else if (quantity === 1) {
+      removeItem(item.id);
+    }
   };
 
   return (
@@ -66,14 +86,32 @@ const FoodCard = ({ item }) => {
                 <p className="text-xs text-gray-500 mt-1">{item.category}</p>
               )}
             </div>
-            <Button
-              onClick={handleAddToCart}
-              variant="primary"
-              size="sm"
-              disabled={!item.available}
-            >
-              {quantity > 0 ? `In Cart (${quantity})` : 'Add'}
-            </Button>
+            {quantity > 0 ? (
+              <div className="flex items-center gap-2 text-gray-900 bg-gray-100 rounded-lg border border-gray-300">
+                <button
+                  onClick={handleDecrement}
+                  className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-l-lg hover:bg-gray-200 transition-colors"
+                >
+                  -
+                </button>
+                <span className="text-sm font-bold w-6 text-center">{quantity}</span>
+                <button
+                  onClick={handleIncrement}
+                  className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-r-lg text-primary-600 hover:bg-gray-200 transition-colors"
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <Button
+                onClick={handleAddToCart}
+                variant="primary"
+                size="sm"
+                disabled={!item.available}
+              >
+                Add
+              </Button>
+            )}
           </div>
         </div>
       </div>
