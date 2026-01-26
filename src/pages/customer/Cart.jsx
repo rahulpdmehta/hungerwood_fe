@@ -94,8 +94,8 @@ const Cart = () => {
           {/* Cart Items */}
           {items.map((item) => (
             <div
-              key={item.id}
-              className="flex items-center gap-4 bg-white dark:bg-[#2d221a] rounded-xl p-3 mb-3 border-2 border-gray-200 dark:border-gray-700 shadow-md last:mb-0"
+              key={item._id || item.id}
+              className="flex items-center gap-4 bg-white dark:bg-[#2d221a] rounded-xl p-2 mb-2 border-2 border-gray-200 dark:border-gray-700 shadow-md last:mb-0"
             >
               <div className="flex items-center gap-4 flex-1">
                 <div

@@ -108,7 +108,26 @@ const AppRoutes = () => {
       <Route path="/admin/*" element={<AdminRoutes />} />
 
       {/* 404 Not Found */}
-      <Route path="*" element={<div className="text-center mt-20 text-2xl">Page Not Found</div>} />
+      <Route 
+        path="*" 
+        element={
+          <div className="flex flex-col items-center justify-center min-h-screen bg-[#f8f7f6] dark:bg-[#211811] p-4">
+            <div className="text-center max-w-md">
+              <h1 className="text-4xl font-bold text-[#7f4f13] dark:text-[#d4a574] mb-4">404</h1>
+              <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Page Not Found</h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-6">
+                The page you're looking for doesn't exist or has been moved.
+              </p>
+              <button
+                onClick={() => window.location.href = '/'}
+                className="bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-3 px-6 rounded-xl transition-all"
+              >
+                Go to Home
+              </button>
+            </div>
+          </div>
+        } 
+      />
     </Routes>
   );
 };

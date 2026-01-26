@@ -55,7 +55,9 @@ api.interceptors.response.use(
 
     // Handle not found (404) errors
     if (error.response?.status === 404) {
-      console.error('Resource not found');
+      console.error('Resource not found:', error.config?.url);
+      // Don't show alert for 404s - let components handle it gracefully
+      // This prevents annoying popups on mobile
     }
 
     // Handle server (500+) errors
