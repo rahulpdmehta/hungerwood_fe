@@ -11,7 +11,6 @@ import DataTable from '../../components/admin/DataTable';
 import StatusBadge from '../../components/admin/StatusBadge';
 import { adminOrderService } from '../../services/admin.service';
 import { formatDate, formatTime, formatDateTime } from '../../utils/dateFormatter';
-import { API_BASE_URL } from '../../utils/constants';
 
 const ORDER_STATUS_OPTIONS = [
   'RECEIVED',
@@ -48,80 +47,6 @@ const AdminOrders = () => {
     loadOrders();
   }, [statusFilter]);
 
-  // Set up SSE listeners for all orders to get real-time updates
-  useEffect(() => {
-    if (orders.length === 0) return;
-
-    // Create SSE connections for each order
-    const eventSources = new Map();
-    
-    orders.forEach(order => {
-      const orderId = order.orderId || order.id || order._id;
-      if (!orderId || orderId === 'undefined') return;
-
-      try {
-        const url = `${API_BASE_URL}/orders/${orderId}/stream`;
-        
-        const eventSource = new EventSource(url);
-        eventSources.set(orderId, eventSource);
-
-        eventSource.onmessage = (event) => {
-          try {
-            const data = JSON.parse(event.data);
-            
-            if (data.type === 'statusUpdate') {
-              // Update the order in the list
-              setOrders(prevOrders => 
-                prevOrders.map(o => {
-                  const oId = o.orderId || o.id || o._id;
-                  if (oId === data.orderId || oId === orderId) {
-                    return {
-                      ...o,
-                      status: data.status,
-                      statusHistory: data.statusHistory,
-                      updatedAt: data.updatedAt
-                    };
-                  }
-                  return o;
-                })
-              );
-
-              // Update selected order if it matches
-              if (selectedOrder) {
-                const selectedId = selectedOrder.orderId || selectedOrder.id || selectedOrder._id;
-                if (selectedId === data.orderId || selectedId === orderId) {
-                  setSelectedOrder(prev => ({
-                    ...prev,
-                    status: data.status,
-                    statusHistory: data.statusHistory,
-                    updatedAt: data.updatedAt
-                  }));
-                }
-              }
-            }
-          } catch (error) {
-            console.error('Error parsing SSE message:', error);
-          }
-        };
-
-        eventSource.onerror = (error) => {
-          console.error(`SSE error for order ${orderId}:`, error);
-          // Don't close on error, let it reconnect automatically
-        };
-      } catch (error) {
-        console.error(`Failed to create SSE connection for order ${orderId}:`, error);
-      }
-    });
-
-    // Cleanup on unmount or when orders change
-    return () => {
-      eventSources.forEach((eventSource, orderId) => {
-        eventSource.close();
-        console.log(`Closed SSE connection for order ${orderId}`);
-      });
-      eventSources.clear();
-    };
-  }, [orders.map(o => o.orderId || o.id || o._id).join(','), selectedOrder]); // Re-run when order IDs change
 
   // Note: dateFilter is applied client-side, no need to reload from server
 
