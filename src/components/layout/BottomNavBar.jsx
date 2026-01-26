@@ -13,8 +13,8 @@ const BottomNavBar = () => {
         {
             id: 'explore',
             path: '/menu',
-            icon: 'search',
-            label: 'Explore',
+            icon: 'restaurant_menu',
+            label: 'Menu',
         },
         {
             id: 'orders',

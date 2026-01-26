@@ -85,7 +85,7 @@ const MenuItemCard = ({ item, onAddToCart }) => {
                     <PriceDisplay
                         price={item.price}
                         discount={item.discount || 0}
-                        size="base"
+                        size="sm"
                     />
                     {quantity > 0 ? (
                         <div className="flex items-center gap-2 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded-lg border border-gray-200 dark:border-gray-700">

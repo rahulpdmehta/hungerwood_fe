@@ -92,64 +92,82 @@ const Cart = () => {
           </div>
 
           {/* Cart Items */}
-          {items.map((item) => (
-            <div
-              key={item.id || item._id}
-              className="flex items-center gap-4 bg-white dark:bg-[#2d221a] rounded-xl p-2 mb-2 border-2 border-gray-200 dark:border-gray-700 shadow-md last:mb-0"
-            >
-              <div className="flex items-center gap-4 flex-1">
+          {items.map((item) => {
+            // Handle both API format (isVeg) and fallback format (veg)
+            const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
+            
+            return (
+              <div
+                key={item.id || item._id}
+                className="flex items-center gap-2 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-md border-2 border-gray-200 dark:border-gray-700 mb-2 last:mb-0"
+              >
                 <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover rounded-lg size-20 border-2 border-gray-200 dark:border-gray-700 shadow-md"
+                  className="bg-center bg-no-repeat aspect-square bg-cover w-[110px] h-[110px] shrink-0"
                   style={{ backgroundImage: `url("${item.image}")` }}
                 ></div>
-                <div className="flex flex-col justify-center">
-                  <div className="flex items-center gap-1 mb-1">
-                    {/* <span className="material-symbols-outlined text-green-600 text-xs">
-                      fiber_manual_record
-                    </span> */}
-                    <p className="text-[#181411] dark:text-white text-base font-bold leading-tight">
-                      {item.name}
-                    </p>
+                <div className="flex flex-col flex-1 justify-between min-h-[110px] p-2">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-1 mb-1 relative">
+                      {isVeg !== undefined && (
+                        <span
+                          className={`w-3 h-3 border absolute top-0 right-0 z-10 ${isVeg ? 'border-green-500' : 'border-red-500'
+                            } p-[1px] flex items-center justify-center`}
+                        >
+                          <span
+                            className={`w-full h-full rounded-full ${isVeg ? 'bg-green-500' : 'bg-red-500'}`}
+                          ></span>
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[#181411] dark:text-white text-base font-bold leading-tight pr-6 mb-2">{item.name}</p>
+                    {/* {item.description && (
+                      <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-2 mt-1">
+                        {item.description}
+                      </p>
+                    )} */}
+                     <PriceDisplay
+                      price={item.price}
+                      discount={item.discount || 0}
+                      size="sm"
+                    />
                   </div>
-                  <PriceDisplay
-                    price={item.price}
-                    discount={item.discount || 0}
-                    size="sm"
-                  />
+                  <div className="flex items-center justify-between mt-2">
+                   <p className="total-price text-sm font-bold">Price: ₹{Math.round((item.price - (item.price*item.discount/100)) * item.quantity)}</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded-lg border border-gray-200 dark:border-gray-700">
+                        <button
+                          onClick={() => {
+                            if (item.quantity === 1) {
+                              removeItem(item.id);
+                            } else {
+                              decrementQuantity(item.id);
+                            }
+                          }}
+                          className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-l-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                        >
+                          -
+                        </button>
+                        <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
+                        <button
+                          onClick={() => incrementQuantity(item.id)}
+                          className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-r-lg text-[#7f4f13] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => removeItem(item.id)}
+                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800 shrink-0"
+                        title="Delete item"
+                      >
+                        <span className="material-symbols-outlined text-lg">delete</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="shrink-0 flex items-center gap-2">
-                <div className="flex items-center gap-3 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 p-1 rounded-full px-3 border-2 border-gray-200 dark:border-gray-700 shadow-sm">
-                  <button
-                    onClick={() => {
-                      if (item.quantity === 1) {
-                        removeItem(item.id);
-                      } else {
-                        decrementQuantity(item.id);
-                      }
-                    }}
-                    className="text-base font-bold flex h-6 w-6 items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-                  >
-                    -
-                  </button>
-                  <span className="text-sm font-bold w-4 text-center">{item.quantity}</span>
-                  <button
-                    onClick={() => incrementQuantity(item.id)}
-                    className="text-base font-bold flex h-6 w-6 items-center justify-center rounded-full text-[#7f4f13] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-                <button
-                  onClick={() => removeItem(item.id)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800"
-                  title="Delete item"
-                >
-                  <span className="material-symbols-outlined text-lg">delete</span>
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Cooking Instructions */}

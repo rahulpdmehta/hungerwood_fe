@@ -6,7 +6,7 @@
 const PriceDisplay = ({
     price,
     discount = 0,
-    size = 'base',
+    size = 'sm',
     className = ''
 }) => {
     const hasDiscount = discount > 0;
@@ -42,7 +42,7 @@ const PriceDisplay = ({
                         ₹{price}
                     </span>
                     {/* Discount Badge */}
-                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[10px] font-bold px-1.5 py-0.5 rounded">
+                    <span className="bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 text-[9px] font-bold px-1.5 py-0.5 rounded">
                         {discount}% OFF
                     </span>
                 </>

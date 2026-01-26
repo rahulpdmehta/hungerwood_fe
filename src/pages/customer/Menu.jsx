@@ -336,7 +336,7 @@ const Menu = () => {
           <div className="px-4 pt-4">
             <h3 className="text-gray-900 dark:text-white text-base font-bold mb-3">Today's Specials</h3>
             <div className="flex w-full overflow-x-auto scrollbar-hide py-1">
-              <div className="flex flex-row items-start justify-start gap-4">
+              <div className="flex flex-row items-start justify-start gap-2">
                 {specials.map((special, index) => (
                   <SpecialItemCard key={special.id || special._id || `special-${index}`} item={special} />
                 ))}
