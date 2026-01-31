@@ -48,6 +48,14 @@ const Profile = () => {
             iconBg: 'bg-[#f4f2f0] dark:bg-[#211811]',
             iconColor: 'text-[#887263]',
         },
+        {
+            id: 'privacy',
+            icon: 'privacy_tip',
+            label: 'Privacy Policy',
+            path: '/privacy-policy',
+            iconBg: 'bg-[#f4f2f0] dark:bg-[#211811]',
+            iconColor: 'text-[#887263]',
+        },
     ];
 
     return (

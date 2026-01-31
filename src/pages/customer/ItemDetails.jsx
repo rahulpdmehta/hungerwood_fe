@@ -280,13 +280,13 @@ const ItemDetails = () => {
             View Cart ({cartQuantity})
           </button>
         ) : (
-          <button
-            onClick={handleAddToCart}
-            className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
-          >
-            <span className="material-symbols-outlined">shopping_basket</span>
-            Add to Cart
-          </button>
+        <button
+          onClick={handleAddToCart}
+          className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
+        >
+          <span className="material-symbols-outlined">shopping_basket</span>
+          Add to Cart
+        </button>
         )}
       </div>
     </div>

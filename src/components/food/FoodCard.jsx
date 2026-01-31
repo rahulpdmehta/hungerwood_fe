@@ -103,14 +103,14 @@ const FoodCard = ({ item }) => {
                 </button>
               </div>
             ) : (
-              <Button
-                onClick={handleAddToCart}
-                variant="primary"
-                size="sm"
-                disabled={!item.available}
-              >
+            <Button
+              onClick={handleAddToCart}
+              variant="primary"
+              size="sm"
+              disabled={!item.available}
+            >
                 Add
-              </Button>
+            </Button>
             )}
           </div>
         </div>

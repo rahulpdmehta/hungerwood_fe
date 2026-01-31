@@ -123,15 +123,15 @@ const BestSellersSection = () => {
                           </button>
                         </div>
                       ) : (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleAddToCart(item);
-                          }}
-                          className="bg-[#7f4f13]/10 text-[#7f4f13] px-3 py-1 rounded text-xs font-extrabold border border-[#7f4f13]/20 hover:bg-[#7f4f13] hover:text-white transition-colors"
-                        >
-                          ADD
-                        </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(item);
+                      }}
+                      className="bg-[#7f4f13]/10 text-[#7f4f13] px-3 py-1 rounded text-xs font-extrabold border border-[#7f4f13]/20 hover:bg-[#7f4f13] hover:text-white transition-colors"
+                    >
+                      ADD
+                    </button>
                       );
                     })()}
                   </div>

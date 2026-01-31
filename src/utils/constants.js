@@ -1,7 +1,7 @@
 // API Base URL - Use environment variable or fallback to default
 // For local development: http://localhost:5001/api
 // For production: Set VITE_API_URL in Vercel environment variables
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://hungerwood-be.vercel.app/api';
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
 export const APP_NAME = import.meta.env.VITE_APP_NAME || 'HungerWood';
 
 export const USER_ROLES = {

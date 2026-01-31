@@ -35,14 +35,14 @@ const CategoryTabsBar = ({ categories, activeCategory, onCategoryChange }) => {
                         (typeof category === 'string' && activeCategory === category);
                     
                     return (
-                        <button
+                    <button
                             key={categoryName}
                             onClick={() => onCategoryChange(categoryName)}
                             className={`flex flex-col items-center justify-center gap-1 border-b-2 ${isActive
-                                ? 'border-[#7f4f13] text-[#7f4f13]'
-                                : 'border-transparent text-gray-500 dark:text-gray-400'
-                                } pb-3 pt-3 shrink-0 transition-colors`}
-                        >
+                            ? 'border-[#7f4f13] text-[#7f4f13]'
+                            : 'border-transparent text-gray-500 dark:text-gray-400'
+                            } pb-3 pt-3 shrink-0 transition-colors`}
+                    >
                             <span 
                                 className={`material-symbols-outlined text-2xl ${isActive ? 'text-[#7f4f13]' : 'text-gray-500 dark:text-gray-400'}`}
                                 style={isActive ? { fontVariationSettings: '"FILL" 1' } : {}}
@@ -50,7 +50,7 @@ const CategoryTabsBar = ({ categories, activeCategory, onCategoryChange }) => {
                                 {categoryIcon}
                             </span>
                             <p className="text-xs font-bold leading-normal whitespace-nowrap">{categoryName}</p>
-                        </button>
+                    </button>
                     );
                 })}
             </div>

@@ -19,6 +19,9 @@ import Addresses from '@pages/customer/Addresses';
 import EditProfile from '@pages/customer/EditProfile';
 import Wallet from '@pages/customer/Wallet';
 import Referral from '@pages/customer/Referral';
+import PrivacyPolicy from '@pages/customer/PrivacyPolicy';
+import Help from '@pages/customer/Help';
+import Settings from '@pages/customer/Settings';
 
 const AppRoutes = () => {
   return (
@@ -100,6 +103,30 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <Referral />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/privacy-policy"
+        element={
+          <ProtectedRoute>
+            <PrivacyPolicy />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/help"
+        element={
+          <ProtectedRoute>
+            <Help />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <Settings />
           </ProtectedRoute>
         }
       />

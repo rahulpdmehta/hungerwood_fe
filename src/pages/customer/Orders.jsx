@@ -369,28 +369,26 @@ const Orders = () => {
             )}
           </div>
         ) : (
-          <div className="space-y-1 mt-2">
+          <div className="space-y-2 mt-2 px-4">
             {ordersToDisplay.map((order) => (
-              <div key={order.orderId || order.id} className="px-4 py-2">
+              <div
+                key={order.orderId || order.id}
+                onClick={() => handleOrderClick(order)}
+                className="flex items-center gap-2 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-md border-2 border-gray-200 dark:border-gray-700 cursor-pointer hover:shadow-lg transition-shadow"
+              >
+                {/* Order Image - Left Column */}
                 <div
-                  onClick={() => handleOrderClick(order)}
-                  className="flex items-start gap-4 rounded-xl shadow-md border-2 border-[#e5e0dc] dark:border-[#3d2e24] bg-white dark:bg-[#2d2118] overflow-hidden cursor-pointer hover:shadow-lg transition-shadow p-4"
-                >
-                  {/* Order Image - Left Column */}
-                  <div className="w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-800">
-                    <img
-                      src={order.image || order.items?.[0]?.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80'}
-                      alt={order.items?.[0]?.name || 'Order'}
-                      className="w-full h-full object-cover"    
-                    />
-                  </div>  
+                  className="bg-center bg-no-repeat aspect-square bg-cover w-[110px] h-[110px] shrink-0"
+                  style={{ backgroundImage: `url("${order.image || order.items?.[0]?.image || 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80'}")` }}
+                ></div>
 
-                  {/* Order Details - Right Column */}
-                  <div className="flex-1 flex flex-col gap-2 min-w-0">
+                {/* Order Details - Right Column */}
+                <div className="flex flex-col flex-1 justify-between min-h-[110px] p-2">
+                  <div className="flex-1">
                     {/* Status and Order ID - Top Row */}
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-2 mb-1 relative">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ${order.status?.toLowerCase() === 'completed' || order.status?.toLowerCase() === 'delivered'
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0 ${order.status?.toLowerCase() === 'completed' || order.status?.toLowerCase() === 'delivered'
                           ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                           : order.status?.toLowerCase() === 'cancelled'
                             ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
@@ -399,20 +397,15 @@ const Orders = () => {
                       >
                         {order.status}
                       </span>
-                      <span className="text-[#887263] dark:text-[#b09d90] text-xs font-medium ml-auto">
+                      <span className="text-[#887263] dark:text-[#b09d90] text-[10px] font-medium ml-auto">
                         #{order.orderId || order.orderNumber || order.id}
                       </span>
                     </div>
 
-                    {/* Restaurant Name */}
-                    {/* <p className="text-[#181411] dark:text-white text-base font-bold leading-tight">
-                      {order.restaurant || 'HungerWood Gaya'}
-                    </p> */}
-
                     {/* Menu Items - Truncated */}
                     <div className="flex-1">
                       {Array.isArray(order.items) && order.items.length > 0 ? (
-                        <p className="text-[#887263] dark:text-[#b09d90] text-sm font-normal line-clamp-2">
+                        <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-2 mt-1">
                           {order.items.slice(0, 2).map((item, idx) => (
                             <span key={idx}>
                               {item.quantity}x {item.name || 'Menu Item'}
@@ -422,23 +415,22 @@ const Orders = () => {
                           {order.items.length > 2 && '...'}
                         </p>
                       ) : (
-                        <p className="text-[#887263] dark:text-[#b09d90] text-sm font-normal">
+                        <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-2 mt-1">
                           {typeof order.items === 'string' ? order.items : formatOrderItems(order.items)}
                         </p>
                       )}
                     </div>
+                  </div>
 
-                    {/* Date, Price and Reorder Button - Bottom Row */}
-                    <div className="flex items-center justify-between gap-3 pt-0 border-t border-gray-100 dark:border-gray-800">
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-[#887263] dark:text-[#b09d90] text-xs font-normal">
-                          {order.createdAt ? formatDate(order.createdAt, 'D MMM, YYYY') : order.date || 'N/A'}
-                        </p>
-                        <p className="text-[#7f4f13] text-base font-bold leading-normal">
-                          ₹{order.totalAmount || order.total}
-                        </p>
-                      </div>
-                      
+                  {/* Date and Price - Bottom Row */}
+                  <div className="flex items-center justify-between mt-2">
+                    <div className="flex flex-col gap-0.5 min-w-0">
+                      <p className="text-[#887263] dark:text-gray-400 text-[10px] font-normal">
+                        {order.createdAt ? formatDate(order.createdAt, 'D MMM, YYYY') : order.date || 'N/A'}
+                      </p>
+                      <p className="text-[#7f4f13] text-base font-bold leading-normal">
+                        ₹{order.totalAmount || order.total}
+                      </p>
                     </div>
                   </div>
                 </div>
