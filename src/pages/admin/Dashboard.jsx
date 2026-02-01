@@ -13,11 +13,14 @@ import {
   Wallet,
   TrendingDown,
   ArrowRight,
-  Calendar
+  Calendar,
+  Power
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { toast } from 'react-hot-toast';
 import AdminLayout from '../../components/admin/AdminLayout';
-import { dashboardService } from '../../services/admin.service';
+import { dashboardService, restaurantService } from '../../services/admin.service';
+import useRestaurantStore from '../../store/useRestaurantStore';
 import { formatChartDate } from '../../utils/dateFormatter';
 
 const COLORS = ['#7f4f13', '#f97316', '#fb923c', '#fdba74', '#fed7aa'];
@@ -33,16 +36,20 @@ const DATE_FILTERS = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { isOpen, closingMessage, fetchAdminStatus, updateStatus } = useRestaurantStore();
   const [stats, setStats] = useState(null);
   const [ordersAnalytics, setOrdersAnalytics] = useState(null);
   const [menuAnalytics, setMenuAnalytics] = useState(null);
   const [customerAnalytics, setCustomerAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [dateFilter, setDateFilter] = useState(30);
+  const [showCloseModal, setShowCloseModal] = useState(false);
+  const [closingMessageInput, setClosingMessageInput] = useState('');
 
   useEffect(() => {
     loadDashboardData();
-  }, [dateFilter]);
+    fetchAdminStatus();
+  }, [dateFilter, fetchAdminStatus]);
 
   const loadDashboardData = async () => {
     try {
@@ -137,6 +144,38 @@ const Dashboard = () => {
     return filter ? filter.label : 'Select Period';
   };
 
+  const handleToggleStatus = async () => {
+    if (isOpen) {
+      // Currently open - show modal to close
+      setShowCloseModal(true);
+    } else {
+      // Currently closed - open restaurant
+      const result = await updateStatus(true, '');
+      if (result.success) {
+        toast.success('Restaurant is now open');
+        setShowCloseModal(false);
+        setClosingMessageInput('');
+        // Refresh status to ensure UI is in sync
+        await fetchAdminStatus();
+      } else {
+        toast.error(result.error || 'Failed to update status');
+      }
+    }
+  };
+
+  const handleCloseRestaurant = async () => {
+    const result = await updateStatus(false, closingMessageInput);
+    if (result.success) {
+      toast.success('Restaurant is now closed');
+      setShowCloseModal(false);
+      setClosingMessageInput('');
+      // Refresh status to ensure UI is in sync
+      await fetchAdminStatus();
+    } else {
+      toast.error(result.error || 'Failed to update status');
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -164,6 +203,36 @@ const Dashboard = () => {
                 </option>
               ))}
             </select>
+          </div>
+        </div>
+
+        {/* Restaurant Status Card */}
+        <div className={`bg-white rounded-lg shadow-sm p-6 border-2 ${isOpen ? 'border-green-200' : 'border-red-200'}`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`p-3 rounded-lg ${isOpen ? 'bg-green-100' : 'bg-red-100'}`}>
+                <Power size={24} className={isOpen ? 'text-green-600' : 'text-red-600'} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Restaurant Status</h3>
+                <p className={`text-sm font-medium ${isOpen ? 'text-green-600' : 'text-red-600'}`}>
+                  {isOpen ? 'Currently Open' : 'Currently Closed'}
+                </p>
+                {!isOpen && closingMessage && (
+                  <p className="text-sm text-gray-600 mt-1">{closingMessage}</p>
+                )}
+              </div>
+            </div>
+            <button
+              onClick={handleToggleStatus}
+              className={`px-6 py-2 rounded-lg font-semibold transition-colors ${
+                isOpen
+                  ? 'bg-red-600 hover:bg-red-700 text-white'
+                  : 'bg-green-600 hover:bg-green-700 text-white'
+              }`}
+            >
+              {isOpen ? 'Close Restaurant' : 'Open Restaurant'}
+            </button>
           </div>
         </div>
 
@@ -392,6 +461,44 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Close Restaurant Modal */}
+      {showCloseModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Close Restaurant</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              Add an optional message to display to customers when the restaurant is closed.
+            </p>
+            <textarea
+              value={closingMessageInput}
+              onChange={(e) => setClosingMessageInput(e.target.value)}
+              placeholder="e.g., Closed for maintenance. Will reopen at 9 AM tomorrow."
+              maxLength={200}
+              rows={3}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent mb-4"
+            />
+            <p className="text-xs text-gray-500 mb-4">{closingMessageInput.length}/200 characters</p>
+            <div className="flex items-center justify-end gap-3">
+              <button
+                onClick={() => {
+                  setShowCloseModal(false);
+                  setClosingMessageInput('');
+                }}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleCloseRestaurant}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-lg transition-colors"
+              >
+                Close Restaurant
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 };

@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useVersionChecker } from '@hooks/useVersionChecker';
 import AppRoutes from '@/routes/AppRoutes';
 import SplashScreen from '@components/common/SplashScreen';
+import RestaurantStatusBanner from '@components/common/RestaurantStatusBanner';
 import useAuthStore from '@store/useAuthStore';
+import useRestaurantStore from '@store/useRestaurantStore';
 import { AnimationProvider } from '@/contexts/AnimationContext';
 import AnimationContainer from '@components/animations/AnimationContainer';
 import { menuService } from '@services/menu.service';
@@ -12,13 +14,27 @@ import { menuKeys } from '@utils/queryKeys';
 
 function AppContent() {
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const { isAuthenticated } = useAuthStore();
+  const { isOpen, closingMessage, fetchStatus } = useRestaurantStore();
   const [showSplash, setShowSplash] = useState(true);
   const [isReady, setIsReady] = useState(false);
   
   // Version checker - runs globally to detect data changes and invalidate cache
   useVersionChecker();
+
+  // Fetch restaurant status on app load
+  useEffect(() => {
+    if (isReady) {
+      fetchStatus();
+      // Refresh status every 30 seconds
+      const interval = setInterval(() => {
+        fetchStatus();
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isReady, fetchStatus]);
 
   useEffect(() => {
     // Check if splash has been shown in this session
@@ -95,8 +111,15 @@ function AppContent() {
     return null;
   }
 
+  // Check if we're on an admin route
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
     <div className="animate-fadeIn">
+      {/* Show banner only on customer routes when restaurant is closed */}
+      {/* {!isAdminRoute && !isOpen && (
+        <RestaurantStatusBanner closingMessage={closingMessage} />
+      )} */}
       <AppRoutes />
     </div>
   );

@@ -9,6 +9,7 @@ import AdminOrders from '@pages/admin/Orders';
 import AdminUsers from '@pages/admin/Users';
 import AdminBanners from '@pages/admin/Banners';
 import Reports from '@pages/admin/Reports';
+import Settings from '@pages/admin/Settings';
 
 const AdminRoutes = () => {
   return (
@@ -74,6 +75,14 @@ const AdminRoutes = () => {
         element={
           <ProtectedRoute requireAdmin>
             <Reports />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute requireAdmin>
+            <Settings />
           </ProtectedRoute>
         }
       />

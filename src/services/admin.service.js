@@ -259,10 +259,33 @@ export const dashboardService = {
   }
 };
 
+// ==================== RESTAURANT MANAGEMENT ====================
+
+export const restaurantService = {
+  // Get restaurant status (admin)
+  getStatus: async () => {
+    const response = await api.get('/admin/restaurant/status');
+    return response.data;
+  },
+
+  // Update restaurant status (admin)
+  updateStatus: async (data) => {
+    const response = await api.patch('/admin/restaurant/status', data);
+    return response.data;
+  },
+
+  // Get restaurant status (public)
+  getPublicStatus: async () => {
+    const response = await api.get('/restaurant/status');
+    return response.data;
+  }
+};
+
 export default {
   category: categoryService,
   menuItem: menuItemService,
   order: adminOrderService,
   user: adminUserService,
-  dashboard: dashboardService
+  dashboard: dashboardService,
+  restaurant: restaurantService
 };

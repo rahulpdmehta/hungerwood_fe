@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef, useCallback } from 'react';
 import useCartStore from '@store/useCartStore';
 import useWalletStore from '@store/useWalletStore';
+import useRestaurantStore from '@store/useRestaurantStore';
 import BackButton from '@components/common/BackButton';
 import { orderService } from '@services/order.service';
 import { addressService } from '@services/address.service';
@@ -14,6 +15,7 @@ const Checkout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { items, totalPrice, clearCart } = useCartStore();
+  const { isOpen, closingMessage } = useRestaurantStore();
   const { animations } = useAnimation();
 
   // Get data from cart page
@@ -50,6 +52,29 @@ const Checkout = () => {
     loadWalletBalance();
   }, []);
 
+  // Handle address selection when returning from addresses page
+  useEffect(() => {
+    // Check if we have a selected address from location state (when returning from addresses page)
+    if (location.state?.selectedAddress) {
+      const selectedAddr = location.state.selectedAddress;
+      console.log('📍 Selected address from location.state:', selectedAddr);
+      // Reload addresses first to ensure we have the latest data, but skip setting default
+      addressService.getAddresses().then((response) => {
+        setAddresses(response.data);
+        // Find the address by ID to ensure we have the latest version, or use the selected one
+        const updatedAddress = response.data.find(addr => addr.id === selectedAddr.id) || selectedAddr;
+        console.log('✅ Setting selected address:', updatedAddress);
+        setSelectedAddress(updatedAddress);
+      }).catch((error) => {
+        console.error('Failed to reload addresses:', error);
+        // If reload fails, still use the selected address from location state
+        setSelectedAddress(selectedAddr);
+      });
+      // Clear the state to avoid stale data on next render
+      window.history.replaceState({}, document.title, location.pathname);
+    }
+  }, [location.state?.selectedAddress]);
+
   const loadWalletBalance = async () => {
     try {
       console.log('🔄 Loading wallet balance for checkout (force refresh)...');
@@ -71,17 +96,19 @@ const Checkout = () => {
     }
   }, [items]);
 
-  const loadAddresses = async () => {
+  const loadAddresses = async (skipSetDefault = false) => {
     setLoadingAddresses(true);
     try {
       const response = await addressService.getAddresses();
       setAddresses(response.data);
-      // Set default address as selected
-      const defaultAddress = response.data.find(addr => addr.isDefault);
-      if (defaultAddress) {
-        setSelectedAddress(defaultAddress);
-      } else if (response.data.length > 0) {
-        setSelectedAddress(response.data[0]);
+      // Only set default address if not skipping (i.e., on initial load)
+      if (!skipSetDefault) {
+        const defaultAddress = response.data.find(addr => addr.isDefault);
+        if (defaultAddress) {
+          setSelectedAddress(defaultAddress);
+        } else if (response.data.length > 0) {
+          setSelectedAddress(response.data[0]);
+        }
       }
     } catch (error) {
       console.error('Failed to load addresses:', error);
@@ -95,8 +122,13 @@ const Checkout = () => {
   };
 
   const handleChangeAddress = () => {
-    // Navigate to address management page
-    navigate('/addresses');
+    // Navigate to address management page with current checkout context
+    navigate('/addresses', {
+      state: {
+        returnTo: '/checkout',
+        fromCheckout: true
+      }
+    });
   };
 
   const handleWalletChange = (amount) => {
@@ -105,6 +137,12 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = useCallback(async () => {
+    // Check restaurant status - block orders if closed
+    if (!isOpen) {
+      alert(closingMessage || 'Restaurant is currently closed. Please try again later.');
+      return;
+    }
+
     // Prevent duplicate orders - check if already processing
     if (isProcessingRef.current) {
       console.log('⏸️ Order placement already in progress, ignoring duplicate click');
@@ -240,12 +278,17 @@ const Checkout = () => {
       }, 5500); // Wait for animation to complete (5 seconds animation + 0.5s buffer)
     } catch (error) {
       console.error('Failed to place order:', error);
-      alert(error.message || 'Failed to place order. Please try again.');
+      // Check if error is due to restaurant being closed
+      if (error.response?.status === 403 || error.message?.includes('closed')) {
+        alert(error.response?.data?.message || error.message || 'Restaurant is currently closed. Please try again later.');
+      } else {
+        alert(error.message || 'Failed to place order. Please try again.');
+      }
       // Reset flags on error
       setIsPlacingOrder(false);
       isProcessingRef.current = false;
     }
-  }, [items, orderType, selectedAddress, paymentMethod, cookingInstructions, itemTotal, deliveryFee, taxes, totalPayable, walletAmount, navigate, animations, clearCart]);
+  }, [items, orderType, selectedAddress, paymentMethod, cookingInstructions, itemTotal, deliveryFee, taxes, totalPayable, walletAmount, navigate, animations, clearCart, isOpen, closingMessage]);
 
   // Redirect to cart if empty (but not when placing an order)
   if (items.length === 0 && !isPlacingOrder) {
@@ -260,6 +303,7 @@ const Checkout = () => {
         <BackButton
           className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
           variant="minimal"
+          onClick={() => navigate('/cart')}
         />
         <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
           Checkout
@@ -533,9 +577,13 @@ const Checkout = () => {
         </div>
         <button
           onClick={handlePlaceOrder}
-          disabled={isPlacingOrder}
-          className={`w-full bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 ${
-            isPlacingOrder ? 'opacity-50 cursor-not-allowed' : ''
+          disabled={isPlacingOrder || !isOpen}
+          className={`w-full font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 ${
+            !isOpen
+              ? 'bg-gray-400 text-white cursor-not-allowed opacity-60'
+              : isPlacingOrder
+              ? 'bg-[#7f4f13] opacity-50 cursor-not-allowed text-white'
+              : 'bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white'
           }`}
         >
           {isPlacingOrder ? (

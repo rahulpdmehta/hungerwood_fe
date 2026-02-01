@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useCartStore from '@store/useCartStore';
+import useRestaurantStore from '@store/useRestaurantStore';
 import BackButton from '@components/common/BackButton';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { BILLING } from '@utils/constants';
@@ -8,6 +9,7 @@ import { BILLING } from '@utils/constants';
 const Cart = () => {
   const navigate = useNavigate();
   const { items, totalItems, totalPrice, incrementQuantity, decrementQuantity, removeItem } = useCartStore();
+  const { isOpen, closingMessage } = useRestaurantStore();
   const [cookingInstructions, setCookingInstructions] = useState('');
 
   // Calculate bill details
@@ -27,6 +29,12 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
+    // Block checkout if restaurant is closed
+    if (!isOpen) {
+      alert(closingMessage || 'Restaurant is currently closed. Please try again later.');
+      return;
+    }
+    
     // In real app, pass cart data and cooking instructions
     navigate('/checkout', {
       state: {
@@ -222,6 +230,21 @@ const Cart = () => {
           </div>
         </div>
 
+        {/* Restaurant Closed Warning */}
+        {!isOpen && (
+          <div className="mx-4 mt-6 p-4 bg-red-50 dark:bg-red-900/10 rounded-xl border-2 border-red-200 dark:border-red-800 shadow-md">
+            <div className="flex gap-3">
+              <span className="material-symbols-outlined text-red-600">info</span>
+              <div>
+                <p className="text-xs font-bold text-red-600 mb-1">Restaurant Closed</p>
+                <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed">
+                  {closingMessage || 'Restaurant is currently closed. Orders cannot be placed at this time.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Cancellation Policy */}
         <div className="mx-4 mt-6 p-4 bg-green-50 dark:bg-green-900/10 rounded-xl border-2 border-green-200 dark:border-green-800 shadow-md">
           <div className="flex gap-3">
@@ -247,10 +270,15 @@ const Cart = () => {
           </div>
           <button
             onClick={handleCheckout}
-            className="flex-1 bg-[#7f4f13] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-[#7f4f13]/90 active:scale-95 transition-all shadow-lg shadow-[#7f4f13]/25"
+            disabled={!isOpen}
+            className={`flex-1 font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg ${
+              isOpen
+                ? 'bg-[#7f4f13] text-white hover:bg-[#7f4f13]/90 active:scale-95 shadow-[#7f4f13]/25'
+                : 'bg-gray-400 text-white cursor-not-allowed opacity-60'
+            }`}
           >
-            <span>Proceed to Checkout</span>
-            <span className="material-symbols-outlined">chevron_right</span>
+            <span>{isOpen ? 'Proceed to Checkout' : 'Restaurant Closed'}</span>
+            {isOpen && <span className="material-symbols-outlined">chevron_right</span>}
           </button>
         </div>
       </div>

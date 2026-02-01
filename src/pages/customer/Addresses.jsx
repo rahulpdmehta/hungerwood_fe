@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import BackButton from '@components/common/BackButton';
 import Button from '@components/common/Button';
 import { addressService } from '@services/address.service';
 
 const Addresses = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -21,6 +22,8 @@ const Addresses = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const MAX_ADDRESSES = 5;
+  const fromCheckout = location.state?.fromCheckout || false;
+  const returnTo = location.state?.returnTo || '/profile';
 
   useEffect(() => {
     loadAddresses();
@@ -155,9 +158,9 @@ const Addresses = () => {
       {/* Header */}
       <div className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="flex items-center px-4 py-4">
-          <BackButton to="/profile" />
+          <BackButton to={returnTo} />
           <h1 className="flex-1 text-center text-xl font-semibold text-text-primary pr-10">
-            My Addresses
+            {fromCheckout ? 'Select Address' : 'My Addresses'}
           </h1>
         </div>
       </div>
@@ -319,7 +322,15 @@ const Addresses = () => {
                 key={address.id}
                 className={`bg-white rounded-2xl shadow-md border-2 p-4 ${
                   address.isDefault ? 'border-primary/50' : 'border-gray-100'
-                }`}
+                } ${fromCheckout ? 'cursor-pointer hover:border-primary transition-colors' : ''}`}
+                onClick={fromCheckout ? () => {
+                  // Navigate back to checkout with selected address
+                  navigate(returnTo, {
+                    state: {
+                      selectedAddress: address
+                    }
+                  });
+                } : undefined}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-3">
@@ -336,23 +347,42 @@ const Addresses = () => {
                   </div>
                   
                   {/* Actions */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(address)}
-                      className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-text-secondary text-xl">
-                        edit
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => handleDelete(address.id)}
-                      className="p-2 hover:bg-danger/10 rounded-lg transition-colors"
-                    >
-                      <span className="material-symbols-outlined text-danger text-xl">
-                        delete
-                      </span>
-                    </button>
+                  <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
+                    {fromCheckout ? (
+                      <button
+                        className="p-2 hover:bg-primary/10 rounded-lg transition-colors"
+                        onClick={() => {
+                          navigate(returnTo, {
+                            state: {
+                              selectedAddress: address
+                            }
+                          });
+                        }}
+                      >
+                        <span className="material-symbols-outlined text-primary text-xl">
+                          check_circle
+                        </span>
+                      </button>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => handleEdit(address)}
+                          className="p-2 hover:bg-gray-200 rounded-lg transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-text-secondary text-xl">
+                            edit
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => handleDelete(address.id)}
+                          className="p-2 hover:bg-danger/10 rounded-lg transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-danger text-xl">
+                            delete
+                          </span>
+                        </button>
+                      </>
+                    )}
                   </div>
                 </div>
 
@@ -362,13 +392,19 @@ const Addresses = () => {
                 </p>
 
                 {/* Set Default Button */}
-                {!address.isDefault && (
+                {!address.isDefault && !fromCheckout && (
                   <button
-                    onClick={() => handleSetDefault(address.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSetDefault(address.id);
+                    }}
                     className="text-primary text-sm font-semibold hover:underline"
                   >
                     Set as Default
                   </button>
+                )}
+                {fromCheckout && (
+                  <p className="text-primary text-sm font-semibold">Tap to select</p>
                 )}
               </div>
             ))}

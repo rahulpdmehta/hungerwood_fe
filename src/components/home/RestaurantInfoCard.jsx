@@ -1,4 +1,8 @@
+import useRestaurantStore from '@store/useRestaurantStore';
+
 const RestaurantInfoCard = () => {
+  const { isOpen } = useRestaurantStore();
+
   return (
     <div className="px-4 mt-4">
       <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-lg border-2 border-gray-200 dark:border-zinc-700">
@@ -19,8 +23,12 @@ const RestaurantInfoCard = () => {
         </div>
         <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-50 dark:border-zinc-700">
           <div className="flex items-center gap-1">
-            <span className="material-symbols-outlined text-green-500 text-lg">schedule</span>
-            <span className="text-xs font-bold text-green-600">Open Now</span>
+            <span className={`material-symbols-outlined text-lg ${isOpen ? 'text-green-500' : 'text-red-500'}`}>
+              {isOpen ? 'schedule' : 'block'}
+            </span>
+            <span className={`text-xs font-bold ${isOpen ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+              {isOpen ? 'Open Now' : 'Closed'}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <span className="material-symbols-outlined text-[#7f4f13] text-lg">payments</span>
