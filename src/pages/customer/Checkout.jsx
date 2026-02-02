@@ -3,9 +3,11 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import useCartStore from '@store/useCartStore';
 import useWalletStore from '@store/useWalletStore';
 import useRestaurantStore from '@store/useRestaurantStore';
+import useAuthStore from '@store/useAuthStore';
 import BackButton from '@components/common/BackButton';
 import { orderService } from '@services/order.service';
 import { addressService } from '@services/address.service';
+import { paymentService } from '@services/payment.service';
 import WalletSection from '@components/checkout/WalletSection';
 import { useAnimation } from '@/contexts/AnimationContext';
 import PriceDisplay from '@components/common/PriceDisplay';
@@ -136,6 +138,114 @@ const Checkout = () => {
     console.log('Wallet amount changed:', amount);
   };
 
+  // Load Razorpay and handle payment
+  const loadRazorpay = async (amount, orderData) => {
+    try {
+      // Check if Razorpay is loaded
+      if (!window.Razorpay) {
+        throw new Error('Razorpay SDK not loaded. Please refresh the page and try again.');
+      }
+
+      // Check if Razorpay key is configured
+      const razorpayKey = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      if (!razorpayKey) {
+        throw new Error('Razorpay key not configured. Please contact support.');
+      }
+
+      // Step 1: Create order from backend
+      const res = await paymentService.createRazorpayOrder(amount, orderData);
+      const razorpayOrder = res.data || res;
+
+      if (!razorpayOrder.id) {
+        throw new Error('Failed to create Razorpay order');
+      }
+
+      // Get user data from auth store
+      const user = useAuthStore.getState().user;
+
+      // Step 2: Open Razorpay
+      const options = {
+        key: razorpayKey, // PUBLIC KEY
+        amount: razorpayOrder.amount,
+        currency: 'INR',
+        name: 'HungerWood',
+        description: 'Food Order Payment',
+        order_id: razorpayOrder.id,
+        handler: async function (response) {
+          try {
+            setIsPlacingOrder(true);
+            // Step 3: Verify payment and create order
+            const verifyRes = await paymentService.verifyPayment(response, orderData);
+            
+            if (verifyRes.success || verifyRes.data) {
+              const orderId = verifyRes.data?.orderId || verifyRes.data?.order?.orderId;
+              
+              if (!orderId) {
+                throw new Error('Order ID not found in response');
+              }
+              
+              // 🎉 Trigger order placed animation and sound
+              animations.orderPlaced({
+                orderNumber: orderId,
+                totalAmount: amount,
+                orderType,
+              });
+
+              // Navigate to order tracking page
+              setTimeout(() => {
+                navigate(`/orders/${orderId}`, {
+                  state: {
+                    order: verifyRes.data?.order || verifyRes.data,
+                    orderPlaced: true,
+                    orderType,
+                    paymentMethod: 'RAZORPAY',
+                    totalPayable: amount,
+                    cookingInstructions,
+                  },
+                  replace: true,
+                });
+
+                // Clear cart after navigation
+                clearCart();
+                
+                // Reset processing flag
+                isProcessingRef.current = false;
+                setIsPlacingOrder(false);
+              }, 5500);
+            } else {
+              throw new Error(verifyRes.message || 'Payment verification failed');
+            }
+          } catch (error) {
+            console.error('Payment verification failed:', error);
+            alert(error.message || 'Payment verification failed. Please contact support.');
+            setIsPlacingOrder(false);
+            isProcessingRef.current = false;
+          }
+        },
+        prefill: {
+          name: user?.name || 'Customer',
+          contact: user?.phone || '9999999999',
+        },
+        theme: { color: '#7f4f13' },
+        modal: {
+          ondismiss: function() {
+            // User closed the payment modal
+            setIsPlacingOrder(false);
+            isProcessingRef.current = false;
+          }
+        }
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {
+      console.error('Failed to load Razorpay:', error);
+      alert(error.message || 'Failed to initialize payment. Please try again.');
+      setIsPlacingOrder(false);
+      isProcessingRef.current = false;
+    }
+  };
+
   const handlePlaceOrder = useCallback(async () => {
     // Check restaurant status - block orders if closed
     if (!isOpen) {
@@ -235,6 +345,25 @@ const Checkout = () => {
       console.log('🛒 Cart items with details:', items);
       console.log('📦 Order payload:', JSON.stringify(orderData, null, 2));
 
+      // Handle Razorpay payment
+      // Only trigger Razorpay if:
+      // 1. Razorpay is selected as payment method
+      // 2. There's an amount to pay (totalPayable > 0)
+      // 3. Wallet doesn't cover the full amount (if wallet covers full amount, use wallet payment instead)
+      if (paymentMethod === 'razorpay' && totalPayable > 0) {
+        // Reset flags temporarily - loadRazorpay will handle them
+        isProcessingRef.current = false;
+        setIsPlacingOrder(false);
+        
+        // Load Razorpay payment gateway
+        await loadRazorpay(totalPayable, orderData);
+        return; // Exit early - payment flow will handle order creation
+      }
+
+      // If Razorpay is selected but wallet covers full amount, fall through to wallet payment
+      // The finalPaymentMethod logic below will handle this correctly
+
+      // For other payment methods (UPI, CASH, WALLET), proceed with normal flow
       // Call backend API to create order
       const response = await orderService.createOrder(orderData);
       
@@ -493,7 +622,7 @@ const Checkout = () => {
           </h3>
         </div>
         <div className="px-4 space-y-3 mb-8">
-          <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border-2 border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer group shadow-md hover:shadow-lg transition-all">
+          {/* <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border-2 border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer group shadow-md hover:shadow-lg transition-all">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600">
                 <span className="material-symbols-outlined">account_balance_wallet</span>
@@ -508,6 +637,25 @@ const Checkout = () => {
               name="payment"
               value="upi"
               checked={paymentMethod === 'upi'}
+              onChange={(e) => setPaymentMethod(e.target.value)}
+              className="w-5 h-5 text-[#7f4f13] border-gray-300 focus:ring-[#7f4f13]"
+            />
+          </label> */}
+          <label className="flex items-center justify-between p-4 bg-white dark:bg-[#2d221a] rounded-xl border-2 border-[#f4f2f0] dark:border-[#3d2e24] cursor-pointer group shadow-md hover:shadow-lg transition-all">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center text-purple-600">
+                <span className="material-symbols-outlined">credit_card</span>
+              </div>
+              <div>
+                <p className="font-bold text-[#181411] dark:text-white">Razorpay</p>
+                <p className="text-xs text-[#887263] dark:text-gray-400">Cards, UPI, Net Banking</p>
+              </div>
+            </div>
+            <input
+              type="radio"
+              name="payment"
+              value="razorpay"
+              checked={paymentMethod === 'razorpay'}
               onChange={(e) => setPaymentMethod(e.target.value)}
               className="w-5 h-5 text-[#7f4f13] border-gray-300 focus:ring-[#7f4f13]"
             />

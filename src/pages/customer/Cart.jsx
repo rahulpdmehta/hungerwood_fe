@@ -80,7 +80,7 @@ const Cart = () => {
     <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-[#211811] shadow-xl overflow-x-hidden">
       {/* TopAppBar */}
       <div className="sticky top-0 z-10 flex items-center bg-white/90 dark:bg-[#211811]/90 backdrop-blur-md p-4 pb-2 justify-between border-b-2 border-gray-100 dark:border-gray-800 shadow-md">
-        <BackButton variant="minimal" />
+        <BackButton variant="minimal" onClick={() => navigate('/')}/>
         <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-10">
           Cart
         </h2>
