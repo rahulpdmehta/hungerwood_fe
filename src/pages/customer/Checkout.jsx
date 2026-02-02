@@ -50,7 +50,11 @@ const Checkout = () => {
 
   // Load addresses and wallet balance on mount
   useEffect(() => {
-    loadAddresses();
+    // Only load addresses if we don't have a selected address in location state
+    // If we have a selected address, the effect below will handle loading addresses
+    if (!location.state?.selectedAddress) {
+      loadAddresses(false); // Normal load - set default address
+    }
     loadWalletBalance();
   }, []);
 
@@ -60,6 +64,7 @@ const Checkout = () => {
     if (location.state?.selectedAddress) {
       const selectedAddr = location.state.selectedAddress;
       console.log('📍 Selected address from location.state:', selectedAddr);
+      
       // Reload addresses first to ensure we have the latest data, but skip setting default
       addressService.getAddresses().then((response) => {
         setAddresses(response.data);
@@ -67,13 +72,16 @@ const Checkout = () => {
         const updatedAddress = response.data.find(addr => addr.id === selectedAddr.id) || selectedAddr;
         console.log('✅ Setting selected address:', updatedAddress);
         setSelectedAddress(updatedAddress);
+        
+        // Clear the state to avoid stale data on next render
+        window.history.replaceState({}, document.title, location.pathname);
       }).catch((error) => {
         console.error('Failed to reload addresses:', error);
         // If reload fails, still use the selected address from location state
         setSelectedAddress(selectedAddr);
+        // Clear the state even on error
+        window.history.replaceState({}, document.title, location.pathname);
       });
-      // Clear the state to avoid stale data on next render
-      window.history.replaceState({}, document.title, location.pathname);
     }
   }, [location.state?.selectedAddress]);
 
@@ -103,8 +111,9 @@ const Checkout = () => {
     try {
       const response = await addressService.getAddresses();
       setAddresses(response.data);
-      // Only set default address if not skipping (i.e., on initial load)
-      if (!skipSetDefault) {
+      // Only set default address if not skipping AND we don't already have a selected address
+      // This prevents overwriting a user-selected address
+      if (!skipSetDefault && !selectedAddress) {
         const defaultAddress = response.data.find(addr => addr.isDefault);
         if (defaultAddress) {
           setSelectedAddress(defaultAddress);
