@@ -99,11 +99,11 @@ const EditProfile = () => {
                             alt="Profile"
                             className="w-32 h-32 rounded-full object-cover border-4 border-primary/20"
                         />
-                        <div className="absolute bottom-0 right-0 bg-primary rounded-full p-2 shadow-lg">
+                        {/* <div className="absolute bottom-0 right-0 bg-primary rounded-full p-2 shadow-lg">
                             <span className="material-symbols-outlined text-white text-xl">
                                 edit
                             </span>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
 

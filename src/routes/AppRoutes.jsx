@@ -22,6 +22,7 @@ import Referral from '@pages/customer/Referral';
 import PrivacyPolicy from '@pages/customer/PrivacyPolicy';
 import Help from '@pages/customer/Help';
 import Settings from '@pages/customer/Settings';
+import AboutUs from '@pages/customer/AboutUs';
 
 const AppRoutes = () => {
   return (
@@ -129,6 +130,10 @@ const AppRoutes = () => {
             <Settings />
           </ProtectedRoute>
         }
+      />
+      <Route
+        path="/about-us"
+        element={<AboutUs />}
       />
 
       {/* Admin Routes */}

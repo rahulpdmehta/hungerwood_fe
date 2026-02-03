@@ -7,6 +7,7 @@ import ReferEarnBanner from '@components/home/ReferEarnBanner';
 import RestaurantInfoCard from '@components/home/RestaurantInfoCard';
 import CuisineGrid from '@components/home/CuisineGrid';
 import BestSellersSection from '@components/home/BestSellersSection';
+import PhotoLibrary from '@components/home/PhotoLibrary';
 
 const Home = () => {
   return (
@@ -37,6 +38,9 @@ const Home = () => {
 
       {/* Promotional Carousel */}
       <BannerCarousel />
+
+      {/* Photo Library / Archives */}
+      <PhotoLibrary />
 
       {/* Bottom Navigation Bar */}
       <BottomNavBar />

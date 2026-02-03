@@ -142,7 +142,7 @@ export const theme = {
     // ============================================
     typography: {
         fontFamily: {
-            primary: "'Poppins', system-ui, sans-serif",
+            primary: "'Google Sans', system-ui, sans-serif",
             fallback: 'system-ui, -apple-system, sans-serif',
         },
 

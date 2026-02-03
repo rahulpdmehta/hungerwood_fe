@@ -76,7 +76,7 @@ const MenuItemCard = ({ item, onAddToCart }) => {
                             </span>
                         )}
                     </div>
-                    <p className="text-[#181411] dark:text-white text-base font-bold leading-tight">{item.name}</p>
+                    <p className="text-[#181411] dark:text-white text-sm font-bold leading-tight">{item.name}</p>
                     <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-2 mt-1">
                         {item.description}
                     </p>

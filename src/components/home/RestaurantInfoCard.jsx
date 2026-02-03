@@ -1,11 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import useRestaurantStore from '@store/useRestaurantStore';
 
 const RestaurantInfoCard = () => {
   const { isOpen } = useRestaurantStore();
+  const navigate = useNavigate();
+
+  const handleCardClick = () => {
+    navigate('/about-us');
+  };
 
   return (
     <div className="px-4 mt-4">
-      <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-lg border-2 border-gray-200 dark:border-zinc-700">
+      <div 
+        onClick={handleCardClick}
+        className="bg-white dark:bg-zinc-800 p-4 rounded-xl shadow-lg border-2 border-gray-200 dark:border-zinc-700 cursor-pointer hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98]"
+      >
         <div className="flex justify-between items-start mb-2">
           <div>
             <h2 className="text-xl font-extrabold text-[#181411] dark:text-white">HungerWood</h2>

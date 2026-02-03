@@ -201,28 +201,28 @@ const Cart = () => {
           </h3>
           <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 border-2 border-gray-200 dark:border-gray-700 shadow-md space-y-3">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-[#887263] dark:text-gray-400">Item Total</span>
+              <span className="text-[#887263] dark:text-gray-400 font-bold">Item Total</span>
               <span className="font-medium">₹{originalTotal}</span>
             </div>
             {totalDiscount > 0 && (
               <div className="flex justify-between items-center text-sm">
-                <span className="text-green-600 dark:text-green-400">Total Discount</span>
+                <span className="text-green-600 dark:text-green-400 font-bold">Total Discount</span>
                 <span className="font-medium text-green-600 dark:text-green-400">-₹{totalDiscount}</span>
               </div>
             )}
             <div className="flex justify-between items-center text-sm">
               <div className="flex items-center gap-1">
-                <span className="text-[#887263] dark:text-gray-400">Taxes & Charges</span>
+                <span className="text-[#887263] dark:text-gray-400 font-bold">Taxes & Charges</span>
                 <span className="material-symbols-outlined text-[14px] text-gray-400">info</span>
               </div>
               <span className="font-medium">₹{taxes}</span>
             </div>
             <div className="flex justify-between items-center text-sm pb-3 border-b-2 border-dashed border-gray-300 dark:border-gray-600">
-              <span className="text-[#887263] dark:text-gray-400">Packaging Fee</span>
+              <span className="text-[#887263] dark:text-gray-400 font-bold">Packaging Fee</span>
               <span className="font-medium">₹{packagingFee}</span>
             </div>
             <div className="flex justify-between items-center pt-2">
-              <span className="text-[#181411] dark:text-white text-base font-bold uppercase tracking-wider">
+              <span className="text-[#181411] dark:text-white text-sm font-bold uppercase tracking-wider">
                 Grand Total
               </span>
               <span className="text-xl font-extrabold text-[#181411] dark:text-white">₹{grandTotal}</span>
