@@ -281,11 +281,75 @@ export const restaurantService = {
   }
 };
 
+// ==================== PHOTO LIBRARY MANAGEMENT ====================
+
+// Helper to transform _id to id for photos
+const transformPhoto = (photo) => {
+  if (!photo) return photo;
+  const { _id, ...rest } = photo;
+  return {
+    ...rest,
+    id: _id || photo.id,
+  };
+};
+
+const transformPhotos = (photos) => {
+  if (!Array.isArray(photos)) return photos;
+  return photos.map(transformPhoto);
+};
+
+export const photoService = {
+  // Get all photos (admin)
+  getAll: async (includeInactive = false) => {
+    const response = await api.get('/admin/photos', {
+      params: { includeInactive }
+    });
+    if (response.data) {
+      response.data = transformPhotos(response.data);
+    }
+    return response.data;
+  },
+
+  // Get photo by ID
+  getById: async (id) => {
+    const response = await api.get(`/admin/photos/${id}`);
+    if (response.data) {
+      response.data = transformPhoto(response.data);
+    }
+    return response.data;
+  },
+
+  // Create photo
+  create: async (data) => {
+    const response = await api.post('/admin/photos', data);
+    if (response.data) {
+      response.data = transformPhoto(response.data);
+    }
+    return response.data;
+  },
+
+  // Update photo
+  update: async (id, data) => {
+    const response = await api.put(`/admin/photos/${id}`, data);
+    if (response.data) {
+      response.data = transformPhoto(response.data);
+    }
+    return response.data;
+  },
+
+  // Delete photo
+  delete: async (id) => {
+    const response = await api.delete(`/admin/photos/${id}`);
+    return response.data;
+  }
+};
+
 export default {
   category: categoryService,
   menuItem: menuItemService,
   order: adminOrderService,
   user: adminUserService,
   dashboard: dashboardService,
-  restaurant: restaurantService
+  restaurant: restaurantService,
+  photo: photoService
 };

@@ -34,6 +34,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Orders', path: '/admin/orders', icon: ShoppingBag },
     { name: 'Customers', path: '/admin/users', icon: Users },
     { name: 'Banners', path: '/admin/banners', icon: Image },
+    { name: 'Photos', path: '/admin/photos', icon: Image },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
   ];
 

@@ -21,20 +21,27 @@ function AppContent() {
   const [showSplash, setShowSplash] = useState(true);
   const [isReady, setIsReady] = useState(false);
   
+  // Check if we're on login page
+  const isLoginPage = location.pathname === '/login' || location.pathname.startsWith('/login');
+  
   // Version checker - runs globally to detect data changes and invalidate cache
-  useVersionChecker();
+  // Only run if not on login page
+  useVersionChecker(!isLoginPage);
 
-  // Fetch restaurant status on app load
+  // Fetch restaurant status on app load (only if not on login page)
   useEffect(() => {
-    if (isReady) {
+    if (isReady && !isLoginPage) {
       fetchStatus();
       // Refresh status every 30 seconds
       const interval = setInterval(() => {
-        fetchStatus();
+        // Check again if still not on login page before fetching
+        if (window.location.pathname !== '/login' && !window.location.pathname.startsWith('/login')) {
+          fetchStatus();
+        }
       }, 30000);
       return () => clearInterval(interval);
     }
-  }, [isReady, fetchStatus]);
+  }, [isReady, isLoginPage, fetchStatus, location.pathname]);
 
   useEffect(() => {
     // Check if splash has been shown in this session
@@ -73,26 +80,32 @@ function AppContent() {
     // Mark splash as shown for this session
     sessionStorage.setItem('splashShown', 'true');
 
-    // Prefetch menu data for better UX
-    const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-    
-    queryClient.prefetchQuery({
-      queryKey: menuKeys.items(),
-      queryFn: async () => {
-        const response = await menuService.getAllItems();
-        return response?.data || response || [];
-      },
-      staleTime: oneDay, // Cache for entire day
-    });
+    // Check current path - only prefetch if not on login page
+    const currentPath = window.location.pathname;
+    const isOnLoginPage = currentPath === '/login' || currentPath.startsWith('/login');
 
-    queryClient.prefetchQuery({
-      queryKey: menuKeys.categories(),
-      queryFn: async () => {
-        const response = await menuService.getCategories();
-        return response?.data || response || [];
-      },
-      staleTime: oneDay, // Cache for entire day
-    });
+    // Prefetch menu data for better UX (only if not on login page)
+    if (!isOnLoginPage) {
+      const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+      
+      queryClient.prefetchQuery({
+        queryKey: menuKeys.items(),
+        queryFn: async () => {
+          const response = await menuService.getAllItems();
+          return response?.data || response || [];
+        },
+        staleTime: oneDay, // Cache for entire day
+      });
+
+      queryClient.prefetchQuery({
+        queryKey: menuKeys.categories(),
+        queryFn: async () => {
+          const response = await menuService.getCategories();
+          return response?.data || response || [];
+        },
+        staleTime: oneDay, // Cache for entire day
+      });
+    }
 
     // Add fade out animation
     setShowSplash(false);

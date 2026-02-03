@@ -8,6 +8,7 @@ import AdminMenu from '@pages/admin/Menu';
 import AdminOrders from '@pages/admin/Orders';
 import AdminUsers from '@pages/admin/Users';
 import AdminBanners from '@pages/admin/Banners';
+import AdminPhotos from '@pages/admin/Photos';
 import Reports from '@pages/admin/Reports';
 import Settings from '@pages/admin/Settings';
 
@@ -67,6 +68,14 @@ const AdminRoutes = () => {
         element={
           <ProtectedRoute requireAdmin>
             <AdminBanners />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/photos"
+        element={
+          <ProtectedRoute requireAdmin>
+            <AdminPhotos />
           </ProtectedRoute>
         }
       />

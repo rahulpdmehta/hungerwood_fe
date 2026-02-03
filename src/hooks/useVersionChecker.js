@@ -11,16 +11,17 @@ import { menuKeys, bannerKeys } from '@utils/queryKeys';
 /**
  * Hook that checks for version mismatches and invalidates React Query cache
  * Should be used at the App level to run globally
+ * @param {boolean} enabled - Whether to enable version checking (default: true)
  */
-export const useVersionChecker = () => {
+export const useVersionChecker = (enabled = true) => {
   const queryClient = useQueryClient();
-  const { data: currentVersions, isLoading, error } = useDataVersions();
+  const { data: currentVersions, isLoading, error } = useDataVersions(enabled);
   const previousVersionsRef = useRef(null);
   const hasInitializedRef = useRef(false);
 
   useEffect(() => {
-    // Skip if still loading or if there's an error
-    if (isLoading || error || !currentVersions) {
+    // Skip if disabled, still loading, or if there's an error
+    if (!enabled || isLoading || error || !currentVersions) {
       return;
     }
 
