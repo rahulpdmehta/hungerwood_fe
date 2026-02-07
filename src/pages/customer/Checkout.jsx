@@ -25,7 +25,7 @@ const Checkout = () => {
   const cartGrandTotal = location.state?.grandTotal || 0;
 
   const [orderType, setOrderType] = useState('Delivery');
-  const [paymentMethod, setPaymentMethod] = useState('upi');
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [showDetails, setShowDetails] = useState(false);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
