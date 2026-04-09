@@ -1,0 +1,355 @@
+/**
+ * Admin Service
+ * API calls for admin operations
+ */
+
+import api from './api';
+
+// ==================== CATEGORY MANAGEMENT ====================
+
+// Helper to transform _id to id for categories
+const transformCategory = (category) => {
+  if (!category) return category;
+  const { _id, ...rest } = category;
+  return {
+    ...rest,
+    id: _id || category.id,
+  };
+};
+
+const transformCategories = (categories) => {
+  if (!Array.isArray(categories)) return categories;
+  return categories.map(transformCategory);
+};
+
+export const categoryService = {
+  // Get all categories
+  getAll: async () => {
+    const response = await api.get('/admin/categories');
+    if (response.data) {
+      response.data = transformCategories(response.data);
+    }
+    return response.data;
+  },
+
+  // Get category by ID
+  getById: async (id) => {
+    const response = await api.get(`/admin/categories/${id}`);
+    if (response.data) {
+      response.data = transformCategory(response.data);
+    }
+    return response.data;
+  },
+
+  // Create category
+  create: async (data) => {
+    const formData = new FormData();
+
+    if (data.name) formData.append('name', data.name);
+    if (data.description) formData.append('description', data.description);
+    if (data.imageUrl) formData.append('imageUrl', data.imageUrl);
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive);
+
+    // Handle file upload
+    if (data.image instanceof File) {
+      formData.append('image', data.image);
+    }
+
+    const response = await api.post('/admin/categories', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+
+  // Update category
+  update: async (id, data) => {
+    const formData = new FormData();
+
+    if (data.name) formData.append('name', data.name);
+    if (data.description !== undefined) formData.append('description', data.description);
+    if (data.imageUrl !== undefined) formData.append('imageUrl', data.imageUrl);
+    if (data.isActive !== undefined) formData.append('isActive', data.isActive);
+
+    // Handle file upload
+    if (data.image instanceof File) {
+      formData.append('image', data.image);
+    }
+
+    const response = await api.put(`/admin/categories/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+
+  // Delete category
+  delete: async (id) => {
+    const response = await api.delete(`/admin/categories/${id}`);
+    return response.data;
+  },
+
+  // Toggle category status
+  toggleStatus: async (id) => {
+    const response = await api.patch(`/admin/categories/${id}/toggle`);
+    return response.data;
+  }
+};
+
+// ==================== MENU ITEM MANAGEMENT ====================
+
+// Helper to transform _id to id for frontend consistency
+const transformMenuItem = (item) => {
+  if (!item) return item;
+  const { _id, ...rest } = item;
+  return {
+    ...rest,
+    id: _id || item.id,
+  };
+};
+
+const transformMenuItems = (items) => {
+  if (!Array.isArray(items)) return items;
+  return items.map(transformMenuItem);
+};
+
+export const menuItemService = {
+  // Get all menu items
+  getAll: async (params = {}) => {
+    const response = await api.get('/menu/items', { params });
+    if (response.data) {
+      response.data = transformMenuItems(response.data);
+    }
+    return response.data;
+  },
+
+  // Get menu item by ID
+  getById: async (id) => {
+    const response = await api.get(`/menu/items/${id}`);
+    if (response.data) {
+      response.data = transformMenuItem(response.data);
+    }
+    return response.data;
+  },
+
+  // Create menu item
+  create: async (data) => {
+    const formData = new FormData();
+
+    if (data.name) formData.append('name', data.name);
+    if (data.description) formData.append('description', data.description);
+    if (data.price) formData.append('price', data.price);
+    if (data.category) formData.append('category', data.category);
+    if (data.imageUrl) formData.append('imageUrl', data.imageUrl);
+    if (data.isVeg !== undefined) formData.append('isVeg', data.isVeg);
+    if (data.isAvailable !== undefined) formData.append('isAvailable', data.isAvailable);
+    if (data.isBestSeller !== undefined) formData.append('isBestSeller', data.isBestSeller);
+    if (data.discount !== undefined) formData.append('discount', data.discount);
+    // Handle file upload
+    if (data.image instanceof File) {
+      formData.append('image', data.image);
+    }
+
+    const response = await api.post('/admin/menu', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+
+  // Update menu item
+  update: async (id, data) => {
+    const formData = new FormData();
+
+    if (data.name) formData.append('name', data.name);
+    if (data.description !== undefined) formData.append('description', data.description);
+    if (data.price !== undefined) formData.append('price', data.price);
+    if (data.category !== undefined) formData.append('category', data.category);
+    if (data.imageUrl !== undefined) formData.append('imageUrl', data.imageUrl);
+    if (data.isVeg !== undefined) formData.append('isVeg', data.isVeg);
+    if (data.isAvailable !== undefined) formData.append('isAvailable', data.isAvailable);
+    if (data.isBestSeller !== undefined) formData.append('isBestSeller', data.isBestSeller);
+    if (data.discount !== undefined) formData.append('discount', data.discount);
+    // Handle file upload
+    if (data.image instanceof File) {
+      formData.append('image', data.image);
+    }
+
+    const response = await api.put(`/admin/menu/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  },
+
+  // Delete menu item
+  delete: async (id) => {
+    const response = await api.delete(`/admin/menu/${id}`);
+    return response.data;
+  },
+
+  // Toggle availability
+  toggleAvailability: async (id) => {
+    const response = await api.patch(`/admin/menu/${id}/availability`);
+    return response.data;
+  }
+};
+
+// ==================== ORDER MANAGEMENT ====================
+
+export const adminOrderService = {
+  // Get all orders
+  getAll: async (params = {}) => {
+    const response = await api.get('/admin/orders', { params });
+    return response.data;
+  },
+
+  // Get order by ID
+  getById: async (id) => {
+    const response = await api.get(`/admin/orders/${id}`);
+    return response.data;
+  },
+
+  // Update order status
+  updateStatus: async (id, status) => {
+    const response = await api.patch(`/admin/orders/${id}/status`, { status });
+    return response.data;
+  }
+};
+
+// ==================== USER MANAGEMENT ====================
+
+export const adminUserService = {
+  // Get all users
+  getAll: async () => {
+    const response = await api.get('/admin/users');
+    return response.data;
+  }
+};
+
+// ==================== DASHBOARD ANALYTICS ====================
+
+export const dashboardService = {
+  // Get dashboard stats
+  getStats: async (dateFilter = 30) => {
+    const response = await api.get('/admin/dashboard/stats', { params: { dateFilter } });
+    return response.data;
+  },
+
+  // Get orders analytics
+  getOrdersAnalytics: async (days = 30) => {
+    const response = await api.get('/admin/dashboard/orders-analytics', { params: { days } });
+    return response.data;
+  },
+
+  // Get menu analytics
+  getMenuAnalytics: async (dateFilter = 30) => {
+    const response = await api.get('/admin/dashboard/menu-analytics', { params: { dateFilter } });
+    return response.data;
+  },
+
+  // Get customer analytics
+  getCustomerAnalytics: async (days = 30) => {
+    const response = await api.get('/admin/dashboard/customer-analytics', { params: { days } });
+    return response.data;
+  }
+};
+
+// ==================== RESTAURANT MANAGEMENT ====================
+
+export const restaurantService = {
+  // Get restaurant status (admin)
+  getStatus: async () => {
+    const response = await api.get('/admin/restaurant/status');
+    return response.data;
+  },
+
+  // Update restaurant status (admin)
+  updateStatus: async (data) => {
+    const response = await api.patch('/admin/restaurant/status', data);
+    return response.data;
+  },
+
+  // Get restaurant status (public)
+  getPublicStatus: async () => {
+    const response = await api.get('/restaurant/status');
+    return response.data;
+  }
+};
+
+// ==================== PHOTO LIBRARY MANAGEMENT ====================
+
+// Helper to transform _id to id for photos
+const transformPhoto = (photo) => {
+  if (!photo) return photo;
+  const { _id, ...rest } = photo;
+  return {
+    ...rest,
+    id: _id || photo.id,
+  };
+};
+
+const transformPhotos = (photos) => {
+  if (!Array.isArray(photos)) return photos;
+  return photos.map(transformPhoto);
+};
+
+export const photoService = {
+  // Get all photos (admin)
+  getAll: async (includeInactive = false) => {
+    const response = await api.get('/admin/photos', {
+      params: { includeInactive }
+    });
+    if (response.data) {
+      response.data = transformPhotos(response.data);
+    }
+    return response.data;
+  },
+
+  // Get photo by ID
+  getById: async (id) => {
+    const response = await api.get(`/admin/photos/${id}`);
+    if (response.data) {
+      response.data = transformPhoto(response.data);
+    }
+    return response.data;
+  },
+
+  // Create photo
+  create: async (data) => {
+    const response = await api.post('/admin/photos', data);
+    if (response.data) {
+      response.data = transformPhoto(response.data);
+    }
+    return response.data;
+  },
+
+  // Update photo
+  update: async (id, data) => {
+    const response = await api.put(`/admin/photos/${id}`, data);
+    if (response.data) {
+      response.data = transformPhoto(response.data);
+    }
+    return response.data;
+  },
+
+  // Delete photo
+  delete: async (id) => {
+    const response = await api.delete(`/admin/photos/${id}`);
+    return response.data;
+  }
+};
+
+export default {
+  category: categoryService,
+  menuItem: menuItemService,
+  order: adminOrderService,
+  user: adminUserService,
+  dashboard: dashboardService,
+  restaurant: restaurantService,
+  photo: photoService
+};
