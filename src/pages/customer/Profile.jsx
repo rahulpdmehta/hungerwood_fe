@@ -66,11 +66,7 @@ const Profile = () => {
                 <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
                     Profile
                 </h2>
-                <div className="flex w-12 items-center justify-end max-h-[40px]">
-                    <button className="flex h-12 cursor-pointer items-center justify-center overflow-hidden rounded-xl bg-white dark:bg-zinc-800 text-[#181411] dark:text-white">
-                        <span className="material-symbols-outlined">notifications</span>
-                    </button>
-                </div>
+                <div className="w-12 max-h-[40px]" />
             </div>
 
             {/* Profile Header */}
