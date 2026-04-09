@@ -2,26 +2,26 @@ import { motion } from 'framer-motion';
 
 const pageVariants = {
   initial: {
+    x: '60%',
     opacity: 0,
-    y: 20,
-    scale: 0.98,
+    filter: 'blur(4px)',
   },
   animate: {
+    x: 0,
     opacity: 1,
-    y: 0,
-    scale: 1,
+    filter: 'blur(0px)',
     transition: {
-      duration: 0.3,
-      ease: [0.25, 0.46, 0.45, 0.94],
+      duration: 0.35,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
   exit: {
+    x: '-30%',
     opacity: 0,
-    y: -10,
-    scale: 0.98,
+    filter: 'blur(4px)',
     transition: {
-      duration: 0.2,
-      ease: [0.25, 0.46, 0.45, 0.94],
+      duration: 0.25,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
 };
