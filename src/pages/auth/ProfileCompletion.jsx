@@ -1,12 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '@store/useAuthStore';
 import Button from '@components/common/Button';
 import { authService } from '@services/auth.service';
 
 const ProfileCompletion = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const { updateUser } = useAuthStore();
+    const returnTo = location.state?.returnTo || '/';
+    const returnState = location.state?.returnState;
 
     // Form state
     const [formData, setFormData] = useState({
@@ -40,35 +43,16 @@ const ProfileCompletion = () => {
             setError('Name is required');
             return false;
         }
-        if (!formData.email.trim()) {
-            setError('Email is required');
-            return false;
-        }
-        // Email validation
-        const emailRegex = /^\S+@\S+\.\S+$/;
-        if (!emailRegex.test(formData.email)) {
-            setError('Invalid email format');
-            return false;
+        // Email optional — validate format only if provided
+        if (formData.email.trim()) {
+            const emailRegex = /^\S+@\S+\.\S+$/;
+            if (!emailRegex.test(formData.email)) {
+                setError('Invalid email format');
+                return false;
+            }
         }
         if (!formData.street.trim()) {
             setError('Street address is required');
-            return false;
-        }
-        if (!formData.city.trim()) {
-            setError('City is required');
-            return false;
-        }
-        if (!formData.state.trim()) {
-            setError('State is required');
-            return false;
-        }
-        if (!formData.pincode.trim()) {
-            setError('Pincode is required');
-            return false;
-        }
-        // Pincode validation (6 digits)
-        if (!/^\d{6}$/.test(formData.pincode)) {
-            setError('Pincode must be 6 digits');
             return false;
         }
         return true;
@@ -88,15 +72,17 @@ const ProfileCompletion = () => {
         try {
             const profileData = {
                 name: formData.name,
-                email: formData.email,
                 address: {
                     street: formData.street,
-                    city: formData.city,
-                    state: formData.state,
-                    pincode: formData.pincode,
+                    city: 'Gaya',
+                    state: 'Bihar',
+                    pincode: '824201',
                 },
                 profilePic: formData.profilePic,
             };
+            if (formData.email && formData.email.trim()) {
+                profileData.email = formData.email.trim();
+            }
 
             // Include referral code if provided
             if (formData.referralCode && formData.referralCode.trim()) {
@@ -113,9 +99,9 @@ const ProfileCompletion = () => {
             // Update user in store
             updateUser(response.data);
 
-            // Navigate to home after a brief delay to show referral message
+            // Navigate after a brief delay to show referral message
             setTimeout(() => {
-                navigate('/');
+                navigate(returnTo, { state: returnState });
             }, response.referralApplied ? 2000 : 0);
         } catch (err) {
             setError(err.message || 'Failed to complete profile. Please try again.');
@@ -187,7 +173,7 @@ const ProfileCompletion = () => {
                         {/* Email */}
                         <div>
                             <label className="block text-sm font-semibold text-text-primary mb-2 uppercase tracking-wide">
-                                Email Address *
+                                Email Address (Optional)
                             </label>
                             <input
                                 type="email"
@@ -243,48 +229,12 @@ const ProfileCompletion = () => {
                                 name="street"
                                 value={formData.street}
                                 onChange={handleChange}
-                                placeholder="Street address"
+                                placeholder="Street address / Locality / Landmark"
                                 className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
                                 disabled={loading}
                             />
 
-                            {/* City and State */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <input
-                                    type="text"
-                                    name="city"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    placeholder="City"
-                                    className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
-                                    disabled={loading}
-                                />
-                                <input
-                                    type="text"
-                                    name="state"
-                                    value={formData.state}
-                                    onChange={handleChange}
-                                    placeholder="State"
-                                    className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
-                                    disabled={loading}
-                                />
-                            </div>
-
-                            {/* Pincode */}
-                            <input
-                                type="tel"
-                                name="pincode"
-                                value={formData.pincode}
-                                onChange={(e) => {
-                                    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
-                                    setFormData(prev => ({ ...prev, pincode: value }));
-                                    setError('');
-                                }}
-                                placeholder="Pincode (6 digits)"
-                                maxLength="6"
-                                className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
-                                disabled={loading}
-                            />
+                            <p className="text-sm text-text-secondary px-1">Gaya, 824201</p>
                         </div>
 
                         {/* Submit Button */}

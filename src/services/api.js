@@ -42,10 +42,16 @@ api.interceptors.response.use(
     // Handle errors globally
     const message = error.response?.data?.message || error.message || 'Something went wrong';
 
-    // Handle unauthorized (401) errors
+    // Handle unauthorized (401) errors — only force logout/redirect if the user
+    // was actually authenticated (i.e. token expired / invalid). Guest users can
+    // browse the app, and some API calls will legitimately 401 — don't yank them
+    // to /login on every such call.
     if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
-      window.location.href = '/login';
+      const { isAuthenticated, logout } = useAuthStore.getState();
+      if (isAuthenticated) {
+        logout();
+        window.location.href = '/login';
+      }
     }
 
     // Handle forbidden (403) errors

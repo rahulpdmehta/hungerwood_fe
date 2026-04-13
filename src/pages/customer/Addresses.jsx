@@ -14,9 +14,9 @@ const Addresses = () => {
   const [formData, setFormData] = useState({
     label: '',
     street: '',
-    city: '',
-    state: '',
-    pincode: '',
+    city: 'Gaya',
+    state: 'Bihar',
+    pincode: '824201',
   });
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -57,18 +57,6 @@ const Addresses = () => {
       setError('Street address is required');
       return false;
     }
-    if (!formData.city.trim()) {
-      setError('City is required');
-      return false;
-    }
-    if (!formData.state.trim()) {
-      setError('State is required');
-      return false;
-    }
-    if (!/^\d{6}$/.test(formData.pincode)) {
-      setError('Pincode must be 6 digits');
-      return false;
-    }
     return true;
   };
 
@@ -93,7 +81,7 @@ const Addresses = () => {
       await loadAddresses();
       
       // Reset form
-      setFormData({ label: '', street: '', city: '', state: '', pincode: '' });
+      setFormData({ label: '', street: '', city: 'Gaya', state: 'Bihar', pincode: '824201' });
       setShowAddForm(false);
       setEditingAddress(null);
     } catch (err) {
@@ -107,9 +95,9 @@ const Addresses = () => {
     setFormData({
       label: address.label,
       street: address.street,
-      city: address.city,
-      state: address.state,
-      pincode: address.pincode,
+      city: address.city || 'Gaya',
+      state: address.state || 'Bihar',
+      pincode: address.pincode || '824201',
     });
     setEditingAddress(address);
     setShowAddForm(true);
@@ -138,7 +126,7 @@ const Addresses = () => {
   const handleCancelForm = () => {
     setShowAddForm(false);
     setEditingAddress(null);
-    setFormData({ label: '', street: '', city: '', state: '', pincode: '' });
+    setFormData({ label: '', street: '', city: 'Gaya', state: 'Bihar', pincode: '824201' });
     setError('');
   };
 
@@ -231,57 +219,14 @@ const Addresses = () => {
                 />
               </div>
 
-              {/* City & State */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-2">
-                    City *
-                  </label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    placeholder="City"
-                    className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
-                    disabled={submitting}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-text-primary mb-2">
-                    State *
-                  </label>
-                  <input
-                    type="text"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    placeholder="State"
-                    className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
-                    disabled={submitting}
-                  />
-                </div>
-              </div>
-
-              {/* Pincode */}
+              {/* Locality (hardcoded single line) */}
               <div>
                 <label className="block text-sm font-semibold text-text-primary mb-2">
-                  Pincode *
+                  City & Pincode
                 </label>
-                <input
-                  type="tel"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
-                    setFormData(prev => ({ ...prev, pincode: value }));
-                    setError('');
-                  }}
-                  placeholder="6-digit pincode"
-                  maxLength="6"
-                  className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-primary placeholder:text-text-tertiary focus:border-primary focus:outline-none transition-colors"
-                  disabled={submitting}
-                />
+                <div className="w-full bg-surface border-2 border-border rounded-xl px-4 py-3 text-text-secondary">
+                  Gaya, 824201
+                </div>
               </div>
 
               {/* Buttons */}
@@ -388,7 +333,7 @@ const Addresses = () => {
 
                 {/* Address */}
                 <p className="text-text-secondary text-sm leading-relaxed mb-3">
-                  {address.street}, {address.city}, {address.state} - {address.pincode}
+                  {address.street}, Gaya - 824201
                 </p>
 
                 {/* Set Default Button */}

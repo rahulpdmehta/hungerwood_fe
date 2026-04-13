@@ -38,15 +38,13 @@ const EditProfile = () => {
             setError('Name is required');
             return false;
         }
-        if (!formData.email.trim()) {
-            setError('Email is required');
-            return false;
-        }
-        // Email validation
-        const emailRegex = /^\S+@\S+\.\S+$/;
-        if (!emailRegex.test(formData.email)) {
-            setError('Invalid email format');
-            return false;
+        // Email optional — validate format only if provided
+        if (formData.email.trim()) {
+            const emailRegex = /^\S+@\S+\.\S+$/;
+            if (!emailRegex.test(formData.email)) {
+                setError('Invalid email format');
+                return false;
+            }
         }
         return true;
     };
@@ -135,7 +133,7 @@ const EditProfile = () => {
                     {/* Email */}
                     <div>
                         <label className="block text-sm font-semibold text-text-primary mb-2 uppercase tracking-wide">
-                            Email Address *
+                            Email Address (Optional)
                         </label>
                         <input
                             type="email"

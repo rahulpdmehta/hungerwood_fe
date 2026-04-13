@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import useCartStore from '@store/useCartStore';
 import useRestaurantStore from '@store/useRestaurantStore';
+import useAuthStore from '@store/useAuthStore';
 import BackButton from '@components/common/BackButton';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { BILLING } from '@utils/constants';
@@ -10,6 +11,7 @@ const Cart = () => {
   const navigate = useNavigate();
   const { items, totalItems, totalPrice, incrementQuantity, decrementQuantity, removeItem } = useCartStore();
   const { isOpen, closingMessage } = useRestaurantStore();
+  const { isAuthenticated } = useAuthStore();
   const [cookingInstructions, setCookingInstructions] = useState('');
 
   // Calculate bill details
@@ -34,14 +36,18 @@ const Cart = () => {
       alert(closingMessage || 'Restaurant is currently closed. Please try again later.');
       return;
     }
-    
-    // In real app, pass cart data and cooking instructions
-    navigate('/checkout', {
-      state: {
-        cookingInstructions,
-        grandTotal,
-      },
-    });
+
+    const checkoutState = { cookingInstructions, grandTotal };
+
+    // Require sign in / sign up at checkout step
+    if (!isAuthenticated) {
+      navigate('/login', {
+        state: { returnTo: '/checkout', returnState: checkoutState },
+      });
+      return;
+    }
+
+    navigate('/checkout', { state: checkoutState });
   };
 
   // Empty cart state

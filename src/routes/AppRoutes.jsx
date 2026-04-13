@@ -42,14 +42,7 @@ const AppRoutes = () => {
         <Route path="/menu/:id" element={<Animated><ItemDetails /></Animated>} />
 
         {/* Protected Customer Routes */}
-        <Route
-          path="/cart"
-          element={
-            <ProtectedRoute>
-              <Animated><Cart /></Animated>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/cart" element={<Animated><Cart /></Animated>} />
         <Route
           path="/checkout"
           element={

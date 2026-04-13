@@ -542,7 +542,7 @@ const Checkout = () => {
                         </p>
                       </div>
                       <p className="text-[#887263] dark:text-gray-400 text-sm font-normal leading-normal">
-                        {selectedAddress.street}, {selectedAddress.city}, {selectedAddress.state} - {selectedAddress.pincode}
+                        {selectedAddress.street}, Gaya - 824201
                       </p>
                       <button
                         onClick={handleChangeAddress}

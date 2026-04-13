@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import useAuthStore from '@store/useAuthStore';
 import Button from '@components/common/Button';
 import { authService } from '@services/auth.service';
@@ -7,7 +7,10 @@ import LogoLite from '../../assets/images/logo_lite.png';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const setAuth = useAuthStore(state => state.setAuth);
+  const returnTo = location.state?.returnTo || '/';
+  const returnState = location.state?.returnState;
 
   // State management
   const [step, setStep] = useState('mobile'); // 'mobile' or 'otp'
@@ -141,11 +144,9 @@ const Login = () => {
 
       // Check if profile is complete
       if (response.data.isProfileComplete) {
-        // Navigate to home if profile is complete
-        navigate('/');
+        navigate(returnTo, { state: returnState });
       } else {
-        // Navigate to profile completion if profile is incomplete
-        navigate('/complete-profile');
+        navigate('/complete-profile', { state: { returnTo, returnState } });
       }
     } catch (err) {
       setError(err.message || 'Invalid OTP. Please try again.');
