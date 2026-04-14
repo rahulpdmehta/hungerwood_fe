@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import PriceDisplay from '@components/common/PriceDisplay';
 import useCartStore from '@store/useCartStore';
 
-const MenuItemCard = ({ item, onAddToCart }) => {
+const MenuItemCard = ({ item, onAddToCart, isOrderable = true, windowLabel = '' }) => {
     const navigate = useNavigate();
     const { getItemQuantity, incrementQuantity, decrementQuantity, addItem, removeItem } = useCartStore();
     const quantity = getItemQuantity(item.id);
@@ -16,7 +16,8 @@ const MenuItemCard = ({ item, onAddToCart }) => {
     };
 
     const handleAddClick = (e) => {
-        e.stopPropagation(); // Prevent card click when clicking Add button
+        e.stopPropagation();
+        if (!isOrderable) return;
         if (onAddToCart) {
             onAddToCart(item);
         } else {
@@ -27,12 +28,14 @@ const MenuItemCard = ({ item, onAddToCart }) => {
                 discount: item.discount || 0,
                 quantity: 1,
                 image: item.image,
+                category: typeof item.category === 'object' ? item.category?.name : item.category,
             });
         }
     };
 
     const handleIncrement = (e) => {
         e.stopPropagation();
+        if (!isOrderable) return;
         if (quantity === 0) {
             handleAddClick(e);
         } else {
@@ -87,7 +90,14 @@ const MenuItemCard = ({ item, onAddToCart }) => {
                         discount={item.discount || 0}
                         size="sm"
                     />
-                    {quantity > 0 ? (
+                    {!isOrderable ? (
+                        <span
+                            className="inline-flex items-center justify-center rounded-lg h-8 px-3 bg-gray-100 text-gray-500 border border-gray-200 text-[11px] font-semibold cursor-not-allowed"
+                            title={windowLabel ? `Available ${windowLabel}` : 'Currently unavailable'}
+                        >
+                            {windowLabel ? `Avail ${windowLabel}` : 'Unavailable'}
+                        </span>
+                    ) : quantity > 0 ? (
                         <div className="flex items-center gap-2 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded-lg border border-gray-200 dark:border-gray-700">
                             <button
                                 onClick={handleDecrement}
