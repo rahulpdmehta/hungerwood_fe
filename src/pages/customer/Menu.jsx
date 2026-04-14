@@ -11,6 +11,7 @@ import DietToggle from '@components/food/DietToggle';
 import SearchBar from '@components/common/SearchBar';
 import BackButton from '@components/common/BackButton';
 import { MenuSkeleton, CategorySkeleton } from '@components/common/Loader';
+import { isCategoryOrderable, formatWindowLabel } from '@utils/categoryWindow';
 
 const Menu = () => {
   const navigate = useNavigate();
@@ -25,6 +26,11 @@ const Menu = () => {
   const [dietFilter, setDietFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
 
   // Transform categories data for UI
   const categories = useMemo(() => {
@@ -38,6 +44,22 @@ const Menu = () => {
     }
     return ['All'];
   }, [categoriesData]);
+
+  const categoryByName = useMemo(() => {
+    const map = {};
+    (categoriesData || []).forEach((c) => {
+      if (c && typeof c === 'object' && c.name) map[c.name.toLowerCase()] = c;
+    });
+    return map;
+  }, [categoriesData]);
+
+  const resolveCategory = (item) => {
+    const name =
+      typeof item.category === 'string'
+        ? item.category
+        : item.category?.name || '';
+    return categoryByName[name.toLowerCase()] || null;
+  };
 
   // Check for search query param and open search if search=true
   useEffect(() => {
@@ -238,6 +260,10 @@ const Menu = () => {
   const displayMenuItems = menuItems.length > 0 ? menuItems : fallbackMenuItems;
 
   const handleAddToCart = (item) => {
+    const cat = resolveCategory(item);
+    if (cat && cat.isTimeRestricted && !isCategoryOrderable(cat, now)) {
+      return;
+    }
     addItem({
       id: item.id,
       name: item.name,
@@ -245,6 +271,7 @@ const Menu = () => {
       discount: item.discount || 0,
       quantity: 1,
       image: item.image,
+      category: cat?.name || (typeof item.category === 'string' ? item.category : ''),
     });
   };
 
@@ -329,6 +356,18 @@ const Menu = () => {
         )}
       </nav>
 
+      {(() => {
+        if (activeCategory === 'All') return null;
+        const cat = categoryByName[activeCategory.toLowerCase()];
+        if (!cat || !cat.isTimeRestricted) return null;
+        if (isCategoryOrderable(cat, now)) return null;
+        return (
+          <div className="mx-4 mt-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 px-3 py-2 text-xs text-orange-700 dark:text-orange-200">
+            {cat.name} is available {formatWindowLabel(cat)} (IST).
+          </div>
+        );
+      })()}
+
       {/* Main Content */}
       <main className="pb-2">
         {/* Today's Specials */}
@@ -365,9 +404,20 @@ const Menu = () => {
               </p>
             </div>
           ) : (
-            filteredItems.map((item, index) => (
-              <MenuItemCard key={item._id || item.id || `menu-item-${index}`} item={item} onAddToCart={handleAddToCart} />
-            ))
+            filteredItems.map((item, index) => {
+              const cat = resolveCategory(item);
+              const orderable =
+                !cat || !cat.isTimeRestricted || isCategoryOrderable(cat, now);
+              return (
+                <MenuItemCard
+                  key={item._id || item.id || `menu-item-${index}`}
+                  item={item}
+                  onAddToCart={handleAddToCart}
+                  isOrderable={orderable}
+                  windowLabel={cat && cat.isTimeRestricted ? formatWindowLabel(cat) : ''}
+                />
+              );
+            })
           )}
         </div>
       </main>
