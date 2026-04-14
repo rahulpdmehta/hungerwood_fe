@@ -1,10 +1,11 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useCartStore from '@store/useCartStore';
 import BackButton from '@components/common/BackButton';
-import { useMenuItem } from '@hooks/useMenuQueries';
+import { useMenuItem, useCategories } from '@hooks/useMenuQueries';
 import { ItemDetailsSkeleton } from '@components/common/Loader';
 import PriceDisplay from '@components/common/PriceDisplay';
+import { isCategoryOrderable, formatWindowLabel } from '@utils/categoryWindow';
 
 const ItemDetails = () => {
   const { id } = useParams();
@@ -13,6 +14,22 @@ const ItemDetails = () => {
 
   // React Query hook for fetching menu item
   const { data: item, isLoading: loading, error } = useMenuItem(id);
+
+  const { data: categoriesData = [] } = useCategories();
+
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const categoryByName = useMemo(() => {
+    const map = {};
+    (categoriesData || []).forEach((c) => {
+      if (c && typeof c === 'object' && c.name) map[c.name.toLowerCase()] = c;
+    });
+    return map;
+  }, [categoriesData]);
 
   // State
   const [spiceLevel, setSpiceLevel] = useState('Low');
@@ -38,6 +55,20 @@ const ItemDetails = () => {
   // Get current quantity from cart
   const cartQuantity = getItemQuantity(displayItem?.id);
   const quantity = cartQuantity > 0 ? cartQuantity : 1;
+
+  const itemCategoryName =
+    typeof displayItem?.category === 'string'
+      ? displayItem.category
+      : displayItem?.category?.name || '';
+  const resolvedCategory = categoryByName[itemCategoryName.toLowerCase()] || null;
+  const isOrderable =
+    !resolvedCategory ||
+    !resolvedCategory.isTimeRestricted ||
+    isCategoryOrderable(resolvedCategory, now);
+  const windowLabel =
+    resolvedCategory && resolvedCategory.isTimeRestricted
+      ? formatWindowLabel(resolvedCategory)
+      : '';
 
   // Add-ons configuration
   const addons = [
@@ -67,6 +98,7 @@ const ItemDetails = () => {
   };
 
   const handleQuantityChange = (change) => {
+    if (!isOrderable) return;
     if (!displayItem?.id) return;
     
     const newQuantity = quantity + change;
@@ -109,6 +141,7 @@ const ItemDetails = () => {
   };
 
   const handleAddToCart = () => {
+    if (!isOrderable) return;
     if (!displayItem?.id) return;
 
     // Calculate unit price with addons (for 1 item)
@@ -127,6 +160,7 @@ const ItemDetails = () => {
       discount: displayItem.discount || 0,
       quantity: 1,
       image: displayItem.image,
+      category: resolvedCategory?.name || itemCategoryName || '',
       customizations: {
         spiceLevel,
         addons: selectedAddons.map(addonId => {
@@ -265,7 +299,7 @@ const ItemDetails = () => {
         <div className="flex items-center justify-between bg-gray-200 dark:bg-gray-800 rounded-full p-1 min-w-[120px]">
           <button
             onClick={() => handleQuantityChange(-1)}
-            disabled={quantity <= 1}
+            disabled={quantity <= 1 || !isOrderable}
             className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-gray-700 text-[#7f4f13] shadow-md border-2 border-gray-200 dark:border-gray-600 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="material-symbols-outlined">remove</span>
@@ -273,14 +307,22 @@ const ItemDetails = () => {
           <span className="text-lg font-bold px-2">{quantity}</span>
           <button
             onClick={() => handleQuantityChange(1)}
-            className="flex size-10 items-center justify-center rounded-full bg-[#7f4f13] text-white shadow-md border-2 border-[#7f4f13]/20 hover:shadow-lg"
+            disabled={!isOrderable}
+            className="flex size-10 items-center justify-center rounded-full bg-[#7f4f13] text-white shadow-md border-2 border-[#7f4f13]/20 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span className="material-symbols-outlined">add</span>
           </button>
         </div>
 
         {/* Add to Cart / Update Cart CTA */}
-        {cartQuantity > 0 ? (
+        {!isOrderable ? (
+          <button
+            disabled
+            className="flex-1 bg-gray-300 text-gray-600 h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-sm shadow-xl border-2 border-gray-300 cursor-not-allowed"
+          >
+            Available {windowLabel} (IST)
+          </button>
+        ) : cartQuantity > 0 ? (
           <button
             onClick={() => navigate('/cart')}
             className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
@@ -289,13 +331,13 @@ const ItemDetails = () => {
             View Cart ({cartQuantity})
           </button>
         ) : (
-        <button
-          onClick={handleAddToCart}
-          className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
-        >
-          <span className="material-symbols-outlined">shopping_basket</span>
-          Add to Cart
-        </button>
+          <button
+            onClick={handleAddToCart}
+            className="flex-1 bg-[#7f4f13] text-white h-12 rounded-xl flex items-center justify-center gap-2 font-bold text-lg shadow-xl border-2 border-[#7f4f13] hover:shadow-2xl active:scale-95 transition-all"
+          >
+            <span className="material-symbols-outlined">shopping_basket</span>
+            Add to Cart
+          </button>
         )}
       </div>
     </div>
