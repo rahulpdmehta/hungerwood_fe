@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import useCartStore from '@store/useCartStore';
 import useWalletStore from '@store/useWalletStore';
 import useRestaurantStore from '@store/useRestaurantStore';
@@ -13,6 +13,8 @@ import { useAnimation } from '@/contexts/AnimationContext';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { BILLING } from '@utils/constants';
 import { toast } from 'react-hot-toast';
+import { useCategories } from '@hooks/useMenuQueries';
+import { isCategoryOrderable, formatWindowLabel } from '@utils/categoryWindow';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -20,6 +22,28 @@ const Checkout = () => {
   const { items, totalPrice, clearCart } = useCartStore();
   const { isOpen, closingMessage } = useRestaurantStore();
   const { animations } = useAnimation();
+
+  const { data: categoriesData = [] } = useCategories();
+  const [windowNow, setWindowNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setWindowNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const categoryByName = useMemo(() => {
+    const map = {};
+    (categoriesData || []).forEach((c) => {
+      if (c && c.name) map[c.name.toLowerCase()] = c;
+    });
+    return map;
+  }, [categoriesData]);
+
+  const blockedItems = useMemo(
+    () =>
+      (items || []).map((ci) => ({ ci, cat: categoryByName[(ci.category || '').toLowerCase()] }))
+        .filter(({ cat }) => cat && cat.isTimeRestricted && !isCategoryOrderable(cat, windowNow)),
+    [items, categoryByName, windowNow]
+  );
 
   // Get data from cart page
   const cookingInstructions = location.state?.cookingInstructions || '';
@@ -264,6 +288,13 @@ const Checkout = () => {
   };
 
   const handlePlaceOrder = useCallback(async () => {
+    // Re-verify category time windows before placing order
+    if (blockedItems.length > 0) {
+      const first = blockedItems[0];
+      toast.error(`${first.cat.name} is only orderable between ${formatWindowLabel(first.cat)} (IST).`);
+      return;
+    }
+
     // Check restaurant status - block orders if closed
     if (!isOpen) {
       toast.error(closingMessage || 'Restaurant is currently closed. Please try again later.');
@@ -430,7 +461,7 @@ const Checkout = () => {
       setIsPlacingOrder(false);
       isProcessingRef.current = false;
     }
-  }, [items, orderType, selectedAddress, paymentMethod, cookingInstructions, itemTotal, deliveryFee, taxes, totalPayable, walletAmount, navigate, animations, clearCart, isOpen, closingMessage]);
+  }, [items, orderType, selectedAddress, paymentMethod, cookingInstructions, itemTotal, deliveryFee, taxes, totalPayable, walletAmount, navigate, animations, clearCart, isOpen, closingMessage, blockedItems]);
 
   // Don't render checkout if cart is empty
   if (items.length === 0 && !isPlacingOrder) {
@@ -452,6 +483,20 @@ const Checkout = () => {
       </div>
 
       <main className="flex-1 pb-40">
+        {/* Category window blocked items banner */}
+        {blockedItems.length > 0 && (
+          <div className="mx-4 my-3 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 px-3 py-2 text-sm text-orange-700 dark:text-orange-200">
+            Some items in your cart are outside their ordering window:
+            <ul className="list-disc ml-5 mt-1 text-xs">
+              {blockedItems.map(({ ci, cat }) => (
+                <li key={ci.id}>
+                  {ci.name} — {cat.name} {formatWindowLabel(cat)} (IST)
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Segmented Buttons - Order Type */}
         <div className="px-4 py-6">
           <div className="flex h-12 flex-1 items-center justify-center rounded-xl bg-white dark:bg-[#2d221a] p-1 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
