@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useCartStore from '@store/useCartStore';
 import useRestaurantStore from '@store/useRestaurantStore';
 import useAuthStore from '@store/useAuthStore';
 import BackButton from '@components/common/BackButton';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { BILLING } from '@utils/constants';
+import { useCategories } from '@hooks/useMenuQueries';
+import { isCategoryOrderable, formatWindowLabel } from '@utils/categoryWindow';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -13,6 +15,29 @@ const Cart = () => {
   const { isOpen, closingMessage } = useRestaurantStore();
   const { isAuthenticated } = useAuthStore();
   const [cookingInstructions, setCookingInstructions] = useState('');
+
+  const { data: categoriesData = [] } = useCategories();
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const categoryByName = useMemo(() => {
+    const map = {};
+    (categoriesData || []).forEach((c) => {
+      if (c && c.name) map[c.name.toLowerCase()] = c;
+    });
+    return map;
+  }, [categoriesData]);
+
+  const blockedItems = useMemo(
+    () =>
+      items
+        .map((ci) => ({ ci, cat: categoryByName[(ci.category || '').toLowerCase()] }))
+        .filter(({ cat }) => cat && cat.isTimeRestricted && !isCategoryOrderable(cat, now)),
+    [items, categoryByName, now]
+  );
 
   // Calculate bill details
   const itemTotal = totalPrice;
@@ -31,6 +56,12 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
+    if (blockedItems.length > 0) {
+      const first = blockedItems[0];
+      alert(`${first.cat.name} is only orderable between ${formatWindowLabel(first.cat)} (IST).`);
+      return;
+    }
+
     // Block checkout if restaurant is closed
     if (!isOpen) {
       alert(closingMessage || 'Restaurant is currently closed. Please try again later.');
@@ -267,6 +298,15 @@ const Cart = () => {
 
       {/* Sticky Bottom Checkout */}
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white/95 dark:bg-[#211811]/95 backdrop-blur-md border-t-2 border-gray-200 dark:border-gray-700 shadow-lg">
+        {blockedItems.length > 0 && (
+          <div className="mx-0 mb-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 px-3 py-2 text-xs text-orange-700 dark:text-orange-200">
+            {blockedItems.map(({ ci, cat }) => (
+              <div key={ci.id}>
+                {ci.name} — {cat.name} window is {formatWindowLabel(cat)} (IST).
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
             <span className="text-[10px] text-[#887263] dark:text-gray-400 uppercase font-bold tracking-widest">
@@ -276,15 +316,17 @@ const Cart = () => {
           </div>
           <button
             onClick={handleCheckout}
-            disabled={!isOpen}
+            disabled={!isOpen || blockedItems.length > 0}
             className={`flex-1 font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg ${
-              isOpen
-                ? 'bg-[#7f4f13] text-white hover:bg-[#7f4f13]/90 active:scale-95 shadow-[#7f4f13]/25'
-                : 'bg-gray-400 text-white cursor-not-allowed opacity-60'
+              !isOpen
+                ? 'bg-gray-400 text-white cursor-not-allowed opacity-60'
+                : blockedItems.length > 0
+                ? 'bg-[#7f4f13] text-white opacity-50 cursor-not-allowed'
+                : 'bg-[#7f4f13] text-white hover:bg-[#7f4f13]/90 active:scale-95 shadow-[#7f4f13]/25'
             }`}
           >
             <span>{isOpen ? 'Proceed to Checkout' : 'Restaurant Closed'}</span>
-            {isOpen && <span className="material-symbols-outlined">chevron_right</span>}
+            {isOpen && blockedItems.length === 0 && <span className="material-symbols-outlined">chevron_right</span>}
           </button>
         </div>
       </div>
