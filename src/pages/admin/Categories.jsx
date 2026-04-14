@@ -23,7 +23,10 @@ const Categories = () => {
     name: '',
     description: '',
     image: '',
-    isActive: true
+    isActive: true,
+    isTimeRestricted: false,
+    availableFrom: '',
+    availableTo: '',
   });
   const [sortKey, setSortKey] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
@@ -72,7 +75,10 @@ const Categories = () => {
         name: category.name || '',
         description: category.description || '',
         image: category.image || '',
-        isActive: category.isActive !== undefined ? category.isActive : true
+        isActive: category.isActive !== undefined ? category.isActive : true,
+        isTimeRestricted: !!category.isTimeRestricted,
+        availableFrom: category.availableFrom || '',
+        availableTo: category.availableTo || '',
       });
     } else {
       setSelectedCategory(null);
@@ -80,7 +86,10 @@ const Categories = () => {
         name: '',
         description: '',
         image: '',
-        isActive: true
+        isActive: true,
+        isTimeRestricted: false,
+        availableFrom: '',
+        availableTo: '',
       });
     }
     setModalOpen(true);
@@ -93,7 +102,10 @@ const Categories = () => {
       name: '',
       description: '',
       image: '',
-      isActive: true
+      isActive: true,
+      isTimeRestricted: false,
+      availableFrom: '',
+      availableTo: '',
     });
   };
 
@@ -104,7 +116,10 @@ const Categories = () => {
       const data = {
         name: formData.name,
         description: formData.description,
-        isActive: formData.isActive
+        isActive: formData.isActive,
+        isTimeRestricted: formData.isTimeRestricted,
+        availableFrom: formData.isTimeRestricted ? formData.availableFrom : null,
+        availableTo: formData.isTimeRestricted ? formData.availableTo : null,
       };
 
       // Handle image (File or URL)
@@ -178,6 +193,11 @@ const Categories = () => {
           <p className="font-medium text-gray-900">{row.name}</p>
           {row.description && (
             <p className="text-xs text-gray-500 mt-1">{row.description}</p>
+          )}
+          {row.isTimeRestricted && row.availableFrom && row.availableTo && (
+            <p className="text-xs text-orange-600 mt-1">
+              Lunch window: {row.availableFrom}–{row.availableTo}
+            </p>
           )}
         </div>
       )
@@ -310,6 +330,56 @@ const Categories = () => {
                   onChange={(value) => setFormData({ ...formData, image: value })}
                   label="Category Image"
                 />
+
+                <div className="border-t border-gray-200 pt-4 space-y-3">
+                  <div className="flex items-center">
+                    <input
+                      type="checkbox"
+                      id="isTimeRestricted"
+                      checked={formData.isTimeRestricted}
+                      onChange={(e) =>
+                        setFormData({ ...formData, isTimeRestricted: e.target.checked })
+                      }
+                      className="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500"
+                    />
+                    <label htmlFor="isTimeRestricted" className="ml-2 text-sm text-gray-700">
+                      Time-restricted ordering (e.g. Lunch)
+                    </label>
+                  </div>
+
+                  {formData.isTimeRestricted && (
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Available from *
+                        </label>
+                        <input
+                          type="time"
+                          value={formData.availableFrom}
+                          onChange={(e) =>
+                            setFormData({ ...formData, availableFrom: e.target.value })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          required={formData.isTimeRestricted}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Available to *
+                        </label>
+                        <input
+                          type="time"
+                          value={formData.availableTo}
+                          onChange={(e) =>
+                            setFormData({ ...formData, availableTo: e.target.value })
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                          required={formData.isTimeRestricted}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 <div className="flex items-center">
                   <input
