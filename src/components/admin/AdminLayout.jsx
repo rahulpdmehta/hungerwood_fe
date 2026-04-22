@@ -19,6 +19,11 @@ import {
   Image,
   Settings,
   Shield,
+  Package,
+  Tags,
+  ClipboardList,
+  Megaphone,
+  BarChart3,
 } from 'lucide-react';
 import useAuthStore from '../../store/useAuthStore';
 
@@ -27,8 +32,9 @@ const AdminLayout = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
+  const role = user?.role;
 
-  const navItems = [
+  const restaurantNavItems = [
     { name: 'Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Categories', path: '/admin/categories', icon: FolderTree },
     { name: 'Menu Items', path: '/admin/menu', icon: UtensilsCrossed },
@@ -37,6 +43,15 @@ const AdminLayout = ({ children }) => {
     { name: 'Banners', path: '/admin/banners', icon: Image },
     { name: 'Photos', path: '/admin/photos', icon: Image },
     { name: 'Settings', path: '/admin/settings', icon: Settings },
+  ];
+
+  const groceryNavItems = [
+    { name: 'Dashboard', path: '/admin/grocery', icon: BarChart3 },
+    { name: 'Orders', path: '/admin/grocery/orders', icon: ClipboardList },
+    { name: 'Products', path: '/admin/grocery/products', icon: Package },
+    { name: 'Categories', path: '/admin/grocery/categories', icon: Tags },
+    { name: 'Banners', path: '/admin/grocery/banners', icon: Megaphone },
+    { name: 'Settings', path: '/admin/grocery/settings', icon: Settings },
   ];
 
   const handleLogout = () => {
@@ -84,29 +99,65 @@ const AdminLayout = ({ children }) => {
 
         {/* Navigation */}
         <nav className="p-4 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = isActive(item.path);
+          {(role === 'RESTAURANT_ADMIN' || role === 'SUPER_ADMIN') && (
+            <>
+              <p className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Restaurant
+              </p>
+              {restaurantNavItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.path);
 
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setSidebarOpen(false)}
-                className={`
-                  flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
-                  ${active
-                    ? 'bg-orange-50 text-orange-600 font-medium'
-                    : 'text-gray-700 hover:bg-gray-50'
-                  }
-                `}
-              >
-                <Icon size={20} />
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
-          {user?.role === 'SUPER_ADMIN' && (
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`
+                      flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+                      ${active
+                        ? 'bg-orange-50 text-orange-600 font-medium'
+                        : 'text-gray-700 hover:bg-gray-50'
+                      }
+                    `}
+                  >
+                    <Icon size={20} />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </>
+          )}
+          {(role === 'GROCERY_ADMIN' || role === 'SUPER_ADMIN') && (
+            <>
+              <p className="px-4 pt-2 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Grocery
+              </p>
+              {groceryNavItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.path);
+
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`
+                      flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+                      ${active
+                        ? 'bg-orange-50 text-orange-600 font-medium'
+                        : 'text-gray-700 hover:bg-gray-50'
+                      }
+                    `}
+                  >
+                    <Icon size={20} />
+                    <span>{item.name}</span>
+                  </Link>
+                );
+              })}
+            </>
+          )}
+          {role === 'SUPER_ADMIN' && (
             <Link
               to="/admin/super/users"
               onClick={() => setSidebarOpen(false)}
