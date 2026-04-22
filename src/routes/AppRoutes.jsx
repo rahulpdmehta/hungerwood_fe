@@ -26,6 +26,7 @@ import Help from '@pages/customer/Help';
 import Settings from '@pages/customer/Settings';
 import AboutUs from '@pages/customer/AboutUs';
 import GroceryHome from '@pages/customer/grocery/Home';
+import GroceryCategory from '@pages/customer/grocery/Category';
 
 const Animated = ({ children }) => <PageTransition>{children}</PageTransition>;
 
@@ -42,6 +43,7 @@ const AppRoutes = () => {
         <Route path="/menu" element={<Animated><Menu /></Animated>} />
         <Route path="/menu/:id" element={<Animated><ItemDetails /></Animated>} />
         <Route path="/grocery" element={<Animated><GroceryHome /></Animated>} />
+        <Route path="/grocery/c/:slug" element={<Animated><GroceryCategory /></Animated>} />
 
         {/* Protected Customer Routes */}
         <Route path="/cart" element={<Animated><Cart /></Animated>} />
