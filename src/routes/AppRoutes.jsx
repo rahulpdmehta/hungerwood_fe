@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import ProtectedRoute from './ProtectedRoute';
@@ -25,8 +26,26 @@ import PrivacyPolicy from '@pages/customer/PrivacyPolicy';
 import Help from '@pages/customer/Help';
 import Settings from '@pages/customer/Settings';
 import AboutUs from '@pages/customer/AboutUs';
+const GroceryHome = lazy(() => import('@pages/customer/grocery/Home'));
+const GroceryCategory = lazy(() => import('@pages/customer/grocery/Category'));
+const GroceryProductDetail = lazy(() => import('@pages/customer/grocery/ProductDetail'));
+const GroceryCart = lazy(() => import('@pages/customer/grocery/Cart'));
+const GroceryCheckout = lazy(() => import('@pages/customer/grocery/Checkout'));
+const GroceryOrderTracking = lazy(() => import('@pages/customer/grocery/OrderTracking'));
 
 const Animated = ({ children }) => <PageTransition>{children}</PageTransition>;
+
+const Lazy = ({ children }) => (
+  <Suspense
+    fallback={
+      <div className="min-h-screen flex items-center justify-center bg-[#f8f7f6] dark:bg-[#211811]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7f4f13]"></div>
+      </div>
+    }
+  >
+    {children}
+  </Suspense>
+);
 
 const AppRoutes = () => {
   const location = useLocation();
@@ -40,6 +59,10 @@ const AppRoutes = () => {
         <Route path="/" element={<Animated><Home /></Animated>} />
         <Route path="/menu" element={<Animated><Menu /></Animated>} />
         <Route path="/menu/:id" element={<Animated><ItemDetails /></Animated>} />
+        <Route path="/grocery" element={<Lazy><Animated><GroceryHome /></Animated></Lazy>} />
+        <Route path="/grocery/c/:slug" element={<Lazy><Animated><GroceryCategory /></Animated></Lazy>} />
+        <Route path="/grocery/p/:id" element={<Lazy><Animated><GroceryProductDetail /></Animated></Lazy>} />
+        <Route path="/grocery/cart" element={<Lazy><Animated><GroceryCart /></Animated></Lazy>} />
 
         {/* Protected Customer Routes */}
         <Route path="/cart" element={<Animated><Cart /></Animated>} />
@@ -48,6 +71,26 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Animated><Checkout /></Animated>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/grocery/checkout"
+          element={
+            <ProtectedRoute>
+              <Lazy>
+                <Animated><GroceryCheckout /></Animated>
+              </Lazy>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/grocery/orders/:id"
+          element={
+            <ProtectedRoute>
+              <Lazy>
+                <Animated><GroceryOrderTracking /></Animated>
+              </Lazy>
             </ProtectedRoute>
           }
         />

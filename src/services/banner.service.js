@@ -9,9 +9,10 @@ import api from './api';
  * Get all active banners (public)
  * @returns {Promise<Array>} List of active banners
  */
-export const getActiveBanners = async () => {
+export const getActiveBanners = async (options = {}) => {
   try {
-    const response = await api.get('/banners/active');
+    const params = typeof options === 'object' && options !== null ? options : {};
+    const response = await api.get('/banners/active', { params });
     return response.data || [];
   } catch (error) {
     console.error('Failed to fetch active banners:', error);
@@ -21,12 +22,16 @@ export const getActiveBanners = async () => {
 
 /**
  * Get all banners (admin)
- * @param {boolean} includeDisabled - Whether to include disabled banners
+ * @param {boolean|Object} optionsOrFlag - includeDisabled flag (legacy) or params object
  * @returns {Promise<Array>} List of all banners
  */
-export const getAllBanners = async (includeDisabled = true) => {
+export const getAllBanners = async (optionsOrFlag = true) => {
   try {
-    const response = await api.get(`/banners/all?includeDisabled=${includeDisabled}`);
+    const params =
+      typeof optionsOrFlag === 'object' && optionsOrFlag !== null
+        ? { includeDisabled: true, ...optionsOrFlag }
+        : { includeDisabled: optionsOrFlag };
+    const response = await api.get('/banners/all', { params });
     return response.data || [];
   } catch (error) {
     console.error('Failed to fetch all banners:', error);

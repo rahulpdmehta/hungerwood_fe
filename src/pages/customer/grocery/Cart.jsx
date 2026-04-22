@@ -1,0 +1,148 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Trash2 } from 'lucide-react';
+import { useState } from 'react';
+import useGroceryCartStore from '@store/useGroceryCartStore';
+import useAuthStore from '@store/useAuthStore';
+import { useGrocerySettingsPublic } from '@hooks/useGroceryCustomerQueries';
+
+export default function GroceryCart() {
+  const navigate = useNavigate();
+  const { items, subtotal, savings, incrementQuantity, decrementQuantity, removeItem } = useGroceryCartStore();
+  const { isAuthenticated } = useAuthStore();
+  const { data: settings } = useGrocerySettingsPublic();
+  const [instructions, setInstructions] = useState('');
+
+  const taxRate = settings?.taxRate ?? 0.05;
+  const tax = Math.round(subtotal * taxRate);
+  const freeThreshold = settings?.freeDeliveryThreshold;
+  const deliveryFlat = settings?.deliveryFee ?? 40;
+  const delivery = freeThreshold != null && subtotal >= freeThreshold ? 0 : deliveryFlat;
+  const grandTotal = subtotal + tax + delivery;
+
+  const minOrderValue = settings?.minOrderValue ?? null;
+  const belowMin = minOrderValue != null && subtotal < minOrderValue;
+  const shopClosed = settings && !settings.isOpen;
+  const canCheckout = !belowMin && !shopClosed && items.length > 0;
+
+  const handleCheckout = () => {
+    if (!canCheckout) return;
+    const checkoutState = { instructions, grandTotal };
+    if (!isAuthenticated) {
+      navigate('/login', { state: { returnTo: '/grocery/checkout', returnState: checkoutState } });
+      return;
+    }
+    navigate('/grocery/checkout', { state: checkoutState });
+  };
+
+  if (items.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex flex-col">
+        <nav className="bg-white dark:bg-[#211811] border-b border-gray-200 dark:border-gray-700 p-4 flex items-center">
+          <Link to="/grocery" className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <ArrowLeft size={20} />
+          </Link>
+          <h2 className="text-lg font-bold ml-2">Grocery Cart</h2>
+        </nav>
+        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+          <h3 className="text-xl font-bold mb-2">Your grocery cart is empty</h3>
+          <Link to="/grocery" className="bg-green-600 text-white font-bold px-6 py-3 rounded-lg mt-4">Browse Grocery</Link>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-40">
+      <nav className="sticky top-0 z-50 bg-white dark:bg-[#211811] border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <div className="flex items-center p-4 max-w-md mx-auto">
+          <Link to="/grocery" className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+            <ArrowLeft size={20} />
+          </Link>
+          <h2 className="text-lg font-bold ml-2">Grocery Cart ({items.length})</h2>
+        </div>
+      </nav>
+
+      <main className="max-w-md mx-auto p-4 space-y-4">
+        {items.map(item => {
+          const lineTotal = item.sellingPrice * item.quantity;
+          return (
+            <div key={`${item.productId}:${item.variantId}`} className="flex gap-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
+              <div className="w-20 h-20 bg-cover bg-center rounded shrink-0" style={{ backgroundImage: `url("${item.image}")` }} />
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-sm">{item.name}</p>
+                <p className="text-xs text-gray-500">{item.variantLabel}</p>
+                <p className="text-sm font-bold text-green-700 dark:text-green-300 mt-1">₹{item.sellingPrice} × {item.quantity} = ₹{lineTotal}</p>
+              </div>
+              <div className="flex flex-col items-end justify-between gap-2">
+                <button onClick={() => removeItem(item.productId, item.variantId)} className="text-red-600 p-1" aria-label="Remove">
+                  <Trash2 size={16} />
+                </button>
+                <div className="flex items-center bg-green-100 dark:bg-green-900/30 rounded border border-green-300 dark:border-green-700 overflow-hidden text-sm">
+                  <button onClick={() => decrementQuantity(item.productId, item.variantId)} className="px-2 py-1 text-green-800 dark:text-green-200 font-bold">-</button>
+                  <span className="px-2 text-green-800 dark:text-green-200 font-bold">{item.quantity}</span>
+                  <button onClick={() => incrementQuantity(item.productId, item.variantId)} className="px-2 py-1 text-green-800 dark:text-green-200 font-bold">+</button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        <div>
+          <label className="block text-sm font-bold mb-2">Pack notes (optional)</label>
+          <textarea
+            value={instructions}
+            onChange={e => setInstructions(e.target.value)}
+            rows={2}
+            className="w-full p-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#2d221a] rounded-lg text-sm"
+            placeholder="e.g. skip bruised tomatoes"
+          />
+        </div>
+
+        <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 border border-gray-200 dark:border-gray-700 space-y-2 text-sm">
+          <div className="flex justify-between"><span>Subtotal</span><span>₹{subtotal}</span></div>
+          {savings > 0 && (
+            <div className="flex justify-between text-green-700 dark:text-green-400">
+              <span>MRP savings</span>
+              <span>-₹{savings}</span>
+            </div>
+          )}
+          <div className="flex justify-between"><span>Tax</span><span>₹{tax}</span></div>
+          <div className="flex justify-between">
+            <span>Delivery</span>
+            <span>{delivery === 0 ? <span className="text-green-700 dark:text-green-400 font-bold">FREE</span> : `₹${delivery}`}</span>
+          </div>
+          {freeThreshold != null && subtotal < freeThreshold && (
+            <p className="text-xs text-gray-500">Add ₹{freeThreshold - subtotal} more for free delivery</p>
+          )}
+          <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-2 font-bold">
+            <span>Total</span>
+            <span>₹{grandTotal}</span>
+          </div>
+        </div>
+
+        {belowMin && (
+          <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3 text-sm text-orange-800 dark:text-orange-200">
+            Add ₹{minOrderValue - subtotal} more to place this order. Minimum is ₹{minOrderValue}.
+          </div>
+        )}
+        {shopClosed && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-3 text-sm text-red-800 dark:text-red-200">
+            Grocery shop is currently closed. {settings?.closingMessage}
+          </div>
+        )}
+      </main>
+
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#211811] border-t-2 border-gray-200 dark:border-gray-700 p-4">
+        <div className="max-w-md mx-auto">
+          <button
+            onClick={handleCheckout}
+            disabled={!canCheckout}
+            className="w-full bg-green-600 disabled:bg-gray-400 text-white py-3 rounded-lg font-bold"
+          >
+            Proceed to Checkout · ₹{grandTotal}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
