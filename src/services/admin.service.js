@@ -224,10 +224,12 @@ export const adminOrderService = {
 // ==================== USER MANAGEMENT ====================
 
 export const adminUserService = {
-  list: () => api.get('/super/users').then(r => r.data.data),
-  create: (payload) => api.post('/super/users', payload).then(r => r.data.data),
-  update: (id, payload) => api.patch(`/super/users/${id}`, payload).then(r => r.data.data),
-  deactivate: (id) => api.delete(`/super/users/${id}`).then(r => r.data.data),
+  // Response interceptor unwraps axios response to JSON body {success, data},
+  // so r.data is the payload.
+  list: () => api.get('/super/users').then(r => r.data),
+  create: (payload) => api.post('/super/users', payload).then(r => r.data),
+  update: (id, payload) => api.patch(`/super/users/${id}`, payload).then(r => r.data),
+  deactivate: (id) => api.delete(`/super/users/${id}`).then(r => r.data),
 };
 
 // ==================== DASHBOARD ANALYTICS ====================
