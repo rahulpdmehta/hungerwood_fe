@@ -9,9 +9,10 @@ import api from './api';
  * Get all active banners (public)
  * @returns {Promise<Array>} List of active banners
  */
-export const getActiveBanners = async () => {
+export const getActiveBanners = async (options = {}) => {
   try {
-    const response = await api.get('/banners/active');
+    const params = typeof options === 'object' && options !== null ? options : {};
+    const response = await api.get('/banners/active', { params });
     return response.data || [];
   } catch (error) {
     console.error('Failed to fetch active banners:', error);

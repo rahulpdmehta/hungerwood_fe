@@ -17,7 +17,7 @@ export default function GroceryHome() {
   const { data: settings } = useGrocerySettingsPublic();
   const { data: banners = [] } = useQuery({
     queryKey: ['grocery-banners-active'],
-    queryFn: () => getActiveBanners(),
+    queryFn: () => getActiveBanners({ section: 'grocery' }),
   });
   const cartCount = useGroceryCartStore(s => s.totalItems);
 
