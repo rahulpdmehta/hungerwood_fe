@@ -9,7 +9,7 @@ import Login from '@pages/auth/Login';
 import ProfileCompletion from '@pages/auth/ProfileCompletion';
 
 // Customer Pages
-import SectionPicker from '@pages/customer/SectionPicker';
+import Home from '@pages/customer/Home';
 import Menu from '@pages/customer/Menu';
 import ItemDetails from '@pages/customer/ItemDetails';
 import Cart from '@pages/customer/Cart';
@@ -38,7 +38,7 @@ const AppRoutes = () => {
         {/* Public Routes */}
         <Route path="/login" element={<Animated><Login /></Animated>} />
         <Route path="/complete-profile" element={<Animated><ProfileCompletion /></Animated>} />
-        <Route path="/" element={<Animated><SectionPicker /></Animated>} />
+        <Route path="/" element={<Animated><Home /></Animated>} />
         <Route path="/menu" element={<Animated><Menu /></Animated>} />
         <Route path="/menu/:id" element={<Animated><ItemDetails /></Animated>} />
         <Route path="/grocery" element={<Animated><GroceryHome /></Animated>} />

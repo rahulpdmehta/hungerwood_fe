@@ -2,6 +2,7 @@ import BottomNavBar from '@components/layout/BottomNavBar';
 import FloatingCartButton from '@components/layout/FloatingCartButton';
 import HomeHeader from '@components/layout/HomeHeader';
 import WalletBalancePill from '@components/home/WalletBalancePill';
+import SectionTilesStrip from '@components/home/GroceryEntryCard';
 import BannerCarousel from '@components/home/BannerCarousel';
 import ReferEarnBanner from '@components/home/ReferEarnBanner';
 import RestaurantInfoCard from '@components/home/RestaurantInfoCard';
@@ -17,6 +18,9 @@ const Home = () => {
 
       {/* Wallet Balance Pill */}
       <WalletBalancePill />
+
+      {/* Section switcher (Restaurant / Grocery) */}
+      <SectionTilesStrip />
 
       {/* Promotional Carousel */}
       <BannerCarousel />
