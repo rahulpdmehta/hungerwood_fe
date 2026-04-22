@@ -67,6 +67,7 @@ export const LOCAL_STORAGE_KEYS = {
   AUTH_TOKEN: 'hungerwood_token',
   USER_DATA: 'hungerwood_user',
   CART: 'hungerwood_cart',
+  GROCERY_CART: 'hungerwood_grocery_cart',
 };
 
 // Billing & Pricing Constants
