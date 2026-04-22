@@ -28,6 +28,7 @@ import AboutUs from '@pages/customer/AboutUs';
 import GroceryHome from '@pages/customer/grocery/Home';
 import GroceryCategory from '@pages/customer/grocery/Category';
 import GroceryProductDetail from '@pages/customer/grocery/ProductDetail';
+import GroceryCart from '@pages/customer/grocery/Cart';
 
 const Animated = ({ children }) => <PageTransition>{children}</PageTransition>;
 
@@ -46,6 +47,7 @@ const AppRoutes = () => {
         <Route path="/grocery" element={<Animated><GroceryHome /></Animated>} />
         <Route path="/grocery/c/:slug" element={<Animated><GroceryCategory /></Animated>} />
         <Route path="/grocery/p/:id" element={<Animated><GroceryProductDetail /></Animated>} />
+        <Route path="/grocery/cart" element={<Animated><GroceryCart /></Animated>} />
 
         {/* Protected Customer Routes */}
         <Route path="/cart" element={<Animated><Cart /></Animated>} />
