@@ -17,7 +17,8 @@ import {
   User,
   Users,
   Image,
-  Settings
+  Settings,
+  Shield,
 } from 'lucide-react';
 import useAuthStore from '../../store/useAuthStore';
 
@@ -105,6 +106,22 @@ const AdminLayout = ({ children }) => {
               </Link>
             );
           })}
+          {user?.role === 'SUPER_ADMIN' && (
+            <Link
+              to="/admin/super/users"
+              onClick={() => setSidebarOpen(false)}
+              className={`
+                flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors
+                ${isActive('/admin/super/users')
+                  ? 'bg-orange-50 text-orange-600 font-medium'
+                  : 'text-gray-700 hover:bg-gray-50'
+                }
+              `}
+            >
+              <Shield size={20} />
+              <span>Users & Roles</span>
+            </Link>
+          )}
         </nav>
 
         {/* User Info & Logout */}

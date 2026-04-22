@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
+import RoleGuard from '@components/admin/RoleGuard';
 
 // Admin Pages
 import Dashboard from '@pages/admin/Dashboard';
@@ -11,6 +12,7 @@ import AdminBanners from '@pages/admin/Banners';
 import AdminPhotos from '@pages/admin/Photos';
 import Reports from '@pages/admin/Reports';
 import Settings from '@pages/admin/Settings';
+import AdminSuperUsers from '@pages/admin/super/Users';
 
 const AdminRoutes = () => {
   return (
@@ -92,6 +94,16 @@ const AdminRoutes = () => {
         element={
           <ProtectedRoute requireAdmin>
             <Settings />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/super/users"
+        element={
+          <ProtectedRoute requireAdmin>
+            <RoleGuard allow={['SUPER_ADMIN']}>
+              <AdminSuperUsers />
+            </RoleGuard>
           </ProtectedRoute>
         }
       />
