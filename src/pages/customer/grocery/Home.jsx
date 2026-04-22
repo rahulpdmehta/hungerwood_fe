@@ -9,6 +9,7 @@ import {
 import { getActiveBanners } from '@services/banner.service';
 import { useQuery } from '@tanstack/react-query';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
+import SectionTilesStrip from '@components/home/GroceryEntryCard';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 
 export default function GroceryHome() {
@@ -51,6 +52,9 @@ export default function GroceryHome() {
       </nav>
 
       <main className="max-w-md mx-auto">
+        {/* Section switcher (Restaurant / Grocery) */}
+        <SectionTilesStrip />
+
         {banners.length > 0 && (
           <div className="px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
             {banners.map(b => (
