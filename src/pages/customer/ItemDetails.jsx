@@ -161,6 +161,7 @@ const ItemDetails = () => {
       quantity: 1,
       image: displayItem.image,
       category: resolvedCategory?.name || itemCategoryName || '',
+      categoryId: resolvedCategory?.id || resolvedCategory?._id || displayItem.categoryId || null,
       customizations: {
         spiceLevel,
         addons: selectedAddons.map(addonId => {

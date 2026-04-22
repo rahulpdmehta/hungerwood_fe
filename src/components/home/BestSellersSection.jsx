@@ -1,13 +1,40 @@
 import { useNavigate } from 'react-router-dom';
-import { useMemo } from 'react';
-import { useMenuItems } from '@hooks/useMenuQueries';
+import { useEffect, useMemo, useState } from 'react';
+import { useMenuItems, useCategories } from '@hooks/useMenuQueries';
 import useCartStore from '@store/useCartStore';
 import { MenuSkeleton } from '@components/common/Loader';
+import {
+  isCategoryOrderable,
+  formatWindowLabel,
+  buildCategoryLookups,
+} from '@utils/categoryWindow';
 
 const BestSellersSection = () => {
   const navigate = useNavigate();
   const { addItem, getItemQuantity, incrementQuantity, decrementQuantity, removeItem } = useCartStore();
   const { data: menuItems = [], isLoading: itemsLoading } = useMenuItems();
+  const { data: categoriesData = [] } = useCategories();
+
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const categoryLookups = useMemo(
+    () => buildCategoryLookups(categoriesData),
+    [categoriesData]
+  );
+
+  const resolveItemCategory = (item) => {
+    const id = item.categoryId ? String(item.categoryId) : null;
+    if (id && categoryLookups.byId[id]) return categoryLookups.byId[id];
+    const name =
+      typeof item.category === 'string'
+        ? item.category
+        : item.category?.name || '';
+    return name ? categoryLookups.byName[name.toLowerCase()] || null : null;
+  };
 
   // Filter best sellers from menu items
   const bestSellers = useMemo(() => {
@@ -17,6 +44,10 @@ const BestSellersSection = () => {
   }, [menuItems]);
 
   const handleAddToCart = (item) => {
+    const cat = resolveItemCategory(item);
+    if (cat && cat.isTimeRestricted && !isCategoryOrderable(cat, now)) {
+      return;
+    }
     addItem({
       id: item.id,
       name: item.name,
@@ -24,11 +55,15 @@ const BestSellersSection = () => {
       discount: item.discount || 0,
       quantity: 1,
       image: item.image,
+      category: cat?.name || (typeof item.category === 'string' ? item.category : ''),
+      categoryId: cat?.id || cat?._id || item.categoryId || null,
     });
   };
 
   const handleIncrement = (item, e) => {
     e.stopPropagation();
+    const cat = resolveItemCategory(item);
+    if (cat && cat.isTimeRestricted && !isCategoryOrderable(cat, now)) return;
     const quantity = getItemQuantity(item.id);
     if (quantity === 0) {
       handleAddToCart(item);
@@ -74,6 +109,11 @@ const BestSellersSection = () => {
             // Handle both API format (isVeg) and fallback format (veg)
             const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
             const itemId = item.id || `best-seller-${index}`;
+            const itemCat = resolveItemCategory(item);
+            const orderable =
+              !itemCat || !itemCat.isTimeRestricted || isCategoryOrderable(itemCat, now);
+            const windowLabel =
+              itemCat && itemCat.isTimeRestricted ? formatWindowLabel(itemCat) : '';
 
             return (
               <div
@@ -106,6 +146,16 @@ const BestSellersSection = () => {
                     <span className="text-sm font-bold text-[#181411] dark:text-white">₹{item.price}</span>
                     {(() => {
                       const quantity = getItemQuantity(item.id);
+                      if (!orderable) {
+                        return (
+                          <span
+                            className="inline-flex items-center rounded px-2 py-1 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-semibold cursor-not-allowed"
+                            title={windowLabel ? `Available ${windowLabel} (IST)` : 'Currently unavailable'}
+                          >
+                            {windowLabel ? `Avail ${windowLabel}` : 'Unavailable'}
+                          </span>
+                        );
+                      }
                       return quantity > 0 ? (
                         <div className="flex items-center gap-1.5 text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded border border-gray-200 dark:border-gray-700">
                           <button

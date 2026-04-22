@@ -7,7 +7,12 @@ import BackButton from '@components/common/BackButton';
 import PriceDisplay from '@components/common/PriceDisplay';
 import { BILLING } from '@utils/constants';
 import { useCategories } from '@hooks/useMenuQueries';
-import { isCategoryOrderable, formatWindowLabel } from '@utils/categoryWindow';
+import {
+  isCategoryOrderable,
+  formatWindowLabel,
+  buildCategoryLookups,
+  resolveCartItemCategory,
+} from '@utils/categoryWindow';
 
 const Cart = () => {
   const navigate = useNavigate();
@@ -23,20 +28,17 @@ const Cart = () => {
     return () => clearInterval(id);
   }, []);
 
-  const categoryByName = useMemo(() => {
-    const map = {};
-    (categoriesData || []).forEach((c) => {
-      if (c && c.name) map[c.name.toLowerCase()] = c;
-    });
-    return map;
-  }, [categoriesData]);
+  const categoryLookups = useMemo(
+    () => buildCategoryLookups(categoriesData),
+    [categoriesData]
+  );
 
   const blockedItems = useMemo(
     () =>
       items
-        .map((ci) => ({ ci, cat: categoryByName[(ci.category || '').toLowerCase()] }))
+        .map((ci) => ({ ci, cat: resolveCartItemCategory(ci, categoryLookups) }))
         .filter(({ cat }) => cat && cat.isTimeRestricted && !isCategoryOrderable(cat, now)),
-    [items, categoryByName, now]
+    [items, categoryLookups, now]
   );
 
   // Calculate bill details
@@ -300,11 +302,22 @@ const Cart = () => {
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white/95 dark:bg-[#211811]/95 backdrop-blur-md border-t-2 border-gray-200 dark:border-gray-700 shadow-lg">
         {blockedItems.length > 0 && (
           <div className="mx-0 mb-2 rounded-lg bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 px-3 py-2 text-xs text-orange-700 dark:text-orange-200">
-            {blockedItems.map(({ ci, cat }) => (
-              <div key={ci.id}>
-                {ci.name} — {cat.name} window is {formatWindowLabel(cat)} (IST).
+            <div className="flex items-start justify-between gap-2">
+              <div className="flex-1">
+                {blockedItems.map(({ ci, cat }) => (
+                  <div key={ci.id}>
+                    {ci.name} — {cat.name} window is {formatWindowLabel(cat)} (IST).
+                  </div>
+                ))}
               </div>
-            ))}
+              <button
+                type="button"
+                onClick={() => blockedItems.forEach(({ ci }) => removeItem(ci.id))}
+                className="shrink-0 rounded-md bg-orange-600 text-white px-2 py-1 text-[11px] font-bold hover:bg-orange-700 transition-colors"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         )}
         <div className="flex items-center gap-4">

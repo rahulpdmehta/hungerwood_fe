@@ -21,6 +21,7 @@ const MenuItemCard = ({ item, onAddToCart, isOrderable = true, windowLabel = '' 
         if (onAddToCart) {
             onAddToCart(item);
         } else {
+            const catObj = typeof item.category === 'object' ? item.category : null;
             addItem({
                 id: item.id,
                 name: item.name,
@@ -28,7 +29,8 @@ const MenuItemCard = ({ item, onAddToCart, isOrderable = true, windowLabel = '' 
                 discount: item.discount || 0,
                 quantity: 1,
                 image: item.image,
-                category: typeof item.category === 'object' ? item.category?.name : item.category,
+                category: catObj?.name || (typeof item.category === 'string' ? item.category : ''),
+                categoryId: item.categoryId || catObj?._id || catObj?.id || null,
             });
         }
     };

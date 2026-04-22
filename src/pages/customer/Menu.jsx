@@ -272,6 +272,7 @@ const Menu = () => {
       quantity: 1,
       image: item.image,
       category: cat?.name || (typeof item.category === 'string' ? item.category : ''),
+      categoryId: cat?.id || cat?._id || item.categoryId || null,
     });
   };
 

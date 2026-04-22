@@ -17,7 +17,7 @@ export function isValidHHmm(s) {
 export function isCategoryOrderable(category, now = new Date()) {
   if (!category || !category.isTimeRestricted) return true;
   const { availableFrom, availableTo } = category;
-  if (!isValidHHmm(availableFrom) || !isValidHHmm(availableTo)) return true;
+  if (!isValidHHmm(availableFrom) || !isValidHHmm(availableTo)) return false;
   const nowHHmm = getCurrentIstHHmm(now);
   return nowHHmm >= availableFrom && nowHHmm < availableTo;
 }
@@ -37,4 +37,39 @@ function to12h(hhmm) {
 export function formatWindowLabel(category) {
   if (!category || !category.isTimeRestricted) return '';
   return `${to12h(category.availableFrom)} – ${to12h(category.availableTo)}`;
+}
+
+/**
+ * Build lookup maps from a categories array so callers can resolve a cart
+ * item's category by id (preferred, stable) or by name (legacy fallback).
+ */
+export function buildCategoryLookups(categoriesData) {
+  const byId = {};
+  const byName = {};
+  (categoriesData || []).forEach((c) => {
+    if (!c || typeof c !== 'object') return;
+    const id = c.id || c._id;
+    if (id) byId[String(id)] = c;
+    if (c.name) byName[c.name.toLowerCase()] = c;
+  });
+  return { byId, byName };
+}
+
+/**
+ * Resolve the Category object for a cart item. Prefer id (stable across
+ * renames); fall back to lowercased name. Returns null if unresolved.
+ */
+export function resolveCartItemCategory(cartItem, lookups) {
+  if (!cartItem || !lookups) return null;
+  const id = cartItem.categoryId ? String(cartItem.categoryId) : null;
+  if (id && lookups.byId[id]) return lookups.byId[id];
+  const rawName = cartItem.category;
+  const name =
+    typeof rawName === 'string'
+      ? rawName
+      : rawName && typeof rawName === 'object'
+        ? rawName.name || ''
+        : '';
+  if (name) return lookups.byName[name.toLowerCase()] || null;
+  return null;
 }

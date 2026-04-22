@@ -14,7 +14,12 @@ import PriceDisplay from '@components/common/PriceDisplay';
 import { BILLING } from '@utils/constants';
 import { toast } from 'react-hot-toast';
 import { useCategories } from '@hooks/useMenuQueries';
-import { isCategoryOrderable, formatWindowLabel } from '@utils/categoryWindow';
+import {
+  isCategoryOrderable,
+  formatWindowLabel,
+  buildCategoryLookups,
+  resolveCartItemCategory,
+} from '@utils/categoryWindow';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -30,19 +35,17 @@ const Checkout = () => {
     return () => clearInterval(id);
   }, []);
 
-  const categoryByName = useMemo(() => {
-    const map = {};
-    (categoriesData || []).forEach((c) => {
-      if (c && c.name) map[c.name.toLowerCase()] = c;
-    });
-    return map;
-  }, [categoriesData]);
+  const categoryLookups = useMemo(
+    () => buildCategoryLookups(categoriesData),
+    [categoriesData]
+  );
 
   const blockedItems = useMemo(
     () =>
-      (items || []).map((ci) => ({ ci, cat: categoryByName[(ci.category || '').toLowerCase()] }))
+      (items || [])
+        .map((ci) => ({ ci, cat: resolveCartItemCategory(ci, categoryLookups) }))
         .filter(({ cat }) => cat && cat.isTimeRestricted && !isCategoryOrderable(cat, windowNow)),
-    [items, categoryByName, windowNow]
+    [items, categoryLookups, windowNow]
   );
 
   // Get data from cart page
