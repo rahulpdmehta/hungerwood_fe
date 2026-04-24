@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import {
   useGroceryCategoriesPublic,
   useGroceryProductsPublic,
@@ -13,6 +13,7 @@ import SectionTilesStrip from '@components/home/GroceryEntryCard';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
 import SavingsWidget from '@components/grocery/SavingsWidget';
 import CategoryTile from '@components/grocery/CategoryTile';
+import HomeHeader from '@components/layout/HomeHeader';
 
 function HeroBanner({ banners }) {
   const [idx, setIdx] = useState(0);
@@ -80,17 +81,7 @@ export default function GroceryHome() {
 
   return (
     <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-24">
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#211811]/80 backdrop-blur-md border-b-2 border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="flex items-center p-4 pb-2 justify-between max-w-md mx-auto">
-          <Link to="/" className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-md border border-gray-200">
-            <ArrowLeft size={20} />
-          </Link>
-          <h2 className="text-lg font-bold">Grocery</h2>
-          <Link to="/grocery/search" className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-md border border-gray-200">
-            <Search size={20} />
-          </Link>
-        </div>
-      </nav>
+      <HomeHeader brandName="M-Mart" searchPath="/grocery/search" />
 
       <main className="max-w-md mx-auto">
         <SectionTilesStrip />

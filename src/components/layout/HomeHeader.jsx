@@ -3,7 +3,7 @@ import { useState } from 'react';
 import logo from '@assets/images/logo_1.jpeg';
 import { useWalletBalance } from '@hooks/useWalletQueries';
 
-const HomeHeader = () => {
+const HomeHeader = ({ brandName = 'HungerWood', searchPath = '/menu?search=true' }) => {
   const navigate = useNavigate();
   const { data: walletBalance = 0, isLoading: walletLoading } = useWalletBalance();
   const [showWalletTooltip, setShowWalletTooltip] = useState(false);
@@ -18,12 +18,12 @@ const HomeHeader = () => {
         <div className="flex items-center gap-3">
           <img
             src={logo}
-            alt="HungerWood Logo"
+            alt={`${brandName} Logo`}
             className="w-12 h-12 rounded-full object-cover shadow-md border-2 border-[#7f4f13]/30 dark:border-[#7f4f13]/40"
           />
           <div className="text-left">
             <h1 className="text-md font-bold text-[#181411] dark:text-white tracking-tight">
-              HungerWood
+              {brandName}
             </h1>
             <p className="text-[10px] text-[#7f4f13] font-bold uppercase tracking-widest">
               Gaya, Bihar
@@ -65,7 +65,7 @@ const HomeHeader = () => {
           <button
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-md border border-gray-200 dark:border-zinc-700 hover:shadow-lg transition-shadow"
             aria-label="Search"
-            onClick={() => navigate('/menu?search=true')}
+            onClick={() => navigate(searchPath)}
           >
             <span className="material-symbols-outlined text-gray-700 dark:text-white">search</span>
           </button>
