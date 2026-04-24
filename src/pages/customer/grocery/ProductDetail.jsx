@@ -15,7 +15,44 @@ export default function GroceryProductDetail() {
   const { addItem, getQuantity, incrementQuantity, decrementQuantity } = useGroceryCartStore();
   const [selectedVariantId, setSelectedVariantId] = useState(null);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-32">
+        <nav className="sticky top-0 z-50 bg-white dark:bg-[#211811] border-b border-gray-200 dark:border-gray-700 shadow-sm">
+          <div className="flex items-center p-4 gap-3 max-w-md mx-auto">
+            <button onClick={() => navigate(-1)} className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+              <ArrowLeft size={20} />
+            </button>
+            <div className="flex-1 h-4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+          </div>
+        </nav>
+        <main className="max-w-md mx-auto">
+          <div className="w-full aspect-square bg-gray-200 dark:bg-gray-800 animate-pulse" />
+          <div className="p-4 space-y-4">
+            <div className="space-y-2">
+              <div className="h-6 w-3/4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+              <div className="h-3 w-1/3 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+              <div className="h-3 w-full bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+              <div className="h-3 w-5/6 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+              <div className="flex flex-wrap gap-2">
+                {[1, 2, 3].map(i => (
+                  <div key={i} className="h-16 w-24 bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+                ))}
+              </div>
+            </div>
+          </div>
+        </main>
+        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#211811] border-t-2 border-gray-200 dark:border-gray-700 p-4">
+          <div className="max-w-md mx-auto">
+            <div className="h-12 w-full bg-gray-200 dark:bg-gray-800 rounded-lg animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (!product) return <div className="min-h-screen flex items-center justify-center">Product not found.</div>;
 
   const variants = (product.variants || []);

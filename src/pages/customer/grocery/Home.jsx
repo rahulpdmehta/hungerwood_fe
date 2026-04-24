@@ -1,6 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
 import {
   useGroceryCategoriesPublic,
   useGroceryProductsPublic,
@@ -9,6 +8,8 @@ import {
 import { getActiveBanners } from '@services/banner.service';
 import { useQuery } from '@tanstack/react-query';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
+import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
+import CategoryTileSkeleton from '@components/grocery/CategoryTileSkeleton';
 import SectionTilesStrip from '@components/home/GroceryEntryCard';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
 import SavingsWidget from '@components/grocery/SavingsWidget';
@@ -86,14 +87,6 @@ export default function GroceryHome() {
       <main className="max-w-md mx-auto">
         <SectionTilesStrip />
 
-        <Link
-          to="/grocery/search"
-          className="mx-4 mt-3 flex items-center gap-2 px-3 py-2.5 bg-white border border-amber-700/30 rounded-xl shadow-sm text-stone-500 text-xs"
-        >
-          <Search size={14} />
-          <span>Search "atta", "milk", "biscuits"…</span>
-        </Link>
-
         <HeroBanner banners={banners} />
         <SavingsWidget />
 
@@ -101,9 +94,7 @@ export default function GroceryHome() {
           <h3 className="text-base font-extrabold mb-2">Shop by category</h3>
           {catsLoading ? (
             <div className="grid grid-cols-4 gap-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-                <div key={i} className="aspect-square bg-gray-200 animate-pulse rounded-2xl" />
-              ))}
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <CategoryTileSkeleton key={i} />)}
             </div>
           ) : (
             <div className="grid grid-cols-4 gap-2">
@@ -153,7 +144,7 @@ export default function GroceryHome() {
           </div>
           {prodLoading ? (
             <div className="grid grid-cols-3 gap-2">
-              {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[3/5] bg-gray-200 animate-pulse rounded-lg" />)}
+              {[1, 2, 3, 4, 5, 6].map(i => <GroceryCardSkeleton key={i} />)}
             </div>
           ) : (
             <div className="grid grid-cols-3 gap-2">

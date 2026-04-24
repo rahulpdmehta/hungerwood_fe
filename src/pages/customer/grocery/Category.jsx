@@ -6,6 +6,7 @@ import {
   useGroceryCategoriesPublic,
 } from '@hooks/useGroceryCustomerQueries';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
+import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
 
 const SORT_OPTIONS = [
@@ -73,7 +74,7 @@ export default function GroceryCategory() {
       <main className="max-w-md mx-auto px-3 pt-4">
         {isLoading ? (
           <div className="grid grid-cols-3 gap-2">
-            {[1,2,3,4,5,6,7,8,9].map(i => <div key={i} className="aspect-[3/5] bg-gray-200 dark:bg-gray-800 animate-pulse rounded-lg" />)}
+            {[1,2,3,4,5,6,7,8,9].map(i => <GroceryCardSkeleton key={i} />)}
           </div>
         ) : sortedProducts.length === 0 ? (
           <div className="text-center py-16 text-gray-500">No products in this category yet.</div>

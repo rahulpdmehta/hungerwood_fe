@@ -10,6 +10,7 @@ export default function GroceryProductCard({ product }) {
   const navigate = useNavigate();
   const { addItem, getQuantity, incrementQuantity, decrementQuantity } = useGroceryCartStore();
   const [variantPickerOpen, setVariantPickerOpen] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
 
   const productId = product.id || product._id;
   const availableVariants = (product.variants || []).filter(v => v.isAvailable);
@@ -45,16 +46,26 @@ export default function GroceryProductCard({ product }) {
   return (
     <div
       onClick={openDetail}
-      className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow flex flex-col"
+      className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow flex flex-col h-full"
     >
       <div className="relative">
-        <img
-          src={optimizeImage(product.image, 160)}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          className="w-full aspect-square object-cover bg-gray-100 dark:bg-gray-800"
-        />
+        {product.image && !imgFailed ? (
+          <img
+            src={optimizeImage(product.image, 160)}
+            alt=""
+            loading="lazy"
+            decoding="async"
+            onError={() => setImgFailed(true)}
+            className="w-full aspect-square object-cover bg-gray-100 dark:bg-gray-800"
+          />
+        ) : (
+          <div
+            aria-hidden
+            className="w-full aspect-square flex items-center justify-center bg-gradient-to-br from-amber-50 to-amber-100 dark:from-[#2a1f15] dark:to-[#3a2a1c]"
+          >
+            <span className="text-5xl opacity-40 select-none">🛒</span>
+          </div>
+        )}
         {pctOff > 0 && (
           <span className="absolute top-1.5 left-1.5 bg-green-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
             {pctOff}% OFF
@@ -62,18 +73,22 @@ export default function GroceryProductCard({ product }) {
         )}
       </div>
       <div className="p-2 flex flex-col flex-1 gap-1">
-        {product.brand && <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wide">{product.brand}</p>}
-        <p className="text-[11px] font-bold text-gray-900 dark:text-white leading-tight line-clamp-2">{product.name}</p>
+        <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wide min-h-[12px]">{product.brand || ''}</p>
+        <p className="text-[11px] font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 min-h-[28px]">{product.name}</p>
 
         {defaultVariant ? (
           <>
-            {hasMultipleVariants ? (
-              <span className="inline-flex w-fit items-center gap-1 text-[9px] font-bold text-gray-700 bg-amber-700/5 border border-amber-200 px-1.5 py-0.5 rounded-full">
-                {defaultVariant.label} ▾
-              </span>
-            ) : (
-              <p className="text-[10px] text-gray-500">{defaultVariant.label}</p>
-            )}
+            <div className="min-h-[18px]">
+              {hasMultipleVariants ? (
+                <span className="inline-flex w-fit items-center gap-1 text-[9px] font-bold text-gray-700 bg-amber-700/5 border border-amber-200 px-1.5 py-0.5 rounded-full">
+                  {defaultVariant.label} ▾
+                </span>
+              ) : (
+                <span className="inline-flex w-fit items-center text-[9px] font-bold text-gray-500 px-1.5 py-0.5">
+                  {defaultVariant.label}
+                </span>
+              )}
+            </div>
             <div className="flex items-center justify-between gap-1 mt-auto pt-1">
               <div className="flex flex-col leading-tight min-w-0">
                 <span className="text-[11px] font-extrabold text-gray-900 dark:text-white">₹{defaultVariant.sellingPrice}</span>
