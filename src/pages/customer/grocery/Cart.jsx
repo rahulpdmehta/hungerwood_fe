@@ -10,7 +10,7 @@ import GroceryStepper from '@components/grocery/GroceryStepper';
 
 export default function GroceryCart() {
   const navigate = useNavigate();
-  const { items, subtotal, savings, coupon, removeCoupon, incrementQuantity, decrementQuantity, removeItem } = useGroceryCartStore();
+  const { items, subtotal, savings, coupon, removeCoupon, bundle, removeBundle, incrementQuantity, decrementQuantity, removeItem } = useGroceryCartStore();
   const { isAuthenticated } = useAuthStore();
   const { data: settings } = useGrocerySettingsPublic();
   const [instructions, setInstructions] = useState('');
@@ -22,7 +22,8 @@ export default function GroceryCart() {
   let delivery = freeThreshold != null && subtotal >= freeThreshold ? 0 : deliveryFlat;
   if (coupon?.freeDelivery) delivery = 0;
   const couponDiscount = coupon && !coupon.freeDelivery ? Math.min(coupon.discount, subtotal) : 0;
-  const grandTotal = Math.max(0, subtotal + tax + delivery - couponDiscount);
+  const bundleDiscount = bundle?.discount ? Math.max(0, Number(bundle.discount)) : 0;
+  const grandTotal = Math.max(0, subtotal + tax + delivery - couponDiscount - bundleDiscount);
 
   const minOrderValue = settings?.minOrderValue ?? null;
   const belowMin = minOrderValue != null && subtotal < minOrderValue;
@@ -119,6 +120,12 @@ export default function GroceryCart() {
             <span>Delivery</span>
             <span>{delivery === 0 ? <span className="text-green-700 dark:text-green-400 font-bold">FREE</span> : `₹${delivery}`}</span>
           </div>
+          {bundle && bundleDiscount > 0 && (
+            <div className="flex justify-between text-green-700 dark:text-green-400">
+              <span>Bundle savings ({bundle.name}) <button onClick={removeBundle} className="text-rose-600 ml-1 underline text-[10px]">remove</button></span>
+              <span>−₹{Math.round(bundleDiscount)}</span>
+            </div>
+          )}
           {coupon && (
             <div className="flex justify-between text-green-700 dark:text-green-400">
               <span>Coupon ({coupon.code}) <button onClick={removeCoupon} className="text-rose-600 ml-1 underline text-[10px]">remove</button></span>

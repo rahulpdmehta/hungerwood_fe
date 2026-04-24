@@ -13,7 +13,7 @@ import AddressSheet from '@components/checkout/AddressSheet';
 export default function GroceryCheckout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, subtotal, clearCart, coupon, removeCoupon } = useGroceryCartStore();
+  const { items, subtotal, clearCart, coupon, removeCoupon, bundle } = useGroceryCartStore();
   const user = useAuthStore(s => s.user);
   const { balance: walletBalance, fetchBalance } = useWalletStore();
   const { data: settings } = useGrocerySettingsPublic();
@@ -38,7 +38,8 @@ export default function GroceryCheckout() {
     : 0;
   if (coupon?.freeDelivery && orderType === 'DELIVERY') delivery = 0;
   const couponDiscount = coupon && !coupon.freeDelivery ? Math.min(coupon.discount, subtotal) : 0;
-  const total = Math.max(0, subtotal + tax + delivery - couponDiscount);
+  const bundleDiscount = bundle?.discount ? Math.max(0, Number(bundle.discount)) : 0;
+  const total = Math.max(0, subtotal + tax + delivery - couponDiscount - bundleDiscount);
   const totalPayable = Math.max(0, total - walletAmount);
 
   useEffect(() => {
@@ -126,6 +127,7 @@ export default function GroceryCheckout() {
       totalAmount: total,
       instructions,
       couponCode: coupon?.code,
+      bundleSlug: bundle?.slug,
     };
 
     try {
@@ -233,6 +235,12 @@ export default function GroceryCheckout() {
           <div className="flex justify-between"><span>Item total</span><span>₹{subtotal}</span></div>
           <div className="flex justify-between"><span>Tax</span><span>₹{tax}</span></div>
           <div className="flex justify-between"><span>Delivery</span><span>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span></div>
+          {bundle && bundleDiscount > 0 && (
+            <div className="flex justify-between text-green-700 dark:text-green-400">
+              <span>Bundle ({bundle.name})</span>
+              <span>−₹{Math.round(bundleDiscount)}</span>
+            </div>
+          )}
           {coupon && (
             <div className="flex justify-between text-green-700 dark:text-green-400">
               <span>Coupon ({coupon.code})</span>

@@ -134,6 +134,23 @@ export default function GroceryHome() {
           </div>
         )}
 
+        <div className="pt-6 px-4">
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-base font-extrabold">Smart bundles</h3>
+            <Link to="/grocery/bundles" className="text-xs text-[#7f4f13] font-bold">Browse all &rarr;</Link>
+          </div>
+          <Link
+            to="/grocery/bundles"
+            className="block rounded-2xl p-4 relative overflow-hidden text-amber-950 shadow-md"
+            style={{ background: 'linear-gradient(135deg, #FFEED4, #F3CD93)' }}
+          >
+            <span className="text-[9px] bg-rose-600 text-white font-extrabold px-1.5 py-0.5 rounded">SAVE MORE</span>
+            <h5 className="mt-2 font-extrabold text-base">Hand-picked combos</h5>
+            <p className="text-[11px] opacity-80 mt-0.5">Atta + oil + tea + biscuits — and more</p>
+            <span className="absolute right-3 -bottom-3 text-6xl opacity-30 pointer-events-none select-none" aria-hidden>📦</span>
+          </Link>
+        </div>
+
         <div className="px-4 pt-6">
           <div className="flex justify-between items-center mb-2">
             <h3 className="text-base font-extrabold">Daily essentials</h3>

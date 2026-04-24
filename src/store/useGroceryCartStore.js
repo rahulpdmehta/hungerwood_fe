@@ -26,6 +26,7 @@ const useGroceryCartStore = create(
       mrpTotal: 0,
       savings: 0,
       coupon: null, // { code, discount, freeDelivery, type, theme }
+      bundle: null, // { slug, name, discount }
 
       addItem: (input) => {
         // input: { productId, variantId, name, variantLabel, mrp, sellingPrice, image }
@@ -79,7 +80,34 @@ const useGroceryCartStore = create(
       applyCoupon: (coupon) => set({ coupon }),
       removeCoupon: () => set({ coupon: null }),
 
-      clearCart: () => set({ items: [], totalItems: 0, subtotal: 0, mrpTotal: 0, savings: 0, coupon: null }),
+      applyBundle: (bundle, items) => {
+        // Push bundle items into cart at their per-item sellingPrice; the
+        // bundleDiscount line in cart subtracts the savings to land at the
+        // bundlePrice. If a (productId, variantId) already exists, increment.
+        const current = get().items;
+        let merged = [...current];
+        for (const it of items || []) {
+          const idx = merged.findIndex(x => x.productId === String(it.productId) && x.variantId === String(it.variantId));
+          if (idx > -1) {
+            merged = merged.map((x, k) => k === idx ? { ...x, quantity: x.quantity + (it.quantity || 1) } : x);
+          } else {
+            merged = [...merged, {
+              productId: String(it.productId),
+              variantId: String(it.variantId),
+              quantity: it.quantity || 1,
+              name: it.name,
+              variantLabel: it.variantLabel,
+              mrp: it.mrp,
+              sellingPrice: it.sellingPrice,
+              image: it.image,
+            }];
+          }
+        }
+        set({ items: merged, ...recomputeTotals(merged), bundle });
+      },
+      removeBundle: () => set({ bundle: null }),
+
+      clearCart: () => set({ items: [], totalItems: 0, subtotal: 0, mrpTotal: 0, savings: 0, coupon: null, bundle: null }),
     }),
     { name: LOCAL_STORAGE_KEYS.GROCERY_CART }
   )
