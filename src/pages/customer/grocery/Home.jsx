@@ -93,12 +93,12 @@ export default function GroceryHome() {
         <div className="px-4 pt-2">
           <h3 className="text-base font-extrabold mb-2">Shop by category</h3>
           {catsLoading ? (
-            <div className="grid grid-cols-4 gap-2">
-              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <CategoryTileSkeleton key={i} />)}
+            <div className="grid grid-cols-5 gap-2">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => <CategoryTileSkeleton key={i} />)}
             </div>
           ) : (
-            <div className="grid grid-cols-4 gap-2">
-              {categories.map(c => <CategoryTile key={c.id || c._id} category={c} />)}
+            <div className="grid grid-cols-5 gap-2">
+              {categories.slice(0, 10).map(c => <CategoryTile key={c.id || c._id} category={c} />)}
             </div>
           )}
         </div>
