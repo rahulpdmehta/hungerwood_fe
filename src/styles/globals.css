@@ -40,6 +40,14 @@
     font-feature-settings: 'liga';
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
+    /* Keep icon spans invisible until the icon font is actually loaded, so
+       we never flash raw ligature text like "account_balance". The
+       fonts-loaded class is set from main.jsx via the Font Loading API. */
+    visibility: hidden;
+  }
+
+  html.fonts-loaded .material-symbols-outlined {
+    visibility: visible;
   }
 
   /* Headings */
