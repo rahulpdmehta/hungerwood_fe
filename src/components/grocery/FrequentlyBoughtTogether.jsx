@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import api from '@services/api';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import toast from 'react-hot-toast';
+import { optimizeImage } from '@utils/image';
 
 const fetchFbt = (id) => async () => (await api.get(`/grocery/products/${id}/fbt`)).data?.data || [];
 
@@ -58,11 +59,18 @@ export default function FrequentlyBoughtTogether({ product }) {
       <div className="flex items-center gap-1.5">
         {all.map((p, i) => (
           <div key={p.id || p._id || i} className="flex items-center gap-1.5">
-            <div
-              className={`w-14 h-14 rounded-md bg-stone-200 ${i === 0 ? 'border-2 border-green-600' : 'border border-stone-200'}`}
-              style={p.image ? { backgroundImage: `url("${p.image}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-              aria-hidden
-            />
+            {p.image ? (
+              <img
+                src={optimizeImage(p.image, 60)}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                className={`w-14 h-14 rounded-md object-cover bg-stone-200 ${i === 0 ? 'border-2 border-green-600' : 'border border-stone-200'}`}
+                aria-hidden
+              />
+            ) : (
+              <div className={`w-14 h-14 rounded-md bg-stone-200 ${i === 0 ? 'border-2 border-green-600' : 'border border-stone-200'}`} aria-hidden />
+            )}
             {i < all.length - 1 && <span className="text-stone-400 font-extrabold text-base">+</span>}
           </div>
         ))}

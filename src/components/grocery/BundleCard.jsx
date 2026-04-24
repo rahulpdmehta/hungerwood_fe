@@ -1,3 +1,5 @@
+import { optimizeImage } from '@utils/image';
+
 /**
  * Curated bundle card. Theme drives the gradient + accent CTA color.
  */
@@ -41,12 +43,19 @@ export default function BundleCard({ bundle, onAdd, busy }) {
 
       <div className="flex gap-1 mt-2">
         {(bundle.items || []).slice(0, 6).map((it, i) => (
-          <div
-            key={i}
-            className="w-9 h-9 rounded-md bg-white/60 border-[1.5px] border-white shadow-sm overflow-hidden"
-            style={it.image ? { backgroundImage: `url("${it.image}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-            aria-hidden
-          />
+          it.image ? (
+            <img
+              key={i}
+              src={optimizeImage(it.image, 40)}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className="w-9 h-9 rounded-md object-cover bg-white/60 border-[1.5px] border-white shadow-sm"
+              aria-hidden
+            />
+          ) : (
+            <div key={i} className="w-9 h-9 rounded-md bg-white/60 border-[1.5px] border-white shadow-sm" aria-hidden />
+          )
         ))}
       </div>
 

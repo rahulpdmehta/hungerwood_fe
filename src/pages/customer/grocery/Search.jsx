@@ -4,6 +4,7 @@ import { ArrowLeft, X, Search as SearchIcon, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@services/api';
 import { useDebounce } from '@hooks/useDebounce';
+import { optimizeImage } from '@utils/image';
 
 const RECENT_KEY = 'grocery.recent';
 const MAX_RECENT = 5;
@@ -115,11 +116,18 @@ export default function GrocerySearch() {
                 onClick={() => navigate(`/grocery/p/${s.id}`)}
                 className="flex items-center gap-2.5 px-4 py-2 w-full text-left hover:bg-stone-100 dark:hover:bg-white/5"
               >
-                <div
-                  className="w-9 h-9 rounded-md bg-stone-200 flex-shrink-0"
-                  style={s.image ? { backgroundImage: `url("${s.image}")`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
-                  aria-hidden
-                />
+                {s.image ? (
+                  <img
+                    src={optimizeImage(s.image, 40)}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    className="w-9 h-9 rounded-md object-cover flex-shrink-0 bg-stone-200"
+                    aria-hidden
+                  />
+                ) : (
+                  <div className="w-9 h-9 rounded-md bg-stone-200 flex-shrink-0" aria-hidden />
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-[12px] font-bold truncate">{s.name}</div>
                   <div className="text-[10px] text-stone-500 truncate">{s.brand && `${s.brand} · `}{s.category}</div>

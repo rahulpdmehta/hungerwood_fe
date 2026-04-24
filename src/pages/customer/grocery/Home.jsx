@@ -117,7 +117,7 @@ export default function GroceryHome() {
             <h3 className="text-base font-extrabold mb-2 px-4">Bestsellers</h3>
             <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide pb-1">
               {bestsellers.map(p => (
-                <div key={p.id} className="min-w-[140px]">
+                <div key={p.id} className="min-w-[110px] max-w-[110px]">
                   <GroceryProductCard product={p} />
                 </div>
               ))}
@@ -152,12 +152,12 @@ export default function GroceryHome() {
             )}
           </div>
           {prodLoading ? (
-            <div className="grid grid-cols-2 gap-2">
-              {[1, 2, 3, 4].map(i => <div key={i} className="aspect-[3/5] bg-gray-200 animate-pulse rounded-lg" />)}
+            <div className="grid grid-cols-3 gap-2">
+              {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-[3/5] bg-gray-200 animate-pulse rounded-lg" />)}
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
-              {allProducts.slice(0, 10).map(p => <GroceryProductCard key={p.id} product={p} />)}
+            <div className="grid grid-cols-3 gap-2">
+              {allProducts.slice(0, 12).map(p => <GroceryProductCard key={p.id} product={p} />)}
             </div>
           )}
         </div>

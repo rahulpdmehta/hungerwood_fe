@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ArrowLeft, ShoppingBasket } from 'lucide-react';
 import { useGroceryProductPublic } from '@hooks/useGroceryCustomerQueries';
 import useGroceryCartStore from '@store/useGroceryCartStore';
+import { optimizeImage } from '@utils/image';
 import FrequentlyBoughtTogether from '@components/grocery/FrequentlyBoughtTogether';
 import MoreFromBrand from '@components/grocery/MoreFromBrand';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
@@ -50,7 +51,7 @@ export default function GroceryProductDetail() {
       </nav>
 
       <main className="max-w-md mx-auto">
-        <div className="w-full aspect-square bg-cover bg-center" style={{ backgroundImage: `url("${product.image}")` }} />
+        <img src={optimizeImage(product.image, 448)} alt="" decoding="async" className="w-full aspect-square object-cover bg-gray-100" />
 
         <div className="p-4 space-y-4">
           <div>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { optimizeImage } from '@utils/image';
 
 /**
  * Category tile for the grocery Home grid. Each tile takes a category and
@@ -42,7 +43,7 @@ export default function CategoryTile({ category }) {
     >
       <div className="w-12 h-12 mx-auto mb-1 rounded-xl bg-white/70 flex items-center justify-center overflow-hidden">
         {category.image ? (
-          <img src={category.image} alt="" className="w-full h-full object-cover" />
+          <img src={optimizeImage(category.image, 60)} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
         ) : (
           <span className="text-[22px]" aria-hidden>{emoji}</span>
         )}

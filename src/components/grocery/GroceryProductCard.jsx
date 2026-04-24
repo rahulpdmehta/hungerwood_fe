@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useGroceryCartStore from '@store/useGroceryCartStore';
+import { optimizeImage } from '@utils/image';
 import GroceryAddButton from './GroceryAddButton';
 import GroceryStepper from './GroceryStepper';
+import VariantPickerSheet from './VariantPickerSheet';
 
 export default function GroceryProductCard({ product }) {
   const navigate = useNavigate();
   const { addItem, getQuantity, incrementQuantity, decrementQuantity } = useGroceryCartStore();
+  const [variantPickerOpen, setVariantPickerOpen] = useState(false);
 
   const productId = product.id || product._id;
   const availableVariants = (product.variants || []).filter(v => v.isAvailable);
@@ -22,7 +26,7 @@ export default function GroceryProductCard({ product }) {
   const handleAdd = (e) => {
     e?.stopPropagation?.();
     if (!defaultVariant) return;
-    if (hasMultipleVariants) { openDetail(); return; }
+    if (hasMultipleVariants) { setVariantPickerOpen(true); return; }
     addItem({
       productId,
       variantId,
@@ -44,9 +48,12 @@ export default function GroceryProductCard({ product }) {
       className="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden cursor-pointer hover:shadow-md transition-shadow flex flex-col"
     >
       <div className="relative">
-        <div
-          className="w-full aspect-square bg-center bg-no-repeat bg-cover"
-          style={{ backgroundImage: `url("${product.image}")` }}
+        <img
+          src={optimizeImage(product.image, 160)}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="w-full aspect-square object-cover bg-gray-100 dark:bg-gray-800"
         />
         {pctOff > 0 && (
           <span className="absolute top-1.5 left-1.5 bg-green-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
@@ -92,6 +99,12 @@ export default function GroceryProductCard({ product }) {
           </button>
         )}
       </div>
+
+      <VariantPickerSheet
+        product={product}
+        open={variantPickerOpen}
+        onClose={() => setVariantPickerOpen(false)}
+      />
     </div>
   );
 }

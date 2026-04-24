@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 import { useState } from 'react';
+import { optimizeImage } from '@utils/image';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import useAuthStore from '@store/useAuthStore';
 import { useGrocerySettingsPublic } from '@hooks/useGroceryCustomerQueries';
@@ -74,7 +75,7 @@ export default function GroceryCart() {
           const lineTotal = item.sellingPrice * item.quantity;
           return (
             <div key={`${item.productId}:${item.variantId}`} className="flex gap-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-3 shadow-sm">
-              <div className="w-20 h-20 bg-cover bg-center rounded shrink-0" style={{ backgroundImage: `url("${item.image}")` }} />
+              <img src={optimizeImage(item.image, 80)} alt="" loading="lazy" decoding="async" className="w-20 h-20 rounded object-cover shrink-0 bg-gray-100" />
               <div className="flex-1 min-w-0">
                 <p className="font-bold text-sm">{item.name}</p>
                 <p className="text-xs text-gray-500">{item.variantLabel}</p>
