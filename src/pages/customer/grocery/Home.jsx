@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Search, ShoppingBasket } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 import {
   useGroceryCategoriesPublic,
   useGroceryProductsPublic,
@@ -10,7 +10,7 @@ import { getActiveBanners } from '@services/banner.service';
 import { useQuery } from '@tanstack/react-query';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
 import SectionTilesStrip from '@components/home/GroceryEntryCard';
-import useGroceryCartStore from '@store/useGroceryCartStore';
+import StickyCartStrip from '@components/grocery/StickyCartStrip';
 
 export default function GroceryHome() {
   const { data: categories = [], isLoading: catsLoading } = useGroceryCategoriesPublic();
@@ -20,7 +20,6 @@ export default function GroceryHome() {
     queryKey: ['grocery-banners-active'],
     queryFn: () => getActiveBanners({ section: 'grocery' }),
   });
-  const cartCount = useGroceryCartStore(s => s.totalItems);
 
   const bestsellers = useMemo(
     () => allProducts.filter(p => p.tags?.isBestseller).slice(0, 8),
@@ -125,15 +124,7 @@ export default function GroceryHome() {
         </div>
       </main>
 
-      {cartCount > 0 && (
-        <Link
-          to="/grocery/cart"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-2 z-40"
-        >
-          <ShoppingBasket size={18} />
-          <span className="font-bold text-sm">View cart ({cartCount})</span>
-        </Link>
-      )}
+      <StickyCartStrip />
     </div>
   );
 }

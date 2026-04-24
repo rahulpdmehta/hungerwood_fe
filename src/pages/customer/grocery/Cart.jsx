@@ -4,6 +4,9 @@ import { useState } from 'react';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import useAuthStore from '@store/useAuthStore';
 import { useGrocerySettingsPublic } from '@hooks/useGroceryCustomerQueries';
+import SavingsStrip from '@components/grocery/SavingsStrip';
+import FreeDeliveryProgress from '@components/grocery/FreeDeliveryProgress';
+import GroceryStepper from '@components/grocery/GroceryStepper';
 
 export default function GroceryCart() {
   const navigate = useNavigate();
@@ -63,6 +66,9 @@ export default function GroceryCart() {
       </nav>
 
       <main className="max-w-md mx-auto p-4 space-y-4">
+        <SavingsStrip savings={savings} />
+        <FreeDeliveryProgress subtotal={subtotal} threshold={freeThreshold} />
+
         {items.map(item => {
           const lineTotal = item.sellingPrice * item.quantity;
           return (
@@ -77,11 +83,11 @@ export default function GroceryCart() {
                 <button onClick={() => removeItem(item.productId, item.variantId)} className="text-red-600 p-1" aria-label="Remove">
                   <Trash2 size={16} />
                 </button>
-                <div className="flex items-center bg-green-100 dark:bg-green-900/30 rounded border border-green-300 dark:border-green-700 overflow-hidden text-sm">
-                  <button onClick={() => decrementQuantity(item.productId, item.variantId)} className="px-2 py-1 text-green-800 dark:text-green-200 font-bold">-</button>
-                  <span className="px-2 text-green-800 dark:text-green-200 font-bold">{item.quantity}</span>
-                  <button onClick={() => incrementQuantity(item.productId, item.variantId)} className="px-2 py-1 text-green-800 dark:text-green-200 font-bold">+</button>
-                </div>
+                <GroceryStepper
+                  qty={item.quantity}
+                  onInc={() => incrementQuantity(item.productId, item.variantId)}
+                  onDec={() => decrementQuantity(item.productId, item.variantId)}
+                />
               </div>
             </div>
           );
@@ -111,9 +117,6 @@ export default function GroceryCart() {
             <span>Delivery</span>
             <span>{delivery === 0 ? <span className="text-green-700 dark:text-green-400 font-bold">FREE</span> : `₹${delivery}`}</span>
           </div>
-          {freeThreshold != null && subtotal < freeThreshold && (
-            <p className="text-xs text-gray-500">Add ₹{freeThreshold - subtotal} more for free delivery</p>
-          )}
           <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-2 font-bold">
             <span>Total</span>
             <span>₹{grandTotal}</span>

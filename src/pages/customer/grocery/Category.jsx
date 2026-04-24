@@ -6,13 +6,12 @@ import {
   useGroceryCategoriesPublic,
 } from '@hooks/useGroceryCustomerQueries';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
-import useGroceryCartStore from '@store/useGroceryCartStore';
+import StickyCartStrip from '@components/grocery/StickyCartStrip';
 
 export default function GroceryCategory() {
   const { slug } = useParams();
   const { data: categories = [] } = useGroceryCategoriesPublic();
   const { data: allProducts = [], isLoading } = useGroceryProductsPublic({ category: slug });
-  const cartCount = useGroceryCartStore(s => s.totalItems);
   const [sort, setSort] = useState('default');
 
   const category = categories.find(c => c.id === slug);
@@ -64,14 +63,7 @@ export default function GroceryCategory() {
         )}
       </main>
 
-      {cartCount > 0 && (
-        <Link
-          to="/grocery/cart"
-          className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-full shadow-lg z-40 font-bold text-sm"
-        >
-          View cart ({cartCount})
-        </Link>
-      )}
+      <StickyCartStrip />
     </div>
   );
 }
