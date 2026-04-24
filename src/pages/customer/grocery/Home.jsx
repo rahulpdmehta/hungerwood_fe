@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Search } from 'lucide-react';
 import {
@@ -11,6 +11,48 @@ import { useQuery } from '@tanstack/react-query';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
 import SectionTilesStrip from '@components/home/GroceryEntryCard';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
+import SavingsWidget from '@components/grocery/SavingsWidget';
+import CategoryTile from '@components/grocery/CategoryTile';
+
+function HeroBanner({ banners }) {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    if (banners.length <= 1) return;
+    const id = setInterval(() => setIdx(i => (i + 1) % banners.length), 5000);
+    return () => clearInterval(id);
+  }, [banners.length]);
+  if (!banners.length) return null;
+  const b = banners[idx];
+  return (
+    <div
+      className="mx-4 my-3 h-32 rounded-2xl relative overflow-hidden p-4 text-amber-950 shadow-lg"
+      style={{ background: 'linear-gradient(135deg, #FFE9C8 0%, #F5C16C 50%, #E59B40 100%)' }}
+    >
+      <div
+        className="absolute -right-5 -top-5 w-32 h-32 rounded-full opacity-50"
+        style={{ background: 'radial-gradient(circle, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 70%)' }}
+      />
+      <div className="absolute -right-3 -bottom-3 text-7xl opacity-30 transform -rotate-12 pointer-events-none select-none" aria-hidden>🛍️</div>
+      {b.badge && (
+        <span className="inline-block bg-white/55 backdrop-blur-sm text-[10px] font-extrabold px-2.5 py-0.5 rounded-full text-amber-950">
+          {b.badge}
+        </span>
+      )}
+      <h3 className="mt-2 text-lg font-extrabold leading-tight max-w-[70%]">{b.title}</h3>
+      {b.subtitle && <p className="text-[11px] mt-0.5 opacity-90 max-w-[70%]">{b.subtitle}</p>}
+      {banners.length > 1 && (
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
+          {banners.map((_, i) => (
+            <span
+              key={i}
+              className={`h-1 rounded-full transition-all ${i === idx ? 'w-4 bg-amber-900' : 'w-1.5 bg-amber-900/30'}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function GroceryHome() {
   const { data: categories = [], isLoading: catsLoading } = useGroceryCategoriesPublic();
@@ -37,7 +79,7 @@ export default function GroceryHome() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
+    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-24">
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-[#211811]/80 backdrop-blur-md border-b-2 border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="flex items-center p-4 pb-2 justify-between max-w-md mx-auto">
           <Link to="/" className="flex size-10 items-center justify-center rounded-full bg-white dark:bg-zinc-800 shadow-md border border-gray-200">
@@ -51,70 +93,59 @@ export default function GroceryHome() {
       </nav>
 
       <main className="max-w-md mx-auto">
-        {/* Section switcher (Restaurant / Grocery) */}
         <SectionTilesStrip />
 
-        {banners.length > 0 && (
-          <div className="px-4 py-3 flex gap-2 overflow-x-auto scrollbar-hide">
-            {banners.map(b => (
-              <div key={b._id || b.id} className="min-w-[280px] h-32 bg-cover bg-center rounded-xl shadow-md" style={{ backgroundImage: `url("${b.image}")` }}>
-                <div className="h-full w-full bg-gradient-to-t from-black/60 to-transparent rounded-xl flex items-end p-3">
-                  <div>
-                    <h3 className="text-white font-bold">{b.title}</h3>
-                    {b.subtitle && <p className="text-white/80 text-xs">{b.subtitle}</p>}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <Link
+          to="/grocery/search"
+          className="mx-4 mt-3 flex items-center gap-2 px-3 py-2.5 bg-white border border-amber-700/30 rounded-xl shadow-sm text-stone-500 text-xs"
+        >
+          <Search size={14} />
+          <span>Search "atta", "milk", "biscuits"…</span>
+        </Link>
 
-        {/* Categories */}
-        <div className="px-4 pt-4">
-          <h3 className="text-lg font-bold mb-3">Shop by category</h3>
+        <HeroBanner banners={banners} />
+        <SavingsWidget />
+
+        <div className="px-4 pt-2">
+          <h3 className="text-base font-extrabold mb-2">Shop by category</h3>
           {catsLoading ? (
-            <div className="grid grid-cols-4 gap-3">
-              {[1,2,3,4].map(i => <div key={i} className="aspect-square bg-gray-200 animate-pulse rounded-lg" />)}
+            <div className="grid grid-cols-4 gap-2">
+              {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+                <div key={i} className="aspect-square bg-gray-200 animate-pulse rounded-2xl" />
+              ))}
             </div>
           ) : (
-            <div className="grid grid-cols-4 gap-3">
-              {categories.map(c => (
-                <Link key={c.id} to={`/grocery/c/${c.id}`} className="text-center">
-                  <div className="aspect-square bg-white dark:bg-gray-900 rounded-lg shadow border border-gray-200 dark:border-gray-700 overflow-hidden mb-1">
-                    <img src={c.image || 'https://via.placeholder.com/80'} alt={c.name} className="w-full h-full object-cover" />
-                  </div>
-                  <p className="text-[11px] font-medium line-clamp-1">{c.name}</p>
-                </Link>
-              ))}
+            <div className="grid grid-cols-4 gap-2">
+              {categories.map(c => <CategoryTile key={c.id || c._id} category={c} />)}
             </div>
           )}
         </div>
 
-        {/* Bestsellers */}
         {bestsellers.length > 0 && (
-          <div className="px-4 pt-6">
-            <h3 className="text-lg font-bold mb-3">Bestsellers</h3>
-            <div className="grid grid-cols-2 gap-2">
+          <div className="pt-6">
+            <h3 className="text-base font-extrabold mb-2 px-4">Bestsellers</h3>
+            <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide pb-1">
               {bestsellers.map(p => (
-                <GroceryProductCard key={p.id} product={p} />
+                <div key={p.id} className="min-w-[140px]">
+                  <GroceryProductCard product={p} />
+                </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* All products preview */}
         <div className="px-4 pt-6">
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-lg font-bold">All products</h3>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-base font-extrabold">Daily essentials</h3>
             {categories.length > 0 && (
-              <Link to={`/grocery/c/${categories[0].id}`} className="text-sm text-[#7f4f13] font-semibold">
+              <Link to={`/grocery/c/${categories[0].id}`} className="text-xs text-[#7f4f13] font-bold">
                 Browse all &rarr;
               </Link>
             )}
           </div>
           {prodLoading ? (
             <div className="grid grid-cols-2 gap-2">
-              {[1,2,3,4].map(i => <div key={i} className="aspect-[3/5] bg-gray-200 animate-pulse rounded-lg" />)}
+              {[1, 2, 3, 4].map(i => <div key={i} className="aspect-[3/5] bg-gray-200 animate-pulse rounded-lg" />)}
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2">
