@@ -3,6 +3,9 @@ import { useState } from 'react';
 import { ArrowLeft, ShoppingBasket } from 'lucide-react';
 import { useGroceryProductPublic } from '@hooks/useGroceryCustomerQueries';
 import useGroceryCartStore from '@store/useGroceryCartStore';
+import FrequentlyBoughtTogether from '@components/grocery/FrequentlyBoughtTogether';
+import MoreFromBrand from '@components/grocery/MoreFromBrand';
+import StickyCartStrip from '@components/grocery/StickyCartStrip';
 
 export default function GroceryProductDetail() {
   const { id } = useParams();
@@ -88,6 +91,9 @@ export default function GroceryProductDetail() {
             </div>
           </div>
         </div>
+
+        <FrequentlyBoughtTogether product={product} />
+        <MoreFromBrand product={product} />
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-[#211811] border-t-2 border-gray-200 dark:border-gray-700 p-4">
