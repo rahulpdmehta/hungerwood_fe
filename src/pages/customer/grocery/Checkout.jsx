@@ -86,7 +86,7 @@ export default function GroceryCheckout() {
             const orderId = verifyRes.data?.orderId;
             toast.success('Order placed!');
             clearCart();
-            navigate(`/grocery/orders/${orderId}`, { replace: true });
+            navigate(`/grocery/orders/${orderId}`, { replace: true, state: { justPlaced: true } });
           } else {
             throw new Error(verifyRes.message || 'Verification failed');
           }
@@ -139,7 +139,7 @@ export default function GroceryCheckout() {
       const data = await createOrderMut.mutateAsync(orderData);
       toast.success('Order placed!');
       clearCart();
-      navigate(`/grocery/orders/${data.orderId}`, { replace: true });
+      navigate(`/grocery/orders/${data._id || data.id || data.orderId}`, { replace: true, state: { justPlaced: true } });
     } catch (err) {
       toast.error(err.response?.data?.message || err.message || 'Failed to place order');
       setIsPlacing(false);

@@ -7,6 +7,7 @@ import { useGrocerySettingsPublic } from '@hooks/useGroceryCustomerQueries';
 import SavingsStrip from '@components/grocery/SavingsStrip';
 import FreeDeliveryProgress from '@components/grocery/FreeDeliveryProgress';
 import GroceryStepper from '@components/grocery/GroceryStepper';
+import EmptyCart from '@components/grocery/EmptyCart';
 
 export default function GroceryCart() {
   const navigate = useNavigate();
@@ -49,10 +50,7 @@ export default function GroceryCart() {
           </Link>
           <h2 className="text-lg font-bold ml-2">Grocery Cart</h2>
         </nav>
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <h3 className="text-xl font-bold mb-2">Your grocery cart is empty</h3>
-          <Link to="/grocery" className="bg-green-600 text-white font-bold px-6 py-3 rounded-lg mt-4">Browse Grocery</Link>
-        </div>
+        <EmptyCart />
       </div>
     );
   }

@@ -1,14 +1,42 @@
 import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Utensils, ShoppingBasket } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Utensils, ShoppingBasket, RotateCcw } from 'lucide-react';
+import toast from 'react-hot-toast';
+import api from '@services/api';
 import { useOrders } from '@hooks/useOrderQueries';
 import { useMyGroceryOrders } from '@hooks/useGroceryCustomerQueries';
+import useGroceryCartStore from '@store/useGroceryCartStore';
 import BottomNavBar from '@components/layout/BottomNavBar';
 
 export default function Orders() {
   const [tab, setTab] = useState('all');
+  const [reorderingId, setReorderingId] = useState(null);
+  const navigate = useNavigate();
+  const addItem = useGroceryCartStore(s => s.addItem);
   const { data: foodOrders = [], isLoading: foodLoading } = useOrders();
   const { data: groceryOrders = [], isLoading: groceryLoading } = useMyGroceryOrders();
+
+  const reorderGrocery = async (orderId) => {
+    setReorderingId(orderId);
+    try {
+      const res = await api.post(`/grocery/orders/${orderId}/reorder`);
+      const { added = [], skipped = [] } = res.data?.data || {};
+      added.forEach(it => addItem(it));
+      if (skipped.length > 0) {
+        toast(
+          `${added.length} of ${added.length + skipped.length} items added. ${skipped.length} no longer available.`,
+          { duration: 4500, icon: 'ℹ️' }
+        );
+      } else {
+        toast.success(`${added.length} items added to cart`);
+      }
+      navigate('/grocery/cart');
+    } catch (e) {
+      toast.error(e?.response?.data?.message || 'Could not reorder');
+    } finally {
+      setReorderingId(null);
+    }
+  };
 
   const combined = useMemo(() => {
     const food = (foodOrders || []).map(o => ({ ...o, _section: 'food' }));
@@ -102,11 +130,13 @@ export default function Orders() {
                 ? `/orders/${o.orderId || o._id}`
                 : `/grocery/orders/${o.orderId || o._id}`;
               const Icon = isFood ? Utensils : ShoppingBasket;
+              const isCompleted = ['delivered', 'completed', 'picked_up'].includes(String(o.status).toLowerCase());
+              const showReorder = !isFood && isCompleted;
               return (
-                <Link
+                <div
                   key={`${o._section}-${o._id || o.orderId}`}
-                  to={href}
-                  className="flex items-center gap-3 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-md border-2 border-gray-200 dark:border-gray-700 p-3 hover:shadow-lg transition-shadow"
+                  className="flex items-center gap-3 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-md border-2 border-gray-200 dark:border-gray-700 p-3 hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => navigate(href)}
                 >
                   {/* Section icon */}
                   <div
@@ -164,7 +194,17 @@ export default function Orders() {
                       </p>
                     </div>
                   </div>
-                </Link>
+                  {showReorder && (
+                    <button
+                      onClick={e => { e.stopPropagation(); reorderGrocery(o._id || o.id); }}
+                      disabled={reorderingId === (o._id || o.id)}
+                      className="ml-1 flex items-center gap-1 text-[10px] font-extrabold text-[#7f4f13] border border-[#7f4f13] px-2 py-1 rounded disabled:opacity-50"
+                    >
+                      <RotateCcw size={11} />
+                      {reorderingId === (o._id || o.id) ? '…' : 'Reorder'}
+                    </button>
+                  )}
+                </div>
               );
             })}
           </div>
