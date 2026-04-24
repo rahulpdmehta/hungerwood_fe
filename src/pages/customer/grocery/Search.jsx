@@ -15,8 +15,8 @@ const saveRecent = (list) => {
   try { localStorage.setItem(RECENT_KEY, JSON.stringify(list.slice(0, MAX_RECENT))); } catch { /* noop */ }
 };
 
-const fetchTrending = async () => (await api.get('/grocery/search/trending')).data?.data || [];
-const fetchSuggest = (q) => async () => (await api.get(`/grocery/search/suggest`, { params: { q } })).data?.data || [];
+const fetchTrending = async () => (await api.get('/grocery/search/trending')).data || [];
+const fetchSuggest = (q) => async () => (await api.get(`/grocery/search/suggest`, { params: { q } })).data || [];
 
 export default function GrocerySearch() {
   const navigate = useNavigate();
