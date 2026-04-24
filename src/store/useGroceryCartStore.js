@@ -25,6 +25,7 @@ const useGroceryCartStore = create(
       subtotal: 0,
       mrpTotal: 0,
       savings: 0,
+      coupon: null, // { code, discount, freeDelivery, type, theme }
 
       addItem: (input) => {
         // input: { productId, variantId, name, variantLabel, mrp, sellingPrice, image }
@@ -75,7 +76,10 @@ const useGroceryCartStore = create(
         return item ? item.quantity : 0;
       },
 
-      clearCart: () => set({ items: [], totalItems: 0, subtotal: 0, mrpTotal: 0, savings: 0 }),
+      applyCoupon: (coupon) => set({ coupon }),
+      removeCoupon: () => set({ coupon: null }),
+
+      clearCart: () => set({ items: [], totalItems: 0, subtotal: 0, mrpTotal: 0, savings: 0, coupon: null }),
     }),
     { name: LOCAL_STORAGE_KEYS.GROCERY_CART }
   )

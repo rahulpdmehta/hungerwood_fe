@@ -10,7 +10,7 @@ import GroceryStepper from '@components/grocery/GroceryStepper';
 
 export default function GroceryCart() {
   const navigate = useNavigate();
-  const { items, subtotal, savings, incrementQuantity, decrementQuantity, removeItem } = useGroceryCartStore();
+  const { items, subtotal, savings, coupon, removeCoupon, incrementQuantity, decrementQuantity, removeItem } = useGroceryCartStore();
   const { isAuthenticated } = useAuthStore();
   const { data: settings } = useGrocerySettingsPublic();
   const [instructions, setInstructions] = useState('');
@@ -19,8 +19,10 @@ export default function GroceryCart() {
   const tax = Math.round(subtotal * taxRate);
   const freeThreshold = settings?.freeDeliveryThreshold;
   const deliveryFlat = settings?.deliveryFee ?? 40;
-  const delivery = freeThreshold != null && subtotal >= freeThreshold ? 0 : deliveryFlat;
-  const grandTotal = subtotal + tax + delivery;
+  let delivery = freeThreshold != null && subtotal >= freeThreshold ? 0 : deliveryFlat;
+  if (coupon?.freeDelivery) delivery = 0;
+  const couponDiscount = coupon && !coupon.freeDelivery ? Math.min(coupon.discount, subtotal) : 0;
+  const grandTotal = Math.max(0, subtotal + tax + delivery - couponDiscount);
 
   const minOrderValue = settings?.minOrderValue ?? null;
   const belowMin = minOrderValue != null && subtotal < minOrderValue;
@@ -117,6 +119,15 @@ export default function GroceryCart() {
             <span>Delivery</span>
             <span>{delivery === 0 ? <span className="text-green-700 dark:text-green-400 font-bold">FREE</span> : `₹${delivery}`}</span>
           </div>
+          {coupon && (
+            <div className="flex justify-between text-green-700 dark:text-green-400">
+              <span>Coupon ({coupon.code}) <button onClick={removeCoupon} className="text-rose-600 ml-1 underline text-[10px]">remove</button></span>
+              <span>−₹{coupon.freeDelivery ? deliveryFlat : Math.round(couponDiscount)}</span>
+            </div>
+          )}
+          <Link to="/grocery/coupons" className="block text-center text-amber-700 text-[11px] font-bold border-t border-dashed border-stone-200 pt-2 mt-1">
+            {coupon ? 'Change coupon ›' : '+ Apply coupon'}
+          </Link>
           <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-2 font-bold">
             <span>Total</span>
             <span>₹{grandTotal}</span>

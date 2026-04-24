@@ -13,7 +13,7 @@ import AddressSheet from '@components/checkout/AddressSheet';
 export default function GroceryCheckout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { items, subtotal, clearCart } = useGroceryCartStore();
+  const { items, subtotal, clearCart, coupon, removeCoupon } = useGroceryCartStore();
   const user = useAuthStore(s => s.user);
   const { balance: walletBalance, fetchBalance } = useWalletStore();
   const { data: settings } = useGrocerySettingsPublic();
@@ -33,10 +33,12 @@ export default function GroceryCheckout() {
   const tax = Math.round(subtotal * taxRate);
   const deliveryFlat = settings?.deliveryFee ?? 40;
   const freeThreshold = settings?.freeDeliveryThreshold;
-  const delivery = orderType === 'DELIVERY'
+  let delivery = orderType === 'DELIVERY'
     ? (freeThreshold != null && subtotal >= freeThreshold ? 0 : deliveryFlat)
     : 0;
-  const total = subtotal + tax + delivery;
+  if (coupon?.freeDelivery && orderType === 'DELIVERY') delivery = 0;
+  const couponDiscount = coupon && !coupon.freeDelivery ? Math.min(coupon.discount, subtotal) : 0;
+  const total = Math.max(0, subtotal + tax + delivery - couponDiscount);
   const totalPayable = Math.max(0, total - walletAmount);
 
   useEffect(() => {
@@ -123,6 +125,7 @@ export default function GroceryCheckout() {
       walletUsed: walletAmount,
       totalAmount: total,
       instructions,
+      couponCode: coupon?.code,
     };
 
     try {
@@ -230,6 +233,12 @@ export default function GroceryCheckout() {
           <div className="flex justify-between"><span>Item total</span><span>₹{subtotal}</span></div>
           <div className="flex justify-between"><span>Tax</span><span>₹{tax}</span></div>
           <div className="flex justify-between"><span>Delivery</span><span>{delivery === 0 ? 'FREE' : `₹${delivery}`}</span></div>
+          {coupon && (
+            <div className="flex justify-between text-green-700 dark:text-green-400">
+              <span>Coupon ({coupon.code})</span>
+              <span>−₹{coupon.freeDelivery ? deliveryFlat : Math.round(couponDiscount)}</span>
+            </div>
+          )}
           {walletAmount > 0 && <div className="flex justify-between text-green-700 dark:text-green-400"><span>Wallet</span><span>-₹{walletAmount}</span></div>}
           <div className="flex justify-between border-t border-gray-200 dark:border-gray-700 pt-2 font-bold"><span>To pay</span><span>₹{totalPayable}</span></div>
         </div>

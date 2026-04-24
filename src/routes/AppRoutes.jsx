@@ -33,6 +33,7 @@ const GroceryProductDetail = lazy(() => import('@pages/customer/grocery/ProductD
 const GroceryCart = lazy(() => import('@pages/customer/grocery/Cart'));
 const GroceryCheckout = lazy(() => import('@pages/customer/grocery/Checkout'));
 const GroceryOrderTracking = lazy(() => import('@pages/customer/grocery/OrderTracking'));
+const GroceryCoupons = lazy(() => import('@pages/customer/grocery/Coupons'));
 
 const Animated = ({ children }) => <PageTransition>{children}</PageTransition>;
 
@@ -64,6 +65,16 @@ const AppRoutes = () => {
         <Route path="/grocery/c/:slug" element={<Lazy><Animated><GroceryCategory /></Animated></Lazy>} />
         <Route path="/grocery/p/:id" element={<Lazy><Animated><GroceryProductDetail /></Animated></Lazy>} />
         <Route path="/grocery/cart" element={<Lazy><Animated><GroceryCart /></Animated></Lazy>} />
+        <Route
+          path="/grocery/coupons"
+          element={
+            <ProtectedRoute>
+              <Lazy>
+                <Animated><GroceryCoupons /></Animated>
+              </Lazy>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Protected Customer Routes */}
         <Route path="/cart" element={<Animated><Cart /></Animated>} />

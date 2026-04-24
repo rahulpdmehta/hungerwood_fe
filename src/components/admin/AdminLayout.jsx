@@ -51,6 +51,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Products', path: '/admin/grocery/products', icon: Package },
     { name: 'Categories', path: '/admin/grocery/categories', icon: Tags },
     { name: 'Banners', path: '/admin/grocery/banners', icon: Megaphone },
+    { name: 'Coupons', path: '/admin/grocery/coupons', icon: Tags },
     { name: 'Settings', path: '/admin/grocery/settings', icon: Settings },
   ];
 
