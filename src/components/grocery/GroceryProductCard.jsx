@@ -75,8 +75,8 @@ export default function GroceryProductCard({ product }) {
               <p className="text-[10px] text-gray-500">{defaultVariant.label}</p>
             )}
             <div className="flex items-center justify-between gap-1 mt-auto pt-1">
-              <div className="flex flex-col leading-tight">
-                <span className="text-sm font-extrabold text-gray-900 dark:text-white">₹{defaultVariant.sellingPrice}</span>
+              <div className="flex flex-col leading-tight min-w-0">
+                <span className="text-[11px] font-extrabold text-gray-900 dark:text-white">₹{defaultVariant.sellingPrice}</span>
                 {pctOff > 0 && <span className="text-[9px] text-gray-400 line-through">₹{defaultVariant.mrp}</span>}
               </div>
               {quantity > 0 && !hasMultipleVariants ? (
