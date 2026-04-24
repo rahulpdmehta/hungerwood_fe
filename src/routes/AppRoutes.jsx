@@ -35,6 +35,7 @@ const GroceryCheckout = lazy(() => import('@pages/customer/grocery/Checkout'));
 const GroceryOrderTracking = lazy(() => import('@pages/customer/grocery/OrderTracking'));
 const GroceryCoupons = lazy(() => import('@pages/customer/grocery/Coupons'));
 const GroceryBundles = lazy(() => import('@pages/customer/grocery/Bundles'));
+const GrocerySearch = lazy(() => import('@pages/customer/grocery/Search'));
 
 const Animated = ({ children }) => <PageTransition>{children}</PageTransition>;
 
@@ -81,6 +82,14 @@ const AppRoutes = () => {
           element={
             <Lazy>
               <Animated><GroceryBundles /></Animated>
+            </Lazy>
+          }
+        />
+        <Route
+          path="/grocery/search"
+          element={
+            <Lazy>
+              <Animated><GrocerySearch /></Animated>
             </Lazy>
           }
         />
