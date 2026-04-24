@@ -17,6 +17,7 @@ import Cart from '@pages/customer/Cart';
 import Checkout from '@pages/customer/Checkout';
 import Orders from '@pages/customer/Orders';
 import OrderTracking from '@pages/customer/OrderTracking';
+import CancelOrder from '@pages/customer/CancelOrder';
 import Profile from '@pages/customer/Profile';
 import Addresses from '@pages/customer/Addresses';
 import EditProfile from '@pages/customer/EditProfile';
@@ -107,6 +108,22 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Animated><OrderTracking /></Animated>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:id/cancel"
+          element={
+            <ProtectedRoute>
+              <Animated><CancelOrder /></Animated>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/grocery/orders/:id/cancel"
+          element={
+            <ProtectedRoute>
+              <Animated><CancelOrder /></Animated>
             </ProtectedRoute>
           }
         />

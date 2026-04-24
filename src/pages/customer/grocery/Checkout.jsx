@@ -8,6 +8,7 @@ import useWalletStore from '@store/useWalletStore';
 import { useGrocerySettingsPublic, useCreateGroceryOrder } from '@hooks/useGroceryCustomerQueries';
 import { groceryPaymentService } from '@services/groceryCustomer.service';
 import { addressService } from '@services/address.service';
+import AddressSheet from '@components/checkout/AddressSheet';
 
 export default function GroceryCheckout() {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ export default function GroceryCheckout() {
 
   const [orderType, setOrderType] = useState('DELIVERY');
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [addressSheetOpen, setAddressSheetOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [walletAmount, setWalletAmount] = useState(0);
   const [isPlacing, setIsPlacing] = useState(false);
@@ -175,15 +177,20 @@ export default function GroceryCheckout() {
             <h3 className="font-bold">Delivery address</h3>
             {selectedAddress ? (
               <div className="text-sm">
-                <div className="font-medium">{selectedAddress.label}</div>
-                <div className="text-gray-600 dark:text-gray-300">{selectedAddress.street}, Gaya - 824201</div>
-                <button onClick={() => navigate('/addresses', { state: { returnTo: '/grocery/checkout' } })} className="text-green-700 dark:text-green-400 text-sm font-semibold mt-2">
-                  Change
+                <div className="font-medium flex items-center gap-2">
+                  {selectedAddress.label}
+                  {selectedAddress.isDefault && (
+                    <span className="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">DEFAULT</span>
+                  )}
+                </div>
+                <div className="text-gray-600 dark:text-gray-300">{selectedAddress.street}, Gaya - {selectedAddress.pincode || '824201'}</div>
+                <button onClick={() => setAddressSheetOpen(true)} className="text-green-700 dark:text-green-400 text-sm font-semibold mt-2">
+                  Change ›
                 </button>
               </div>
             ) : (
-              <button onClick={() => navigate('/addresses')} className="text-green-700 dark:text-green-400 text-sm font-semibold">
-                + Add address
+              <button onClick={() => setAddressSheetOpen(true)} className="text-green-700 dark:text-green-400 text-sm font-semibold">
+                + Choose address
               </button>
             )}
           </div>
@@ -239,6 +246,13 @@ export default function GroceryCheckout() {
           </button>
         </div>
       </div>
+
+      <AddressSheet
+        open={addressSheetOpen}
+        onClose={() => setAddressSheetOpen(false)}
+        selectedId={selectedAddress?.id || selectedAddress?._id}
+        onSelect={setSelectedAddress}
+      />
     </div>
   );
 }

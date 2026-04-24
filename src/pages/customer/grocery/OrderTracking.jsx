@@ -1,5 +1,5 @@
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Check, Package, Truck, Home as HomeIcon } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Check, Package, Truck, Home as HomeIcon, X } from 'lucide-react';
 import { useMyGroceryOrder } from '@hooks/useGroceryCustomerQueries';
 
 const STATUS_STEPS_DELIVERY = [
@@ -16,6 +16,7 @@ const STATUS_STEPS_PICKUP = [
 
 export default function GroceryOrderTracking() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { data: order, isLoading } = useMyGroceryOrder(id);
 
   if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
@@ -24,6 +25,7 @@ export default function GroceryOrderTracking() {
   const steps = order.orderType === 'DELIVERY' ? STATUS_STEPS_DELIVERY : STATUS_STEPS_PICKUP;
   const currentIdx = steps.findIndex(s => s.key === order.status);
   const isCancelled = order.status === 'CANCELLED';
+  const canCancel = order.status === 'RECEIVED';
 
   return (
     <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
@@ -97,6 +99,20 @@ export default function GroceryOrderTracking() {
           <section className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 text-sm">
             <div className="font-bold mb-1 text-yellow-800 dark:text-yellow-200">Pack notes</div>
             <div>{order.instructions}</div>
+          </section>
+        )}
+
+        {canCancel && (
+          <button
+            onClick={() => navigate(`/grocery/orders/${id}/cancel`)}
+            className="w-full mt-2 flex items-center justify-center gap-2 py-3 border border-rose-300 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50"
+          >
+            <X size={16} /> Cancel order
+          </button>
+        )}
+        {isCancelled && order.cancellationReason && (
+          <section className="bg-stone-100 dark:bg-stone-800 rounded-xl p-3 text-xs text-stone-600 dark:text-stone-400">
+            <strong>Reason:</strong> {order.cancellationReason}
           </section>
         )}
       </main>
