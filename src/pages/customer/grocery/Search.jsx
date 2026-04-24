@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, X, Search as SearchIcon, Clock } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '@services/api';
 import { useDebounce } from '@hooks/useDebounce';
 import { optimizeImage } from '@utils/image';
+import { useGroceryProductsPublic } from '@hooks/useGroceryCustomerQueries';
+import GroceryProductCard from '@components/grocery/GroceryProductCard';
+import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
 
 const RECENT_KEY = 'grocery.recent';
 const MAX_RECENT = 5;
@@ -35,6 +38,13 @@ export default function GrocerySearch() {
     queryFn: fetchSuggest(debounced),
     enabled: debounced.length >= 2,
   });
+
+  const { data: allProducts = [], isLoading: productsLoading } = useGroceryProductsPublic();
+  const topPicks = useMemo(() => {
+    const bestsellers = allProducts.filter(p => p.tags?.isBestseller);
+    const picks = bestsellers.length >= 8 ? bestsellers : allProducts;
+    return picks.slice(0, 10);
+  }, [allProducts]);
 
   const submit = (term) => {
     const t = term.trim();
@@ -103,6 +113,35 @@ export default function GrocerySearch() {
               ))}
             </div>
           </section>
+        )}
+
+        {q.length < 2 && (
+          <section className="pt-6">
+            <h6 className="px-4 text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">Top picks for you</h6>
+            {productsLoading ? (
+              <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide pb-1">
+                {[1, 2, 3, 4].map(i => (
+                  <div key={i} className="min-w-[130px] max-w-[130px]">
+                    <GroceryCardSkeleton />
+                  </div>
+                ))}
+              </div>
+            ) : topPicks.length > 0 ? (
+              <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide pb-1">
+                {topPicks.map(p => (
+                  <div key={p.id || p._id} className="min-w-[130px] max-w-[130px]">
+                    <GroceryProductCard product={p} />
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </section>
+        )}
+
+        {q.length < 2 && !productsLoading && recent.length === 0 && trending.length === 0 && topPicks.length === 0 && (
+          <div className="text-center text-stone-400 text-sm py-16 px-6">
+            Start typing to search our catalogue.
+          </div>
         )}
 
         {debounced.length >= 2 && (
