@@ -31,7 +31,12 @@ export default function VariantPickerSheet({ product, open, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center" role="dialog" aria-modal="true">
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center"
+      role="dialog"
+      aria-modal="true"
+    >
       <button
         aria-label="Close"
         onClick={onClose}

@@ -86,7 +86,7 @@ export default function GroceryProductCard({ product }) {
                   onDec={() => decrementQuantity(productId, variantId)}
                 />
               ) : (
-                <GroceryAddButton onClick={handleAdd} label={hasMultipleVariants ? 'OPTIONS' : 'ADD'} />
+                <GroceryAddButton onClick={handleAdd} label={hasMultipleVariants ? 'ADD ▾' : 'ADD'} />
               )}
             </div>
           </>

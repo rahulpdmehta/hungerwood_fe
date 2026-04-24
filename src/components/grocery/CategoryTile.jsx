@@ -39,16 +39,16 @@ export default function CategoryTile({ category }) {
   return (
     <Link
       to={`/grocery/c/${id}`}
-      className={`block rounded-2xl p-2 text-center shadow-sm border border-white/60 bg-gradient-to-br ${hue} transition-transform active:scale-95`}
+      className={`block rounded-2xl p-1 text-center shadow-sm border border-white/60 bg-gradient-to-br ${hue} transition-transform active:scale-95`}
     >
-      <div className="w-12 h-12 mx-auto mb-1 rounded-xl bg-white/70 flex items-center justify-center overflow-hidden">
+      <div className="w-full aspect-square mb-1 rounded-xl bg-white/70 flex items-center justify-center overflow-hidden">
         {category.image ? (
-          <img src={optimizeImage(category.image, 60)} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
+          <img src={optimizeImage(category.image, 160)} alt="" loading="lazy" decoding="async" className="w-full h-full object-cover" />
         ) : (
-          <span className="text-[22px]" aria-hidden>{emoji}</span>
+          <span className="text-[34px]" aria-hidden>{emoji}</span>
         )}
       </div>
-      <div className="text-[10px] font-extrabold text-amber-950 leading-tight line-clamp-2">{category.name}</div>
+      <div className="text-[10px] font-extrabold text-amber-950 leading-tight line-clamp-2 px-1 pb-1">{category.name}</div>
     </Link>
   );
 }
