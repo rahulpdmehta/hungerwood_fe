@@ -8,6 +8,7 @@ import {
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
 import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 
 const SORT_OPTIONS = [
   { value: 'default',    label: 'Relevance' },
@@ -44,7 +45,7 @@ export default function GroceryCategory() {
   }, [allProducts, sort]);
 
   return (
-    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
+    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-28">
       <nav className="sticky top-0 z-50 bg-white dark:bg-[#211811] border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="flex items-center p-4 justify-between max-w-md mx-auto">
           <Link to="/grocery" className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -86,6 +87,7 @@ export default function GroceryCategory() {
       </main>
 
       <StickyCartStrip />
+      <GroceryBottomNavBar />
     </div>
   );
 }

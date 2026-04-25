@@ -13,6 +13,7 @@ import GroceryProductCard from '@components/grocery/GroceryProductCard';
 import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
 import CategoryTile from '@components/grocery/CategoryTile';
 import CategoryTileSkeleton from '@components/grocery/CategoryTileSkeleton';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 
 const RECENT_KEY = 'grocery.recent';
 const MAX_RECENT = 5;
@@ -90,7 +91,7 @@ export default function GrocerySearch() {
         </div>
       </nav>
 
-      <main className="max-w-md mx-auto pb-10">
+      <main className="max-w-md mx-auto pb-24">
         {q.length < 2 && recent.length > 0 && (
           <section className="px-4 pt-4">
             <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-1">Recent searches</h6>
@@ -210,6 +211,7 @@ export default function GrocerySearch() {
           </section>
         )}
       </main>
+      <GroceryBottomNavBar />
     </div>
   );
 }

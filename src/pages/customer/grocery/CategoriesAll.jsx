@@ -5,6 +5,7 @@ import { useGroceryCategoriesPublic } from '@hooks/useGroceryCustomerQueries';
 import CategoryTile from '@components/grocery/CategoryTile';
 import CategoryTileSkeleton from '@components/grocery/CategoryTileSkeleton';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 
 export default function GroceryCategoriesAll() {
   const { data: categories = [], isLoading } = useGroceryCategoriesPublic();
@@ -63,6 +64,7 @@ export default function GroceryCategoriesAll() {
       </main>
 
       <StickyCartStrip />
+      <GroceryBottomNavBar />
     </div>
   );
 }

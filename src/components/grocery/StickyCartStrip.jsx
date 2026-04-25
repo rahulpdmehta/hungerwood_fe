@@ -27,7 +27,7 @@ export default function StickyCartStrip() {
     <button
       type="button"
       onClick={() => navigate('/grocery/cart')}
-      className="w-[75%] mx-auto fixed left-2 right-2 bottom-2 z-40 bg-green-600 text-white rounded-3xl pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_8px_24px_rgba(22,163,74,0.35)] active:scale-[.99] transition-transform animate-slideUp"
+      className="w-[75%] mx-auto fixed left-2 right-2 bottom-20 z-40 bg-green-600 text-white rounded-3xl pl-2 pr-3 py-2 flex items-center gap-3 shadow-[0_8px_24px_rgba(22,163,74,0.35)] active:scale-[.99] transition-transform animate-slideUp"
     >
       <div className="flex -space-x-2.5 shrink-0">
         {thumbs.map((item, i) => (

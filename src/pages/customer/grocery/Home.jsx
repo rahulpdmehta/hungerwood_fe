@@ -12,6 +12,7 @@ import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
 import CategoryTileSkeleton from '@components/grocery/CategoryTileSkeleton';
 import SectionTilesStrip from '@components/home/GroceryEntryCard';
 import StickyCartStrip from '@components/grocery/StickyCartStrip';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 import SavingsWidget from '@components/grocery/SavingsWidget';
 import CategoryTile from '@components/grocery/CategoryTile';
 import HomeHeader from '@components/layout/HomeHeader';
@@ -200,6 +201,7 @@ export default function GroceryHome() {
       </main>
 
       <StickyCartStrip />
+      <GroceryBottomNavBar />
     </div>
   );
 }

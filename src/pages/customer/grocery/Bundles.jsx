@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import api from '@services/api';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import BundleCard from '@components/grocery/BundleCard';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 
 const fetchBundles = async () => (await api.get('/grocery/bundles')).data || [];
 
@@ -39,7 +40,7 @@ export default function GroceryBundles() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-10">
+    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-24">
       <nav className="sticky top-0 z-30 bg-white dark:bg-[#211811] border-b border-stone-200 dark:border-gray-700">
         <div className="flex items-center p-4 max-w-md mx-auto">
           <Link to="/grocery" className="flex size-10 items-center justify-center rounded-full hover:bg-stone-100">
@@ -68,6 +69,7 @@ export default function GroceryBundles() {
           />
         ))}
       </main>
+      <GroceryBottomNavBar />
     </div>
   );
 }
