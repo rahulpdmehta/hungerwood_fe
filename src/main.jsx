@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient } from '@tanstack/react-query';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
 import App from './App.jsx';
 import './styles/globals.css';
 
@@ -17,28 +19,61 @@ if (typeof document !== 'undefined' && document.fonts && typeof document.fonts.l
   revealIcons();
 }
 
-// Create a QueryClient with production-ready defaults
+// Bump this when the data shape changes — the persisted cache is dropped
+// (the version is part of the storage buster). Bumped automatically when
+// the build hash changes via __APP_VERSION__ defined below.
+const CACHE_BUSTER = '1';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      // Default stale time: 5 minutes (data considered fresh)
-      staleTime: 5 * 60 * 1000,
-      // Default cache time: 10 minutes (data kept in cache after unmount)
-      gcTime: 10 * 60 * 1000,
-      // Retry failed requests once
+      // gcTime must be ≥ persist maxAge so data isn't evicted before persist
+      // gets a chance to write it.
+      staleTime: 5 * 60 * 1000,        // 5 min
+      gcTime: 24 * 60 * 60 * 1000,     // 24 h — needed for persistence
       retry: 1,
-      // Don't refetch on window focus by default (can be overridden per query)
       refetchOnWindowFocus: false,
-      // Don't refetch on mount if data is fresh
       refetchOnMount: false,
     },
   },
 });
 
+const persister = createSyncStoragePersister({
+  storage: typeof window !== 'undefined' ? window.localStorage : undefined,
+  key: 'hw-rq-cache',
+  // Skip persisting any error state to avoid replaying a bad response.
+  serialize: (data) => JSON.stringify(data),
+  deserialize: (str) => JSON.parse(str),
+  throttleTime: 1000,
+});
+
+// Don't persist queries that are personal/auth-bound or that hold money/order
+// data — better to refetch those fresh on reload.
+const shouldPersistQuery = (query) => {
+  const key = JSON.stringify(query.queryKey).toLowerCase();
+  if (
+    key.includes('order') ||
+    key.includes('wallet') ||
+    key.includes('me') ||
+    key.includes('admin')
+  ) {
+    return false;
+  }
+  return query.state.status === 'success';
+};
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: 24 * 60 * 60 * 1000, // 24h
+        buster: CACHE_BUSTER,
+        dehydrateOptions: { shouldDehydrateQuery: shouldPersistQuery },
+      }}
+    >
       <App />
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   </React.StrictMode>
 );

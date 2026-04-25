@@ -37,37 +37,64 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg}'],
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api/, /^\/_/, /^\/sw\.js/, /^\/workbox-/],
+        // Match the API regardless of host — local dev uses 192.168.1.2:5001,
+        // staging the Vercel preview, prod the Vercel prod alias. Workbox sees
+        // the path on the URL object so we just check pathname.
         runtimeCaching: [
+          // Static catalog endpoints — cache hard, refresh in the background.
           {
-            urlPattern: /^https:\/\/api\./i,
-            handler: 'NetworkFirst',
+            urlPattern: ({ url, request }) =>
+              request.method === 'GET' &&
+              /\/api\/(menu(\/items|\/categories)?|banners\/active|photos|grocery\/categories|grocery\/settings|grocery\/bundles|restaurant\/status|versions)(\?|$|\/)/.test(url.pathname),
+            handler: 'StaleWhileRevalidate',
             options: {
-              cacheName: 'api-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 300 // 5 minutes
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
+              cacheName: 'hw-static-api',
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 }, // 1h
+              cacheableResponse: { statuses: [200] },
+            },
           },
+
+          // Public grocery products list — large but slow-changing.
           {
-            // Don't cache 404 responses
-            urlPattern: ({ url }) => url.pathname.startsWith('/'),
+            urlPattern: ({ url, request }) =>
+              request.method === 'GET' &&
+              /\/api\/grocery\/products(\?|$|\/)/.test(url.pathname),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'hw-grocery-products',
+              expiration: { maxEntries: 30, maxAgeSeconds: 10 * 60 }, // 10m
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+
+          // User-specific reads — keep fresh, but tolerate brief offline.
+          {
+            urlPattern: ({ url, request }) =>
+              request.method === 'GET' &&
+              /\/api\/(orders|wallet|grocery\/orders|grocery\/me|addresses)(\?|$|\/)/.test(url.pathname),
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'pages-cache',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              },
-              cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
+              cacheName: 'hw-user-api',
+              networkTimeoutSeconds: 4,
+              expiration: { maxEntries: 60, maxAgeSeconds: 30 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+
+          // App shell / pages.
+          {
+            urlPattern: ({ request }) => request.mode === 'navigate',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'hw-pages',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          // Anything else (auth, payment, admin) is intentionally NOT cached
+          // — those endpoints either mutate state or carry sensitive
+          // per-user data, and a stale response is worse than a network hit.
+        ],
       }
     })
   ],

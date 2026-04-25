@@ -13,18 +13,42 @@ const K = {
   order: (id) => ['grocery-customer', 'order', id],
 };
 
-// Catalog
+// Catalog — staleTime is generous because the catalogue moves slowly. The PWA
+// service worker also caches these via SWR so a cold open hits SW, not Mongo.
+const HOUR = 60 * 60 * 1000;
+
 export const useGroceryCategoriesPublic = () =>
-  useQuery({ queryKey: K.categories, queryFn: groceryCatalogService.listCategories });
+  useQuery({
+    queryKey: K.categories,
+    queryFn: groceryCatalogService.listCategories,
+    staleTime: HOUR,
+    gcTime: 24 * HOUR,
+  });
 
 export const useGroceryProductsPublic = (params = {}) =>
-  useQuery({ queryKey: K.products(params), queryFn: () => groceryCatalogService.listProducts(params) });
+  useQuery({
+    queryKey: K.products(params),
+    queryFn: () => groceryCatalogService.listProducts(params),
+    staleTime: 10 * 60 * 1000, // 10 min — products move faster (price, stock)
+    gcTime: 24 * HOUR,
+  });
 
 export const useGroceryProductPublic = (id) =>
-  useQuery({ queryKey: K.product(id), queryFn: () => groceryCatalogService.getProduct(id), enabled: !!id });
+  useQuery({
+    queryKey: K.product(id),
+    queryFn: () => groceryCatalogService.getProduct(id),
+    enabled: !!id,
+    staleTime: 10 * 60 * 1000,
+    gcTime: 24 * HOUR,
+  });
 
 export const useGrocerySettingsPublic = () =>
-  useQuery({ queryKey: K.settings, queryFn: groceryCatalogService.getSettings });
+  useQuery({
+    queryKey: K.settings,
+    queryFn: groceryCatalogService.getSettings,
+    staleTime: HOUR,
+    gcTime: 24 * HOUR,
+  });
 
 // Orders
 export const useMyGroceryOrders = () =>

@@ -113,6 +113,15 @@ const useCartStore = create(
     }),
     {
       name: LOCAL_STORAGE_KEYS.CART,
+      version: 1,
+      // If the persisted shape ever drifts (item schema change, currency
+      // change, etc.) bump `version` above and add a branch here. Until
+      // then, persisted state from older builds is dropped rather than
+      // silently breaking checkout with mismatched fields.
+      migrate: (persisted, fromVersion) => {
+        if (fromVersion === 1) return persisted;
+        return { items: [] };
+      },
     }
   )
 );

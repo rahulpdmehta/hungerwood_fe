@@ -109,7 +109,17 @@ const useGroceryCartStore = create(
 
       clearCart: () => set({ items: [], totalItems: 0, subtotal: 0, mrpTotal: 0, savings: 0, coupon: null, bundle: null }),
     }),
-    { name: LOCAL_STORAGE_KEYS.GROCERY_CART }
+    {
+      name: LOCAL_STORAGE_KEYS.GROCERY_CART,
+      version: 1,
+      // Bump this and add a migration branch if the cart item shape
+      // changes; otherwise dropping the persisted cart is safer than
+      // shipping a half-broken checkout to existing users.
+      migrate: (persisted, fromVersion) => {
+        if (fromVersion === 1) return persisted;
+        return { items: [], totalItems: 0, subtotal: 0, mrpTotal: 0, savings: 0, coupon: null, bundle: null };
+      },
+    }
   )
 );
 
