@@ -6,7 +6,7 @@
 export default function GroceryStepper({ qty, onInc, onDec, size = 'sm' }) {
   const cfg = size === 'lg'
     ? { h: 'h-[38px]', w: 'w-9', fs: 'text-base', qfs: 'text-sm', pad: 'px-2.5' }
-    : { h: 'h-[26px]', w: 'w-6', fs: 'text-xs', qfs: 'text-[11px]', pad: 'px-1.5' };
+    : { h: 'h-[26px]', w: 'w-6', fs: 'text-xs', qfs: 'text-2xs', pad: 'px-1.5' };
   return (
     <div className={`inline-flex items-center bg-green-600 text-white rounded-md overflow-hidden ${cfg.h}`}>
       <button

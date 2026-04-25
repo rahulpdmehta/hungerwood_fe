@@ -51,7 +51,7 @@ export default function GroceryBundles() {
       </nav>
 
       <main className="max-w-md mx-auto pt-2">
-        <p className="px-4 py-2 text-[11px] text-stone-600 dark:text-stone-400">
+        <p className="px-4 py-2 text-2xs text-stone-600 dark:text-stone-400">
           Hand-picked bundles by HungerWood — save more when bought together.
         </p>
 

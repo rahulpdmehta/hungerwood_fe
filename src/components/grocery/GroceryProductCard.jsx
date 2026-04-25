@@ -67,32 +67,32 @@ export default function GroceryProductCard({ product }) {
           </div>
         )}
         {pctOff > 0 && (
-          <span className="absolute top-1.5 left-1.5 bg-green-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
+          <span className="absolute top-1.5 left-1.5 bg-green-600 text-white text-2xs font-extrabold px-1.5 py-0.5 rounded">
             {pctOff}% OFF
           </span>
         )}
       </div>
       <div className="p-2 flex flex-col flex-1 gap-1">
-        <p className="text-[9px] text-gray-500 font-bold uppercase tracking-wide min-h-[12px]">{product.brand || ''}</p>
-        <p className="text-[11px] font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 min-h-[28px]">{product.name}</p>
+        <p className="text-2xs text-gray-500 font-bold uppercase tracking-wide min-h-[12px]">{product.brand || ''}</p>
+        <p className="text-2xs font-bold text-gray-900 dark:text-white leading-tight line-clamp-2 min-h-[28px]">{product.name}</p>
 
         {defaultVariant ? (
           <>
             <div className="min-h-[18px]">
               {hasMultipleVariants ? (
-                <span className="inline-flex w-fit items-center gap-1 text-[9px] font-bold text-gray-700 bg-amber-700/5 border border-amber-200 px-1.5 py-0.5 rounded-full">
+                <span className="inline-flex w-fit items-center gap-1 text-2xs font-bold text-gray-700 bg-amber-700/5 border border-amber-200 px-1.5 py-0.5 rounded-full">
                   {defaultVariant.label} ▾
                 </span>
               ) : (
-                <span className="inline-flex w-fit items-center text-[9px] font-bold text-gray-500 px-1.5 py-0.5">
+                <span className="inline-flex w-fit items-center text-2xs font-bold text-gray-500 px-1.5 py-0.5">
                   {defaultVariant.label}
                 </span>
               )}
             </div>
             <div className="flex items-center justify-between gap-1 mt-auto pt-1">
               <div className="flex flex-col leading-tight min-w-0">
-                <span className="text-[11px] font-extrabold text-gray-900 dark:text-white">₹{defaultVariant.sellingPrice}</span>
-                {pctOff > 0 && <span className="text-[9px] text-gray-400 line-through">₹{defaultVariant.mrp}</span>}
+                <span className="text-2xs font-extrabold text-gray-900 dark:text-white">₹{defaultVariant.sellingPrice}</span>
+                {pctOff > 0 && <span className="text-2xs text-gray-400 line-through">₹{defaultVariant.mrp}</span>}
               </div>
               {quantity > 0 && !hasMultipleVariants ? (
                 <GroceryStepper

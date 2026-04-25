@@ -40,7 +40,7 @@ const BannerCarousel = () => {
               <div className="absolute inset-0 p-5 flex flex-col justify-center text-white">
                 {banner.badge && (
                   <span
-                    className="text-[10px] font-bold px-2 py-0.5 rounded w-fit mb-2 text-white"
+                    className="text-2xs font-bold px-2 py-0.5 rounded w-fit mb-2 text-white"
                     style={{ backgroundColor: banner.badgeColor }}
                   >
                     {banner.badge}

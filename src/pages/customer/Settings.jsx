@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import BackButton from '@components/common/BackButton';
 import BottomNavBar from '@components/layout/BottomNavBar';
+import ConfirmModal from '@components/common/ConfirmModal';
 
 const Settings = () => {
+  // Single confirm modal driven by a `pending` payload — keeps the action
+  // map below readable instead of exploding it with N modals.
+  const [pendingConfirm, setPendingConfirm] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [notifications, setNotifications] = useState({
     orderUpdates: true,
@@ -172,25 +176,35 @@ const Settings = () => {
           label: 'Clear Cache',
           description: 'Clear app cache to free up storage',
           type: 'button',
-          action: () => {
-            if (window.confirm('Are you sure you want to clear the cache?')) {
-              localStorage.removeItem('menuCache');
-              localStorage.removeItem('categoriesCache');
-              toast.success('Cache cleared');
-            }
-          }
+          action: () =>
+            setPendingConfirm({
+              title: 'Clear cache?',
+              message: 'Recently viewed menu and categories will be re-fetched on next load.',
+              confirmText: 'Clear cache',
+              tone: 'danger',
+              run: () => {
+                localStorage.removeItem('menuCache');
+                localStorage.removeItem('categoriesCache');
+                toast.success('Cache cleared');
+              },
+            }),
         },
         {
           id: 'clearData',
           label: 'Clear All Data',
           description: 'Remove all stored app data (requires login again)',
           type: 'button',
-          action: () => {
-            if (window.confirm('This will clear all your app data. Are you sure?')) {
-              localStorage.clear();
-              toast.success('All data cleared — please restart the app');
-            }
-          }
+          action: () =>
+            setPendingConfirm({
+              title: 'Clear all data?',
+              message: "You'll be signed out. Saved cart, addresses and preferences will all be lost.",
+              confirmText: 'Clear everything',
+              tone: 'danger',
+              run: () => {
+                localStorage.clear();
+                toast.success('All data cleared — please restart the app');
+              },
+            }),
         }
       ]
     }
@@ -329,6 +343,16 @@ const Settings = () => {
 
       {/* Bottom Navigation Bar */}
       <BottomNavBar />
+
+      <ConfirmModal
+        open={!!pendingConfirm}
+        onClose={() => setPendingConfirm(null)}
+        onConfirm={() => pendingConfirm?.run()}
+        title={pendingConfirm?.title}
+        message={pendingConfirm?.message}
+        confirmText={pendingConfirm?.confirmText}
+        tone={pendingConfirm?.tone}
+      />
     </div>
   );
 };

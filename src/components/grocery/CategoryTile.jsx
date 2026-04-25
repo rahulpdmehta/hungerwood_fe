@@ -48,7 +48,7 @@ export default function CategoryTile({ category }) {
           <span className="text-[34px]" aria-hidden>{emoji}</span>
         )}
       </div>
-      <div className="text-[10px] font-extrabold text-amber-950 leading-tight line-clamp-2 px-1 pb-1">{category.name}</div>
+      <div className="text-2xs font-extrabold text-amber-950 leading-tight line-clamp-2 px-1 pb-1">{category.name}</div>
     </Link>
   );
 }

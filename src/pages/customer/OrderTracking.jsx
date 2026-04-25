@@ -339,7 +339,7 @@ const OrderTracking = () => {
             <span className="material-symbols-outlined text-yellow-600 dark:text-yellow-400 text-sm">
               warning
             </span>
-            <span className="text-yellow-700 dark:text-yellow-400 text-[11px] font-medium">
+            <span className="text-yellow-700 dark:text-yellow-400 text-2xs font-medium">
               {pollingError}
             </span>
           </div>
@@ -361,7 +361,7 @@ const OrderTracking = () => {
                 This order has been cancelled.
               </p>
               {order?.statusHistory && order.statusHistory.find(s => s.status === 'CANCELLED') && (
-                <p className="text-[#887263] dark:text-gray-400 text-[11px] mt-1">
+                <p className="text-[#887263] dark:text-gray-400 text-2xs mt-1">
                   Cancelled on {formatDate(order.statusHistory.find(s => s.status === 'CANCELLED').timestamp, 'MMM D h:mm A')}
                 </p>
               )}
@@ -503,7 +503,7 @@ const OrderTracking = () => {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h4 className="text-[#181411] dark:text-white font-bold text-sm">HungerWood Gaya</h4>
-                <p className="text-[#887263] dark:text-gray-400 text-[11px]">Order #{orderNumber}</p>
+                <p className="text-[#887263] dark:text-gray-400 text-2xs">Order #{orderNumber}</p>
               </div>
               <div className="w-8 h-8 rounded-md bg-[#7f4f13]/10 flex items-center justify-center text-[#7f4f13]">
                 <span className="material-symbols-outlined text-base">restaurant</span>
@@ -615,7 +615,7 @@ const OrderTracking = () => {
                 <span className="material-symbols-outlined text-[#7f4f13] text-base">location_on</span>
               </div>
               <div>
-                <p className="text-[#887263] dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">
+                <p className="text-[#887263] dark:text-gray-400 text-2xs font-bold uppercase tracking-wider mb-0.5">
                   Delivering To
                 </p>
                 <p className="text-[#181411] dark:text-white text-xs font-medium leading-snug">

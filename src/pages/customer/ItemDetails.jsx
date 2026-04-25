@@ -210,10 +210,17 @@ const ItemDetails = () => {
       </div>
 
       {/* Header Image Section */}
-      <div
-        className="relative w-full aspect-[4/3] sm:aspect-video bg-center bg-no-repeat bg-cover"
-        style={{ backgroundImage: `url("${displayItem.image}")` }}
-      ></div>
+      <div className="relative w-full aspect-[4/3] sm:aspect-video bg-gray-100 dark:bg-gray-800">
+        {displayItem.image && (
+          <img
+            src={displayItem.image}
+            alt={displayItem.name || ''}
+            loading="lazy"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        )}
+      </div>
 
       {/* Content Container */}
       <div className="flex flex-col flex-1 px-4 -mt-6 bg-[#f8f7f6] dark:bg-[#211811] rounded-t-xl relative z-20 pb-32 max-w-[calc(100%-10px)] ml-[5px] shadow-2xl border-t-2 border-gray-200 dark:border-gray-700">

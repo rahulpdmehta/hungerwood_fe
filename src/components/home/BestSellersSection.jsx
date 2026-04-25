@@ -142,7 +142,7 @@ const BestSellersSection = () => {
                 </div>
                 <div className="p-3">
                   <h4 className="text-sm font-bold line-clamp-1 text-[#181411] dark:text-white">{item.name}</h4>
-                  <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">{item.description}</p>
+                  <p className="text-2xs text-gray-500 dark:text-gray-400 mt-1 line-clamp-1">{item.description}</p>
                   <div className="flex items-center justify-between mt-3">
                     <span className="text-sm font-bold text-[#181411] dark:text-white">₹{item.price}</span>
                     {(() => {
@@ -150,7 +150,7 @@ const BestSellersSection = () => {
                       if (!orderable) {
                         return (
                           <span
-                            className="inline-flex items-center rounded px-2 py-1 bg-gray-100 text-gray-500 border border-gray-200 text-[10px] font-semibold cursor-not-allowed"
+                            className="inline-flex items-center rounded px-2 py-1 bg-gray-100 text-gray-500 border border-gray-200 text-2xs font-semibold cursor-not-allowed"
                             title={windowLabel ? `Available ${windowLabel} (IST)` : 'Currently unavailable'}
                           >
                             {windowLabel ? `Avail ${windowLabel}` : 'Unavailable'}

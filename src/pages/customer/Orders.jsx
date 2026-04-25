@@ -156,7 +156,7 @@ export default function Orders({ section }) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 mb-0.5">
                       <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold flex-shrink-0 ${
+                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-bold flex-shrink-0 ${
                           o.status?.toLowerCase() === 'completed' || o.status?.toLowerCase() === 'delivered'
                             ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400'
                             : o.status?.toLowerCase() === 'cancelled'
@@ -166,14 +166,14 @@ export default function Orders({ section }) {
                       >
                         {o.status}
                       </span>
-                      <span className="text-[#887263] dark:text-[#b09d90] text-[10px] font-medium ml-auto">
+                      <span className="text-[#887263] dark:text-[#b09d90] text-2xs font-medium ml-auto">
                         #{o.orderId}
                       </span>
                     </div>
 
                     {/* Item names */}
                     {Array.isArray(o.items) && o.items.length > 0 && (
-                      <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-1">
+                      <p className="text-[#887263] dark:text-gray-400 text-2xs leading-snug line-clamp-1">
                         {o.items.slice(0, 2).map((item, idx) => (
                           <span key={idx}>
                             {item.quantity}x {item.name || (isFood ? 'Food Item' : 'Grocery Item')}
@@ -188,7 +188,7 @@ export default function Orders({ section }) {
                       <p className="text-[#7f4f13] text-sm font-bold leading-normal">
                         ₹{o.totalAmount}
                       </p>
-                      <p className="text-[#887263] dark:text-gray-400 text-[10px]">
+                      <p className="text-[#887263] dark:text-gray-400 text-2xs">
                         {new Date(o.createdAt).toLocaleDateString('en-IN', {
                           day: 'numeric',
                           month: 'short',
@@ -201,7 +201,7 @@ export default function Orders({ section }) {
                     <button
                       onClick={e => { e.stopPropagation(); reorderGrocery(o._id || o.id); }}
                       disabled={reorderingId === (o._id || o.id)}
-                      className="ml-1 flex items-center gap-1 text-[10px] font-extrabold text-[#7f4f13] border border-[#7f4f13] px-2 py-1 rounded disabled:opacity-50"
+                      className="ml-1 flex items-center gap-1 text-2xs font-extrabold text-[#7f4f13] border border-[#7f4f13] px-2 py-1 rounded disabled:opacity-50"
                     >
                       <RotateCcw size={11} />
                       {reorderingId === (o._id || o.id) ? '…' : 'Reorder'}

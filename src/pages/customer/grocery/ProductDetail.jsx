@@ -122,7 +122,7 @@ export default function GroceryProductDetail() {
                       <span className="font-bold">₹{v.sellingPrice}</span>
                       {pctOff > 0 && <span className="text-gray-400 line-through ml-1">₹{v.mrp}</span>}
                     </div>
-                    {pctOff > 0 && <div className="text-[10px] text-green-700 dark:text-green-400 font-bold">{pctOff}% OFF</div>}
+                    {pctOff > 0 && <div className="text-2xs text-green-700 dark:text-green-400 font-bold">{pctOff}% OFF</div>}
                   </button>
                 );
               })}

@@ -27,7 +27,7 @@ const RestaurantInfoCard = () => {
                 star
               </span>
             </div>
-            <span className="text-[10px] text-gray-400 mt-1 font-medium">1.2k+ reviews</span>
+            <span className="text-2xs text-gray-400 mt-1 font-medium">1.2k+ reviews</span>
           </div>
         </div>
         <div className="flex items-center gap-4 mt-4 pt-4 border-t border-gray-50 dark:border-zinc-700">

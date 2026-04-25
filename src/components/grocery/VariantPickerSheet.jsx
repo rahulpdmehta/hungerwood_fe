@@ -52,9 +52,9 @@ export default function VariantPickerSheet({ product, open, onClose }) {
             className="w-16 h-16 rounded-lg object-cover shrink-0 bg-gray-100"
           />
           <div className="flex-1 min-w-0">
-            {product.brand && <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">{product.brand}</p>}
+            {product.brand && <p className="text-2xs text-gray-500 font-bold uppercase tracking-wide">{product.brand}</p>}
             <h3 className="text-sm font-bold leading-tight line-clamp-2">{product.name}</h3>
-            <p className="text-[11px] text-gray-500 mt-1">Choose a pack size</p>
+            <p className="text-2xs text-gray-500 mt-1">Choose a pack size</p>
           </div>
           <button
             onClick={onClose}
@@ -86,8 +86,8 @@ export default function VariantPickerSheet({ product, open, onClose }) {
                     <span className="text-sm font-extrabold text-gray-900 dark:text-white">₹{v.sellingPrice}</span>
                     {pctOff > 0 && (
                       <>
-                        <span className="text-[11px] text-gray-400 line-through">₹{v.mrp}</span>
-                        <span className="text-[10px] text-green-700 font-bold">{pctOff}% OFF</span>
+                        <span className="text-2xs text-gray-400 line-through">₹{v.mrp}</span>
+                        <span className="text-2xs text-green-700 font-bold">{pctOff}% OFF</span>
                       </>
                     )}
                   </div>

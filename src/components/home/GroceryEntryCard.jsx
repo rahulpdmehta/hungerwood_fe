@@ -46,9 +46,9 @@ const SectionTilesStrip = () => {
               restaurant
             </span>
           </div>
-          <span className={`text-[11px] font-bold leading-none ${restaurantLabelColor}`}>Restaurant</span>
+          <span className={`text-2xs font-bold leading-none ${restaurantLabelColor}`}>Restaurant</span>
           {foodCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-[#7f4f13] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+            <span className="absolute -top-1 -right-1 bg-[#7f4f13] text-white text-2xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
               {foodCount}
             </span>
           )}
@@ -64,9 +64,9 @@ const SectionTilesStrip = () => {
               shopping_basket
             </span>
           </div>
-          <span className={`text-[11px] font-bold leading-none ${groceryLabelColor}`}>Grocery</span>
+          <span className={`text-2xs font-bold leading-none ${groceryLabelColor}`}>Grocery</span>
           {groceryCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-green-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+            <span className="absolute -top-1 -right-1 bg-green-600 text-white text-2xs font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
               {groceryCount}
             </span>
           )}

@@ -134,7 +134,7 @@ export default function GroceryCouponsAdmin() {
                     <td className="p-3 text-stone-600">{c.minOrderValue ? `₹${c.minOrderValue}` : '—'}</td>
                     <td className="p-3 text-stone-600">{fmtDate(c.validTo)}</td>
                     <td className="p-3">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${c.isActive ? 'bg-green-100 text-green-700' : 'bg-stone-200 text-stone-500'}`}>
+                      <span className={`text-2xs font-bold px-2 py-0.5 rounded ${c.isActive ? 'bg-green-100 text-green-700' : 'bg-stone-200 text-stone-500'}`}>
                         {c.isActive ? 'ACTIVE' : 'OFF'}
                       </span>
                     </td>

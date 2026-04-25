@@ -65,7 +65,7 @@ function HeroBanner({ banners }) {
       <div className="absolute inset-0 p-4 flex flex-col justify-center">
         {b.badge && (
           <span
-            className="self-start inline-block text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full"
+            className="self-start inline-block text-white text-2xs font-extrabold px-2.5 py-0.5 rounded-full"
             style={{ backgroundColor: badgeBg }}
           >
             {b.badge}
@@ -75,7 +75,7 @@ function HeroBanner({ banners }) {
           {b.title}
         </h3>
         {b.subtitle && (
-          <p className="text-[11px] mt-0.5 opacity-90 max-w-[60%]" style={{ color: textColor }}>
+          <p className="text-2xs mt-0.5 opacity-90 max-w-[60%]" style={{ color: textColor }}>
             {b.subtitle}
           </p>
         )}
@@ -172,9 +172,9 @@ export default function GroceryHome() {
             className="block rounded-2xl p-4 relative overflow-hidden text-amber-950 shadow-md"
             style={{ background: 'linear-gradient(135deg, #FFEED4, #F3CD93)' }}
           >
-            <span className="text-[9px] bg-rose-600 text-white font-extrabold px-1.5 py-0.5 rounded">SAVE MORE</span>
+            <span className="text-2xs bg-rose-600 text-white font-extrabold px-1.5 py-0.5 rounded">SAVE MORE</span>
             <h5 className="mt-2 font-extrabold text-base">Hand-picked combos</h5>
-            <p className="text-[11px] opacity-80 mt-0.5">Atta + oil + tea + biscuits — and more</p>
+            <p className="text-2xs opacity-80 mt-0.5">Atta + oil + tea + biscuits — and more</p>
             <span className="absolute right-3 -bottom-3 text-6xl opacity-30 pointer-events-none select-none" aria-hidden>📦</span>
           </Link>
         </div>

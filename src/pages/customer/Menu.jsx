@@ -327,7 +327,7 @@ const Menu = () => {
             <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-tight">
               HungerWood
             </h2>
-            <p className="text-[10px] text-[#7f4f13] font-bold uppercase tracking-widest">Gaya, Bihar</p>
+            <p className="text-2xs text-[#7f4f13] font-bold uppercase tracking-widest">Gaya, Bihar</p>
           </div>
           <div className="flex w-10 items-center justify-end">
             <button

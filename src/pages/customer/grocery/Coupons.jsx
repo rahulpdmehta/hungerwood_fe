@@ -75,7 +75,7 @@ export default function GroceryCoupons() {
           </div>
         )}
 
-        <div className="mt-5 mb-1 px-1 text-[11px] font-extrabold text-stone-500 uppercase tracking-wider">
+        <div className="mt-5 mb-1 px-1 text-2xs font-extrabold text-stone-500 uppercase tracking-wider">
           Available coupons
         </div>
 

@@ -103,7 +103,7 @@ export default function GroceryCart() {
                     style={{ backgroundImage: `url("${optimizeImage(item.image, 160)}")` }}
                   />
                   {discountPct > 0 && (
-                    <span className="absolute top-1 left-1 bg-green-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
+                    <span className="absolute top-1 left-1 bg-green-600 text-white text-2xs font-extrabold px-1.5 py-0.5 rounded">
                       {discountPct}% OFF
                     </span>
                   )}
@@ -113,7 +113,7 @@ export default function GroceryCart() {
                     <p className="text-[#181411] dark:text-white text-sm font-bold leading-tight line-clamp-1">
                       {item.name}
                     </p>
-                    <p className="text-[#887263] dark:text-gray-400 text-[10px] leading-snug">
+                    <p className="text-[#887263] dark:text-gray-400 text-2xs leading-snug">
                       {item.variantLabel}
                     </p>
                   </div>
@@ -121,7 +121,7 @@ export default function GroceryCart() {
                     <div className="flex items-baseline gap-1.5">
                       <span className="text-sm font-extrabold text-[#181411] dark:text-white">₹{lineTotal}</span>
                       {hasMrp && (
-                        <span className="text-[10px] text-[#887263] line-through">₹{item.mrp * item.quantity}</span>
+                        <span className="text-2xs text-[#887263] line-through">₹{item.mrp * item.quantity}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -203,7 +203,7 @@ export default function GroceryCart() {
               <div className="flex justify-between items-center text-sm">
                 <span className="text-green-600 dark:text-green-400 font-bold">
                   Bundle ({bundle.name})
-                  <button onClick={removeBundle} className="text-rose-600 ml-2 underline text-[10px]">remove</button>
+                  <button onClick={removeBundle} className="text-rose-600 ml-2 underline text-2xs">remove</button>
                 </span>
                 <span className="font-medium text-green-600 dark:text-green-400">−₹{Math.round(bundleDiscount)}</span>
               </div>
@@ -212,7 +212,7 @@ export default function GroceryCart() {
               <div className="flex justify-between items-center text-sm">
                 <span className="text-green-600 dark:text-green-400 font-bold">
                   Coupon ({coupon.code})
-                  <button onClick={removeCoupon} className="text-rose-600 ml-2 underline text-[10px]">remove</button>
+                  <button onClick={removeCoupon} className="text-rose-600 ml-2 underline text-2xs">remove</button>
                 </span>
                 <span className="font-medium text-green-600 dark:text-green-400">
                   −₹{coupon.freeDelivery ? deliveryFlat : Math.round(couponDiscount)}
@@ -221,7 +221,7 @@ export default function GroceryCart() {
             )}
             <Link
               to="/grocery/coupons"
-              className="block text-center text-green-700 text-[11px] font-bold border-t border-dashed border-gray-300 pt-2"
+              className="block text-center text-green-700 text-2xs font-bold border-t border-dashed border-gray-300 pt-2"
             >
               {coupon ? 'Change coupon ›' : '+ Apply coupon'}
             </Link>
@@ -240,7 +240,7 @@ export default function GroceryCart() {
               <span className="material-symbols-outlined text-orange-600">info</span>
               <div>
                 <p className="text-xs font-bold text-orange-600 mb-1">Below minimum order</p>
-                <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed">
+                <p className="text-2xs text-[#887263] dark:text-gray-400 leading-relaxed">
                   Add ₹{minOrderValue - subtotal} more to place this order. Minimum is ₹{minOrderValue}.
                 </p>
               </div>
@@ -254,7 +254,7 @@ export default function GroceryCart() {
               <span className="material-symbols-outlined text-red-600">info</span>
               <div>
                 <p className="text-xs font-bold text-red-600 mb-1">Grocery shop closed</p>
-                <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed">
+                <p className="text-2xs text-[#887263] dark:text-gray-400 leading-relaxed">
                   {settings?.closingMessage || 'Please try again later.'}
                 </p>
               </div>
@@ -267,7 +267,7 @@ export default function GroceryCart() {
             <span className="material-symbols-outlined text-green-600">verified_user</span>
             <div>
               <p className="text-xs font-bold text-green-600 mb-1">Fresh & Quality Assured</p>
-              <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed uppercase tracking-tight">
+              <p className="text-2xs text-[#887263] dark:text-gray-400 leading-relaxed uppercase tracking-tight">
                 Every grocery order is hand-picked and packed fresh on the day of delivery.
               </p>
             </div>
@@ -278,7 +278,7 @@ export default function GroceryCart() {
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-white/95 dark:bg-[#211811]/95 backdrop-blur-md border-t-2 border-gray-200 dark:border-gray-700 shadow-lg">
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="text-[10px] text-[#887263] dark:text-gray-400 uppercase font-bold tracking-widest">
+            <span className="text-2xs text-[#887263] dark:text-gray-400 uppercase font-bold tracking-widest">
               To Pay
             </span>
             <span className="text-lg font-extrabold">₹{grandTotal}</span>

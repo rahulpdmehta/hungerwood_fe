@@ -61,7 +61,7 @@ export default function CancelOrder() {
       </nav>
 
       <main className="max-w-md mx-auto p-4">
-        <div className="bg-rose-50 border-l-4 border-rose-600 p-3 text-[11px] text-rose-700 rounded-r-md mb-4 leading-relaxed">
+        <div className="bg-rose-50 border-l-4 border-rose-600 p-3 text-2xs text-rose-700 rounded-r-md mb-4 leading-relaxed">
           ⚠ Cancellation is free as long as the order hasn't been packed yet.
           Refund will be credited to wallet/Razorpay within 24h.
         </div>

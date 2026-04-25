@@ -34,12 +34,12 @@ export default function BundleCard({ bundle, onAdd, busy }) {
   return (
     <div className={`mx-3 my-2 rounded-2xl bg-gradient-to-br ${t.grad} border ${t.border} p-3 relative overflow-hidden shadow-sm`}>
       {savings > 0 && (
-        <span className={`inline-block ${t.badge} text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded`}>
+        <span className={`inline-block ${t.badge} text-white text-2xs font-extrabold px-1.5 py-0.5 rounded`}>
           SAVE ₹{Math.round(savings)}
         </span>
       )}
       <h5 className={`mt-1.5 text-sm font-extrabold ${t.title}`}>{bundle.name}</h5>
-      {bundle.description && <p className="text-[10px] text-stone-700 opacity-80">{bundle.description}</p>}
+      {bundle.description && <p className="text-2xs text-stone-700 opacity-80">{bundle.description}</p>}
 
       <div className="flex gap-1 mt-2">
         {(bundle.items || []).slice(0, 6).map((it, i) => (
@@ -62,12 +62,12 @@ export default function BundleCard({ bundle, onAdd, busy }) {
       <div className="flex justify-between items-center mt-2">
         <div className="text-[12px] font-extrabold text-stone-900">
           ₹{Math.round(bundle.bundlePrice)}
-          {savings > 0 && <span className="ml-1 text-stone-500 line-through font-medium text-[10px]">₹{Math.round(bundle.regularPrice)}</span>}
+          {savings > 0 && <span className="ml-1 text-stone-500 line-through font-medium text-2xs">₹{Math.round(bundle.regularPrice)}</span>}
         </div>
         <button
           onClick={onAdd}
           disabled={busy}
-          className={`text-[11px] font-extrabold px-3 py-1.5 rounded-md ${t.cta} disabled:opacity-50`}
+          className={`text-2xs font-extrabold px-3 py-1.5 rounded-md ${t.cta} disabled:opacity-50`}
         >
           {busy ? 'Adding…' : 'Add bundle'}
         </button>

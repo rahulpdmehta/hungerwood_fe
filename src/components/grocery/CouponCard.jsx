@@ -43,18 +43,18 @@ export default function CouponCard({ coupon, applied, onApply, onRemove }) {
       <div className="flex-1 min-w-0">
         <h6 className="text-xs font-extrabold text-stone-900 dark:text-white">{coupon.code}</h6>
         {coupon.description && (
-          <p className="text-[10px] text-stone-500 dark:text-stone-400 leading-tight mt-0.5 line-clamp-2">
+          <p className="text-2xs text-stone-500 dark:text-stone-400 leading-tight mt-0.5 line-clamp-2">
             {coupon.description}
           </p>
         )}
       </div>
 
       {applied ? (
-        <button onClick={onRemove} className={`${t.accent} text-[10px] font-extrabold px-1`}>
+        <button onClick={onRemove} className={`${t.accent} text-2xs font-extrabold px-1`}>
           REMOVE ✓
         </button>
       ) : (
-        <button onClick={onApply} className={`${t.accent} text-[10px] font-extrabold px-1`}>
+        <button onClick={onApply} className={`${t.accent} text-2xs font-extrabold px-1`}>
           APPLY
         </button>
       )}

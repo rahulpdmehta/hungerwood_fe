@@ -157,7 +157,7 @@ const Cart = () => {
                     style={{ backgroundImage: `url("${item.image}")` }}
                   />
                   {discountPct > 0 && (
-                    <span className="absolute top-1 left-1 bg-[#7f4f13] text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
+                    <span className="absolute top-1 left-1 bg-[#7f4f13] text-white text-2xs font-extrabold px-1.5 py-0.5 rounded">
                       {discountPct}% OFF
                     </span>
                   )}
@@ -179,7 +179,7 @@ const Cart = () => {
                     <div className="flex items-baseline gap-1.5">
                       <span className="text-sm font-extrabold text-[#181411] dark:text-white">₹{lineTotal}</span>
                       {discountPct > 0 && (
-                        <span className="text-[10px] text-[#887263] line-through">₹{lineMrp}</span>
+                        <span className="text-2xs text-[#887263] line-through">₹{lineMrp}</span>
                       )}
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -272,7 +272,7 @@ const Cart = () => {
               <span className="material-symbols-outlined text-red-600">info</span>
               <div>
                 <p className="text-xs font-bold text-red-600 mb-1">Restaurant Closed</p>
-                <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed">
+                <p className="text-2xs text-[#887263] dark:text-gray-400 leading-relaxed">
                   {closingMessage || 'Restaurant is currently closed. Orders cannot be placed at this time.'}
                 </p>
               </div>
@@ -286,7 +286,7 @@ const Cart = () => {
             <span className="material-symbols-outlined text-green-600">verified_user</span>
             <div>
               <p className="text-xs font-bold text-green-600 mb-1">Safety & Quality Assured</p>
-              <p className="text-[10px] text-[#887263] dark:text-gray-400 leading-relaxed uppercase tracking-tight">
+              <p className="text-2xs text-[#887263] dark:text-gray-400 leading-relaxed uppercase tracking-tight">
                 Orders cannot be cancelled once accepted by the kitchen to avoid food waste.
               </p>
             </div>
@@ -309,7 +309,7 @@ const Cart = () => {
               <button
                 type="button"
                 onClick={() => blockedItems.forEach(({ ci }) => removeItem(ci.id))}
-                className="shrink-0 rounded-md bg-orange-600 text-white px-2 py-1 text-[11px] font-bold hover:bg-orange-700 transition-colors"
+                className="shrink-0 rounded-md bg-orange-600 text-white px-2 py-1 text-2xs font-bold hover:bg-orange-700 transition-colors"
               >
                 Remove
               </button>
@@ -318,7 +318,7 @@ const Cart = () => {
         )}
         <div className="flex items-center gap-4">
           <div className="flex flex-col">
-            <span className="text-[10px] text-[#887263] dark:text-gray-400 uppercase font-bold tracking-widest">
+            <span className="text-2xs text-[#887263] dark:text-gray-400 uppercase font-bold tracking-widest">
               To Pay
             </span>
             <span className="text-lg font-extrabold">₹{grandTotal}</span>

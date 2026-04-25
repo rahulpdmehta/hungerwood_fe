@@ -40,7 +40,7 @@ class ErrorBoundary extends Component {
             Reload
           </button>
           {import.meta.env.DEV && this.state.error && (
-            <pre className="mt-4 text-left text-[10px] text-rose-700 bg-rose-50 dark:bg-rose-900/20 p-2 rounded overflow-auto max-h-40">
+            <pre className="mt-4 text-left text-2xs text-rose-700 bg-rose-50 dark:bg-rose-900/20 p-2 rounded overflow-auto max-h-40">
               {String(this.state.error)}
             </pre>
           )}

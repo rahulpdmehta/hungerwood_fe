@@ -94,7 +94,7 @@ export default function GrocerySearch() {
       <main className="max-w-md mx-auto pb-24">
         {q.length < 2 && recent.length > 0 && (
           <section className="px-4 pt-4">
-            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-1">Recent searches</h6>
+            <h6 className="text-2xs font-extrabold text-stone-500 uppercase tracking-wider mb-1">Recent searches</h6>
             {recent.map(r => (
               <div key={r} className="flex items-center gap-2.5 py-2 border-b border-dashed border-stone-200 text-sm">
                 <Clock size={14} className="text-stone-400" />
@@ -107,13 +107,13 @@ export default function GrocerySearch() {
 
         {q.length < 2 && trending.length > 0 && (
           <section className="px-4 pt-5">
-            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">Trending in Gaya</h6>
+            <h6 className="text-2xs font-extrabold text-stone-500 uppercase tracking-wider mb-2">Trending in Gaya</h6>
             <div className="flex flex-wrap gap-1.5">
               {trending.map(t => (
                 <button
                   key={t.term}
                   onClick={() => submit(t.term)}
-                  className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${t.hot ? 'bg-amber-100 border-amber-400 text-amber-700' : 'bg-white border-stone-200 text-stone-700'}`}
+                  className={`text-2xs font-bold px-2.5 py-1 rounded-full border ${t.hot ? 'bg-amber-100 border-amber-400 text-amber-700' : 'bg-white border-stone-200 text-stone-700'}`}
                 >
                   {t.hot && <span className="mr-1">🔥</span>}{t.term}
                 </button>
@@ -124,7 +124,7 @@ export default function GrocerySearch() {
 
         {q.length < 2 && (
           <section className="pt-6">
-            <h6 className="px-4 text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">Top picks for you</h6>
+            <h6 className="px-4 text-2xs font-extrabold text-stone-500 uppercase tracking-wider mb-2">Top picks for you</h6>
             {productsLoading ? (
               <div className="flex gap-2 overflow-x-auto px-4 scrollbar-hide pb-1">
                 {[1, 2, 3, 4].map(i => (
@@ -147,7 +147,7 @@ export default function GrocerySearch() {
 
         {q.length < 2 && (
           <section className="pt-6 px-4">
-            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">Shop by category</h6>
+            <h6 className="text-2xs font-extrabold text-stone-500 uppercase tracking-wider mb-2">Shop by category</h6>
             {categoriesLoading ? (
               <div className="grid grid-cols-4 gap-2">
                 {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <CategoryTileSkeleton key={i} />)}
@@ -164,7 +164,7 @@ export default function GrocerySearch() {
 
         {q.length < 2 && !productsLoading && allProducts.length > topPicks.length && (
           <section className="pt-6 px-4">
-            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">More to explore</h6>
+            <h6 className="text-2xs font-extrabold text-stone-500 uppercase tracking-wider mb-2">More to explore</h6>
             <div className="grid grid-cols-3 gap-2">
               {allProducts.slice(topPicks.length, topPicks.length + 9).map(p => (
                 <GroceryProductCard key={p.id || p._id} product={p} />
@@ -181,7 +181,7 @@ export default function GrocerySearch() {
 
         {debounced.length >= 2 && (
           <section className="pt-2">
-            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-1 px-4">
+            <h6 className="text-2xs font-extrabold text-stone-500 uppercase tracking-wider mb-1 px-4">
               {suggestions.length ? `Suggestions for "${debounced}"` : `No results for "${debounced}"`}
             </h6>
             {suggestions.map(s => (
@@ -204,7 +204,7 @@ export default function GrocerySearch() {
                 )}
                 <div className="flex-1 min-w-0">
                   <div className="text-[12px] font-bold truncate">{s.name}</div>
-                  <div className="text-[10px] text-stone-500 truncate">{s.brand && `${s.brand} · `}{s.category}</div>
+                  <div className="text-2xs text-stone-500 truncate">{s.brand && `${s.brand} · `}{s.category}</div>
                 </div>
               </button>
             ))}

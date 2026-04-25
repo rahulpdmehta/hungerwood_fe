@@ -81,7 +81,7 @@ const PhotoLibrary = () => {
               </div>
               {/* Featured badge */}
               {photo.isFeatured && (
-                <div className="absolute top-2 left-2 bg-[#7f4f13] dark:bg-[#d4a574] text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                <div className="absolute top-2 left-2 bg-[#7f4f13] dark:bg-[#d4a574] text-white text-2xs font-bold px-2 py-0.5 rounded">
                   Featured
                 </div>
               )}

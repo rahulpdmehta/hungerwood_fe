@@ -79,13 +79,13 @@ const Profile = ({ section }) => {
                     <div className="flex gap-4 flex-col items-center">
                         {/* Avatar with Gradient Border */}
                         <div className="relative p-1 rounded-full bg-gradient-to-tr from-[#7f4f13] to-[#887263] shadow-lg">
-                            <div
-                                className="bg-center bg-no-repeat aspect-square bg-cover rounded-full min-h-20 w-20 border-2 border-[#f8f7f6] dark:border-[#211811] shadow-md"
-                                style={{
-                                    backgroundImage:
-                                        `url("${user?.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=B45309&color=fff&size=200`}")`,
-                                }}
-                            ></div>
+                            <img
+                                src={user?.profilePic || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=B45309&color=fff&size=200`}
+                                alt={user?.name || 'Profile picture'}
+                                loading="lazy"
+                                decoding="async"
+                                className="aspect-square rounded-full w-20 h-20 object-cover border-2 border-[#f8f7f6] dark:border-[#211811] shadow-md bg-[#7f4f13]"
+                            />
                         </div>
                         <div className="flex flex-col items-center justify-center">
                             <p className="text-[#181411] dark:text-white text-md font-bold leading-tight tracking-[-0.015em] text-center">

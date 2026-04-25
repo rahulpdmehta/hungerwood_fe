@@ -76,13 +76,13 @@ const MenuItemCard = ({ item, onAddToCart, isOrderable = true, windowLabel = '' 
                             ></span>
                         </span>
                         {isBestSeller && (
-                            <span className="text-[10px] font-bold text-red-500 uppercase tracking-tighter">
+                            <span className="text-2xs font-bold text-red-500 uppercase tracking-tighter">
                                 Bestseller
                             </span>
                         )}
                     </div>
                     <p className="text-[#181411] dark:text-white text-sm font-bold leading-tight">{item.name}</p>
-                    <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-2 mt-1">
+                    <p className="text-[#887263] dark:text-gray-400 text-2xs leading-snug line-clamp-2 mt-1">
                         {item.description}
                     </p>
                 </div>
@@ -94,7 +94,7 @@ const MenuItemCard = ({ item, onAddToCart, isOrderable = true, windowLabel = '' 
                     />
                     {!isOrderable ? (
                         <span
-                            className="inline-flex items-center justify-center rounded-lg h-8 px-3 bg-gray-100 text-gray-500 border border-gray-200 text-[11px] font-semibold cursor-not-allowed"
+                            className="inline-flex items-center justify-center rounded-lg h-8 px-3 bg-gray-100 text-gray-500 border border-gray-200 text-2xs font-semibold cursor-not-allowed"
                             title={windowLabel ? `Available ${windowLabel}` : 'Currently unavailable'}
                         >
                             {windowLabel ? `Avail ${windowLabel}` : 'Unavailable'}

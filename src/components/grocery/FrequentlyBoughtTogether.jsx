@@ -75,17 +75,17 @@ export default function FrequentlyBoughtTogether({ product }) {
           </div>
         ))}
       </div>
-      <div className="text-[10px] text-stone-500 mt-1.5 line-clamp-1">
+      <div className="text-2xs text-stone-500 mt-1.5 line-clamp-1">
         {all.map(p => p.name).join(' · ')}
       </div>
       <div className="flex justify-between items-center mt-2.5">
         <div>
           <div className="text-[12px] font-extrabold">₹{Math.round(total)}</div>
-          {savings > 0 && <div className="text-[9px] text-green-700 font-bold">You save ₹{Math.round(savings)}</div>}
+          {savings > 0 && <div className="text-2xs text-green-700 font-bold">You save ₹{Math.round(savings)}</div>}
         </div>
         <button
           onClick={addAll}
-          className="bg-green-600 text-white text-[11px] font-extrabold px-3 py-1.5 rounded-md"
+          className="bg-green-600 text-white text-2xs font-extrabold px-3 py-1.5 rounded-md"
         >
           Add other {all.length - 1}
         </button>

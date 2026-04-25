@@ -104,13 +104,13 @@ export default function GroceryBundlesAdmin() {
               <tbody>
                 {bundles.map(b => (
                   <tr key={b._id} className="border-t border-stone-100">
-                    <td className="p-3 font-bold">{b.name}<div className="text-[10px] text-stone-400 font-normal">{b.slug}</div></td>
+                    <td className="p-3 font-bold">{b.name}<div className="text-2xs text-stone-400 font-normal">{b.slug}</div></td>
                     <td className="p-3">{b.items?.length || 0}</td>
                     <td className="p-3">₹{b.bundlePrice}</td>
                     <td className="p-3 text-stone-500 line-through">₹{b.regularPrice}</td>
                     <td className="p-3 text-xs">{b.theme}</td>
                     <td className="p-3">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${b.isActive ? 'bg-green-100 text-green-700' : 'bg-stone-200 text-stone-500'}`}>
+                      <span className={`text-2xs font-bold px-2 py-0.5 rounded ${b.isActive ? 'bg-green-100 text-green-700' : 'bg-stone-200 text-stone-500'}`}>
                         {b.isActive ? 'ACTIVE' : 'OFF'}
                       </span>
                     </td>

@@ -71,7 +71,7 @@ export default function RateOrderModal({ open, orderId, isGrocery, onClose }) {
             <button
               key={t}
               onClick={() => toggleTag(t)}
-              className={`text-[10px] font-bold px-2 py-1 rounded-full border ${tags.includes(t) ? 'bg-green-100 border-green-600 text-green-700' : 'bg-stone-50 border-stone-200 text-stone-600'}`}
+              className={`text-2xs font-bold px-2 py-1 rounded-full border ${tags.includes(t) ? 'bg-green-100 border-green-600 text-green-700' : 'bg-stone-50 border-stone-200 text-stone-600'}`}
             >
               {t}
             </button>
@@ -94,7 +94,7 @@ export default function RateOrderModal({ open, orderId, isGrocery, onClose }) {
         >
           {submitMut.isPending ? 'Submitting…' : 'Submit'}
         </button>
-        <button onClick={dismiss} className="text-stone-400 text-[11px] mt-2">Maybe later</button>
+        <button onClick={dismiss} className="text-stone-400 text-2xs mt-2">Maybe later</button>
       </div>
     </div>
   );

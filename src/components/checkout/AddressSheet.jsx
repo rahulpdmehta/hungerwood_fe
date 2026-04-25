@@ -60,7 +60,7 @@ export default function AddressSheet({ open, onClose, selectedId, onSelect }) {
         <div className="w-9 h-1 bg-amber-200 rounded-full mx-auto mb-3" aria-hidden />
 
         <h5 className="font-extrabold text-base">Choose delivery address</h5>
-        <p className="text-[11px] text-stone-500 mb-3">Delivery available across Gaya {DEFAULT_PINCODE}</p>
+        <p className="text-2xs text-stone-500 mb-3">Delivery available across Gaya {DEFAULT_PINCODE}</p>
 
         {isLoading && <div className="py-8 text-center text-stone-500 text-sm">Loading…</div>}
 
@@ -89,10 +89,10 @@ export default function AddressSheet({ open, onClose, selectedId, onSelect }) {
                 <div className="text-[12px] font-extrabold flex items-center gap-1.5">
                   {a.label}
                   {a.isDefault && (
-                    <span className="text-[9px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">DEFAULT</span>
+                    <span className="text-2xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-bold">DEFAULT</span>
                   )}
                 </div>
-                <div className="text-[11px] text-stone-500 mt-0.5">
+                <div className="text-2xs text-stone-500 mt-0.5">
                   {a.street}, Gaya - {a.pincode || DEFAULT_PINCODE}
                   {!inZone && <span className="text-rose-600 ml-1">· Outside delivery zone</span>}
                 </div>

@@ -50,7 +50,7 @@ export default function StickyCartStrip() {
       </div>
       <div className="flex-1 text-left leading-tight">
         <div className="text-[15px] font-extrabold">View cart</div>
-        <div className="text-[11px] font-semibold opacity-90 ">
+        <div className="text-2xs font-semibold opacity-90 ">
           {totalItems} item{totalItems > 1 ? 's' : ''} · ₹{Math.round(subtotal)}
         </div>
       </div>

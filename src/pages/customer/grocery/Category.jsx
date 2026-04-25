@@ -54,7 +54,7 @@ export default function GroceryCategory() {
           <h2 className="text-lg font-bold flex-1 text-center pr-10">{category?.name || 'Category'}</h2>
         </div>
         <div className="px-4 pb-3 max-w-md mx-auto flex items-center justify-between gap-3">
-          <span className="text-[11px] text-gray-500 font-semibold">
+          <span className="text-2xs text-gray-500 font-semibold">
             {isLoading ? '' : `${sortedProducts.length} product${sortedProducts.length === 1 ? '' : 's'}`}
           </span>
           <div className="relative">
@@ -63,7 +63,7 @@ export default function GroceryCategory() {
               value={sort}
               onChange={e => setSort(e.target.value)}
               aria-label="Sort products"
-              className="appearance-none pl-7 pr-7 py-1.5 border border-amber-700/30 bg-white dark:bg-[#2d221a] rounded-full text-[11px] font-bold text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-700/40 shadow-sm"
+              className="appearance-none pl-7 pr-7 py-1.5 border border-amber-700/30 bg-white dark:bg-[#2d221a] rounded-full text-2xs font-bold text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-700/40 shadow-sm"
             >
               {SORT_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>

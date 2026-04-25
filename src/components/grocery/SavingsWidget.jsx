@@ -47,7 +47,7 @@ export default function SavingsWidget() {
       <div className="absolute right-3 -bottom-2 text-[56px] opacity-25 pointer-events-none select-none" aria-hidden>💰</div>
       <div>
         <div className="text-2xl font-extrabold leading-none">₹{n.toLocaleString('en-IN')}</div>
-        <div className="text-[10px] opacity-90 leading-tight mt-1">
+        <div className="text-2xs opacity-90 leading-tight mt-1">
           saved on grocery this year<br />with HungerWood
         </div>
       </div>

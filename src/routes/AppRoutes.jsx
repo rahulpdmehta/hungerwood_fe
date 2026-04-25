@@ -41,22 +41,26 @@ const GrocerySearch = lazy(() => import('@pages/customer/grocery/Search'));
 
 const Animated = ({ children }) => <PageTransition>{children}</PageTransition>;
 
-const Lazy = ({ children }) => (
-  <Suspense
-    fallback={
-      <div className="min-h-screen flex items-center justify-center bg-[#f8f7f6] dark:bg-[#211811]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7f4f13]"></div>
+/**
+ * Page-shape fallback used while a lazy chunk downloads. Approximates a
+ * top app bar + 4 list rows so the layout shift when the real page lands
+ * is small. Better than a centred spinner because the user sees structure.
+ */
+const RouteFallback = () => (
+  <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811]">
+    <div className="max-w-md mx-auto p-4">
+      <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-4 w-2/3" />
+      <div className="space-y-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="h-16 bg-white dark:bg-[#2d221a] border border-gray-200 dark:border-gray-700 rounded-xl animate-pulse" />
+        ))}
       </div>
-    }
-  >
-    {children}
-  </Suspense>
+    </div>
+  </div>
 );
 
-const RouteFallback = () => (
-  <div className="min-h-screen flex items-center justify-center bg-[#f8f7f6] dark:bg-[#211811]">
-    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7f4f13]"></div>
-  </div>
+const Lazy = ({ children }) => (
+  <Suspense fallback={<RouteFallback />}>{children}</Suspense>
 );
 
 const AppRoutes = () => {

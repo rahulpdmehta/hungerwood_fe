@@ -43,7 +43,7 @@ export default function EmptyCart() {
       {lastOrder && (
         <button
           onClick={() => navigate(`/grocery/orders/${lastOrder._id || lastOrder.id}`)}
-          className="text-amber-700 text-[11px] font-bold mt-1"
+          className="text-amber-700 text-2xs font-bold mt-1"
         >
           View last order ›
         </button>

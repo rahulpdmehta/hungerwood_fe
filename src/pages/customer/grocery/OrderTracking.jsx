@@ -282,7 +282,7 @@ export default function GroceryOrderTracking() {
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h4 className="text-[#181411] dark:text-white font-bold text-sm">HungerWood Grocery</h4>
-                <p className="text-[#887263] dark:text-gray-400 text-[11px]">Order #{orderNumber}</p>
+                <p className="text-[#887263] dark:text-gray-400 text-2xs">Order #{orderNumber}</p>
               </div>
               <div className="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center text-green-700">
                 <span className="material-symbols-outlined text-base">shopping_basket</span>
@@ -294,7 +294,7 @@ export default function GroceryOrderTracking() {
                 <div key={i} className="flex items-center justify-between text-xs">
                   <div className="min-w-0 pr-2">
                     <div className="font-medium text-[#181411] dark:text-white truncate">{it.name}</div>
-                    <div className="text-[10px] text-[#887263]">{it.variantLabel} × {it.quantity}</div>
+                    <div className="text-2xs text-[#887263]">{it.variantLabel} × {it.quantity}</div>
                   </div>
                   <span className="font-medium whitespace-nowrap">₹{(it.sellingPrice || 0) * (it.quantity || 0)}</span>
                 </div>
@@ -313,7 +313,7 @@ export default function GroceryOrderTracking() {
               <div className="flex justify-between font-bold pt-1.5 border-t border-gray-200 dark:border-gray-700 text-sm">
                 <span>Total</span><span>₹{order.totalAmount}</span>
               </div>
-              <div className="text-[10px] text-gray-500 pt-0.5">
+              <div className="text-2xs text-gray-500 pt-0.5">
                 Payment: {order.paymentMethod} ({order.paymentStatus || 'pending'})
               </div>
             </div>

@@ -54,7 +54,7 @@ const BottomNavBar = () => {
                         >
                             {item.icon}
                         </span>
-                        <span className="text-[10px] font-bold">{item.label}</span>
+                        <span className="text-2xs font-bold">{item.label}</span>
                     </Link>
                 );
             })}

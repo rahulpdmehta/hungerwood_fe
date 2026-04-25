@@ -25,7 +25,7 @@ const HomeHeader = ({ brandName = 'HungerWood', searchPath = '/menu?search=true'
             <h1 className="text-md font-bold text-[#181411] dark:text-white tracking-tight">
               {brandName}
             </h1>
-            <p className="text-[10px] text-[#7f4f13] font-bold uppercase tracking-widest">
+            <p className="text-2xs text-[#7f4f13] font-bold uppercase tracking-widest">
               Gaya, Bihar
             </p>
           </div>
