@@ -331,44 +331,44 @@ const OrderTracking = () => {
         </div>
       </div>
 
-      <main className="flex-1 px-4 pt-6">
+      <main className="flex-1 px-3 pt-4">
         {/* Polling Error */}
-        <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3 text-center">Order #{orderNumber}</h3>
+        <h3 className="text-[#181411] dark:text-white text-sm font-bold mb-2 text-center">Order #{orderNumber}</h3>
         {pollingError && (
-          <div className="flex items-center justify-center gap-2 mb-4 px-4 py-2 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <div className="flex items-center justify-center gap-2 mb-3 px-3 py-1.5 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
             <span className="material-symbols-outlined text-yellow-600 dark:text-yellow-400 text-sm">
               warning
             </span>
-            <span className="text-yellow-700 dark:text-yellow-400 text-xs font-medium">
+            <span className="text-yellow-700 dark:text-yellow-400 text-[11px] font-medium">
               {pollingError}
             </span>
           </div>
         )}
 
         {/* Countdown Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-5">
           {order?.status === 'CANCELLED' ? (
             <>
-              <div className="flex items-center justify-center mb-3">
-                <span className="material-symbols-outlined text-red-500 text-5xl">
+              <div className="flex items-center justify-center mb-2">
+                <span className="material-symbols-outlined text-red-500 text-4xl">
                   cancel
                 </span>
               </div>
-              <h3 className="text-red-600 dark:text-red-500 text-xl font-bold mb-2">
+              <h3 className="text-red-600 dark:text-red-500 text-base font-bold mb-1">
                 Order Cancelled
               </h3>
-              <p className="text-[#887263] dark:text-gray-400 text-base">
+              <p className="text-[#887263] dark:text-gray-400 text-xs">
                 This order has been cancelled.
               </p>
               {order?.statusHistory && order.statusHistory.find(s => s.status === 'CANCELLED') && (
-                <p className="text-[#887263] dark:text-gray-400 text-sm mt-2">
+                <p className="text-[#887263] dark:text-gray-400 text-[11px] mt-1">
                   Cancelled on {formatDate(order.statusHistory.find(s => s.status === 'CANCELLED').timestamp, 'MMM D h:mm A')}
                 </p>
               )}
             </>
           ) : (
             <>
-              <h3 className="text-[#7f4f13] text-xl font-bold mb-2">
+              <h3 className="text-[#7f4f13] text-base font-bold mb-1">
                 {order?.status === 'COMPLETED'
                   ? 'Order Delivered!'
                   : order?.status === 'OUT_FOR_DELIVERY'
@@ -377,7 +377,7 @@ const OrderTracking = () => {
                       ? 'Ready for Pickup!'
                       : `Arriving in ${minutes} mins`}
               </h3>
-              <p className="text-[#887263] dark:text-gray-400 text-base italic">
+              <p className="text-[#887263] dark:text-gray-400 text-xs italic">
                 {order?.status === 'COMPLETED'
                   ? 'Enjoy your meal! 🎉'
                   : order?.status === 'OUT_FOR_DELIVERY'
@@ -410,67 +410,61 @@ const OrderTracking = () => {
 
         {/* Order Timeline */}
         {order?.status !== 'CANCELLED' ? (
-          <div className=" relative z-10 mb-8 bg-white dark:bg-[#2d221a] rounded-xl p-6 shadow-md border border-[#f4f2f0] dark:border-[#3d2e24]">
+          <div className="relative z-10 mb-5 bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
             <button
-            onClick={refreshOrder}
-            disabled={isRefreshing}
-            className={`h-10 w-10 bg-white dark:bg-[#2d221a] rounded-full flex items-center justify-center border border-[#f4f2f0] dark:border-[#3d2e24] shadow-md text-[#7f4f13] hover:text-[#7f4f13]/80 transition-all absolute top-[-10px] right-[-10px] ${
-              isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            title="Refresh order status"
-          >
-            <span className={`material-symbols-outlined ${isRefreshing ? 'animate-spin' : ''}`}>
-              refresh
-            </span>
-          </button>
+              onClick={refreshOrder}
+              disabled={isRefreshing}
+              className={`h-8 w-8 bg-white dark:bg-[#2d221a] rounded-full flex items-center justify-center border border-[#f4f2f0] dark:border-[#3d2e24] shadow text-[#7f4f13] hover:text-[#7f4f13]/80 transition-all absolute top-[-10px] right-[-10px] ${
+                isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+              title="Refresh order status"
+            >
+              <span className={`material-symbols-outlined text-base ${isRefreshing ? 'animate-spin' : ''}`}>refresh</span>
+            </button>
             {orderSteps.map((step, index) => (
-              <div key={step.index} className="flex items-start gap-4 mb-0 last:mb-0">
+              <div key={step.index} className="flex items-start gap-3 mb-0 last:mb-0">
                 {/* Icon Column */}
-                <div className="flex flex-col items-center pt-1">
+                <div className="flex flex-col items-center pt-0.5">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${step.index < currentStep
-                      ? 'bg-[#7f4f13] text-white'
-                      : step.index === currentStep
+                    className={`w-7 h-7 rounded-full flex items-center justify-center ${
+                      step.index <= currentStep
                         ? 'bg-[#7f4f13] text-white'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-400'
-                      }`}
+                    }`}
                   >
-                    <span className="material-symbols-outlined text-xl">
+                    <span className="material-symbols-outlined text-[16px]">
                       {step.index < currentStep ? 'check' : step.icon}
                     </span>
                   </div>
                   {index < orderSteps.length - 1 && (
                     <div
-                      className={`w-0.5 h-12 ${step.index < currentStep
-                        ? 'bg-[#7f4f13]'
-                        : 'bg-gray-200 dark:bg-gray-700'
-                        }`}
-                    ></div>
+                      className={`w-0.5 h-7 ${step.index < currentStep ? 'bg-[#7f4f13]' : 'bg-gray-200 dark:bg-gray-700'}`}
+                    />
                   )}
                 </div>
 
                 {/* Content Column */}
-                <div className="flex-1 pt-0">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="flex-1 pt-0 pb-3 last:pb-0">
+                  <div className="flex items-center gap-1.5">
                     <h3
-                      className={`font-bold text-base ${step.index === currentStep
-                        ? 'text-[#181411] dark:text-white'
-                        : step.index < currentStep
+                      className={`font-bold text-sm leading-tight ${
+                        step.index <= currentStep
                           ? 'text-[#181411] dark:text-white'
                           : 'text-[#887263] dark:text-gray-400'
-                        }`}
+                      }`}
                     >
                       {step.title}
                     </h3>
                     {step.index === currentStep && (
-                      <span className="w-2 h-2 rounded-full bg-[#7f4f13] animate-pulse"></span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#7f4f13] animate-pulse"></span>
                     )}
                   </div>
                   <p
-                    className={`text-sm ${step.index === currentStep
-                      ? 'text-[#7f4f13] italic font-medium'
-                      : 'text-[#887263] dark:text-gray-400'
-                      }`}
+                    className={`text-xs leading-snug ${
+                      step.index === currentStep
+                        ? 'text-[#7f4f13] italic font-medium'
+                        : 'text-[#887263] dark:text-gray-400'
+                    }`}
                   >
                     {step.subtitle}
                   </p>
@@ -480,20 +474,20 @@ const OrderTracking = () => {
           </div>
         ) : (
           /* Cancelled Order Info */
-          <div className="mb-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-red-500 text-2xl">
+          <div className="mb-5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+            <div className="flex items-start gap-2">
+              <span className="material-symbols-outlined text-red-500 text-lg">
                 info
               </span>
               <div className="flex-1">
-                <h4 className="text-red-700 dark:text-red-400 font-bold text-sm mb-1">
+                <h4 className="text-red-700 dark:text-red-400 font-bold text-xs mb-0.5">
                   Order Cancellation
                 </h4>
-                <p className="text-red-600 dark:text-red-500 text-sm">
-                  Your order was cancelled and no charges have been made. If you have any questions, please contact our support team.
+                <p className="text-red-600 dark:text-red-500 text-xs">
+                  Your order was cancelled and no charges have been made.
                 </p>
                 {order?.cancellationReason && (
-                  <p className="text-red-600 dark:text-red-500 text-sm mt-2">
+                  <p className="text-red-600 dark:text-red-500 text-xs mt-1">
                     <span className="font-medium">Reason:</span> {order.cancellationReason}
                   </p>
                 )}
@@ -503,39 +497,32 @@ const OrderTracking = () => {
         )}
 
         {/* Order Details */}
-        <div className="mb-6">
-          <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3">Order Details</h3>
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
-            <div className="flex items-center justify-between mb-4">
+        <div className="mb-4">
+          <h3 className="text-[#181411] dark:text-white text-sm font-bold mb-2">Order Details</h3>
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-3 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+            <div className="flex items-center justify-between mb-3">
               <div>
-                <h4 className="text-[#181411] dark:text-white font-bold text-base mb-1">HungerWood Gaya</h4>
-                <p className="text-[#887263] dark:text-gray-400 text-sm">Order #{orderNumber}</p>
+                <h4 className="text-[#181411] dark:text-white font-bold text-sm">HungerWood Gaya</h4>
+                <p className="text-[#887263] dark:text-gray-400 text-[11px]">Order #{orderNumber}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-[#7f4f13]/10 flex items-center justify-center text-[#7f4f13]">
-                <span className="material-symbols-outlined">restaurant</span>
+              <div className="w-8 h-8 rounded-md bg-[#7f4f13]/10 flex items-center justify-center text-[#7f4f13]">
+                <span className="material-symbols-outlined text-base">restaurant</span>
               </div>
             </div>
 
             {/* Menu Items */}
             {orderItems?.length > 0 && (
-              <div className="border-t border-[#f4f2f0] dark:border-[#3d2e24] pt-4">
-                <h5 className="text-[#181411] dark:text-white font-semibold text-sm mb-3">Items Ordered</h5>
-                <div className="space-y-2">
+              <div className="border-t border-[#f4f2f0] dark:border-[#3d2e24] pt-3">
+                <h5 className="text-[#181411] dark:text-white font-semibold text-xs mb-2">Items Ordered</h5>
+                <div className="space-y-1.5">
                   {orderItems?.map((item, index) => {
-                    // Debug log for each item
-                    if (index === 0) {
-                      console.log('🍽️ Rendering order items. First item structure:', item);
-                    }
-
-                    // Handle both formats: item with menuItem object or flat item structure
                     const itemName = item?.name || 'Menu Item';
                     const itemPrice = item?.price || 0;
                     const itemDiscount = item?.discount || 0;
-
                     return (
-                      <div key={index} className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[#887263] dark:text-gray-400 font-medium min-w-[30px]">
+                      <div key={index} className="flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[#887263] dark:text-gray-400 font-medium min-w-[24px]">
                             {item.quantity}x
                           </span>
                           <span className="text-[#181411] dark:text-white">
@@ -557,82 +544,64 @@ const OrderTracking = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex gap-2 mb-4">
           {order?.status === 'CANCELLED' ? (
             <button
               onClick={handleCallRestaurant}
-              className="flex-1 bg-[#887263] hover:bg-[#887263]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+              className="flex-1 bg-[#887263] hover:bg-[#887263]/90 text-white font-bold py-2.5 rounded-xl transition-all shadow active:scale-[0.98] flex items-center justify-center gap-1.5 text-sm"
             >
-              <span className="material-symbols-outlined">support_agent</span>
+              <span className="material-symbols-outlined text-base">support_agent</span>
               Contact Support
             </button>
           ) : (
             <>
               <button
                 onClick={handleCallRestaurant}
-                className="flex-1 bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
+                className="flex-1 bg-[#7f4f13] hover:bg-[#7f4f13]/90 text-white font-bold py-2.5 rounded-xl transition-all shadow active:scale-[0.98] flex items-center justify-center gap-1.5 text-sm"
               >
-                <span className="material-symbols-outlined">call</span>
+                <span className="material-symbols-outlined text-base">call</span>
                 Call Restaurant
               </button>
               <button
                 onClick={handleChat}
-                className="w-14 h-14 bg-white dark:bg-[#2d221a] border-2 border-[#f4f2f0] dark:border-[#3d2e24] rounded-xl flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                className="w-11 h-11 bg-white dark:bg-[#2d221a] border border-[#f4f2f0] dark:border-[#3d2e24] rounded-xl flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
-                <span className="material-symbols-outlined text-[#181411] dark:text-white">chat</span>
+                <span className="material-symbols-outlined text-[#181411] dark:text-white text-base">chat</span>
               </button>
             </>
           )}
         </div>
 
         {/* Bill Details */}
-        <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] mb-6">
-          <h3 className="text-[#181411] dark:text-white text-base font-bold mb-4">Bill Details</h3>
-
-          <div className="space-y-3">
-            {/* Item Total */}
-            <div className="flex items-center justify-between text-sm">
+        <div className="bg-white dark:bg-[#2d221a] rounded-xl p-3 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-4">
+          <h3 className="text-[#181411] dark:text-white text-sm font-bold mb-2">Bill Details</h3>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-[#887263] dark:text-gray-400">Item Total</span>
-              <span className="text-[#181411] dark:text-white font-medium">
-                ₹{order.itemTotal || totalPayable}
-              </span>
+              <span className="text-[#181411] dark:text-white font-medium">₹{order.itemTotal || totalPayable}</span>
             </div>
-
-            {/* Discount */}
             {Number(order?.discount || 0) > 0 && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-green-600">Discount</span>
-                <span className="text-green-600 font-medium">
-                  -₹{order.discount}
-                </span>
+                <span className="text-green-600 font-medium">-₹{order.discount}</span>
               </div>
             )}
-
-            {/* Delivery Fee */}
             {Number(order?.deliveryFee || 0) > 0 && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-[#887263] dark:text-gray-400">Delivery Fee</span>
-                <span className="text-[#181411] dark:text-white font-medium">
-                  ₹{order.deliveryFee}
-                </span>
+                <span className="text-[#181411] dark:text-white font-medium">₹{order.deliveryFee}</span>
               </div>
             )}
-
-            {/* Taxes */}
             {Number(order?.tax || 0) > 0 && (
-              <div className="flex items-center justify-between text-sm">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-[#887263] dark:text-gray-400">Taxes & Charges</span>
-                <span className="text-[#181411] dark:text-white font-medium">
-                  ₹{order.tax}
-                </span>
+                <span className="text-[#181411] dark:text-white font-medium">₹{order.tax}</span>
               </div>
             )}
-
-            {/* Divider */}
-            <div className="border-t border-[#f4f2f0] dark:border-[#3d2e24] pt-3">
+            <div className="border-t border-[#f4f2f0] dark:border-[#3d2e24] pt-2">
               <div className="flex items-center justify-between">
-                <span className="text-[#181411] dark:text-white font-bold text-base">Total Amount</span>
-                <span className="text-[#7f4f13] text-2xl font-bold">₹{totalPayable.toFixed(2)}</span>
+                <span className="text-[#181411] dark:text-white font-bold text-sm">Total Amount</span>
+                <span className="text-[#7f4f13] text-lg font-extrabold">₹{totalPayable.toFixed(2)}</span>
               </div>
             </div>
           </div>
@@ -640,16 +609,16 @@ const OrderTracking = () => {
 
         {/* Delivery Address */}
         {orderType === 'Delivery' && (
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#7f4f13]/10 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-[#7f4f13]">location_on</span>
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-3 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+            <div className="flex items-start gap-2">
+              <div className="w-8 h-8 rounded-md bg-[#7f4f13]/10 flex items-center justify-center shrink-0">
+                <span className="material-symbols-outlined text-[#7f4f13] text-base">location_on</span>
               </div>
               <div>
-                <p className="text-[#887263] dark:text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">
+                <p className="text-[#887263] dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider mb-0.5">
                   Delivering To
                 </p>
-                <p className="text-[#181411] dark:text-white text-sm font-medium leading-relaxed">
+                <p className="text-[#181411] dark:text-white text-xs font-medium leading-snug">
                   {formatDeliveryAddress()}
                 </p>
               </div>

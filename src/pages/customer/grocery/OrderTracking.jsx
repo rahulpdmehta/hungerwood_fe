@@ -159,23 +159,23 @@ export default function GroceryOrderTracking() {
         </div>
       </div>
 
-      <main className="flex-1 px-4 pt-6">
-        <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3 text-center">
+      <main className="flex-1 px-3 pt-4">
+        <h3 className="text-[#181411] dark:text-white text-sm font-bold mb-2 text-center">
           Order #{orderNumber}
         </h3>
 
-        <div className="text-center mb-8">
+        <div className="text-center mb-5">
           {isCancelled ? (
             <>
-              <div className="flex items-center justify-center mb-3">
-                <span className="material-symbols-outlined text-red-500 text-5xl">cancel</span>
+              <div className="flex items-center justify-center mb-2">
+                <span className="material-symbols-outlined text-red-500 text-4xl">cancel</span>
               </div>
-              <h3 className="text-red-600 dark:text-red-500 text-xl font-bold mb-2">Order Cancelled</h3>
-              <p className="text-[#887263] dark:text-gray-400 text-base">This order has been cancelled.</p>
+              <h3 className="text-red-600 dark:text-red-500 text-base font-bold mb-1">Order Cancelled</h3>
+              <p className="text-[#887263] dark:text-gray-400 text-xs">This order has been cancelled.</p>
             </>
           ) : (
             <>
-              <h3 className="text-green-700 text-xl font-bold mb-2">
+              <h3 className="text-green-700 text-base font-bold mb-1">
                 {order.status === 'DELIVERED'
                   ? 'Order Delivered!'
                   : order.status === 'PICKED_UP'
@@ -188,7 +188,7 @@ export default function GroceryOrderTracking() {
                   ? 'Packed & ready'
                   : 'Arriving soon'}
               </h3>
-              <p className="text-[#887263] dark:text-gray-400 text-base italic">
+              <p className="text-[#887263] dark:text-gray-400 text-xs italic">
                 {order.status === 'DELIVERED'
                   ? 'Enjoy your groceries! 🎉'
                   : order.status === 'PICKED_UP'
@@ -206,33 +206,33 @@ export default function GroceryOrderTracking() {
         </div>
 
         {!isCancelled ? (
-          <div className="relative z-10 mb-8 bg-white dark:bg-[#2d221a] rounded-xl p-6 shadow-md border border-[#f4f2f0] dark:border-[#3d2e24]">
+          <div className="relative z-10 mb-5 bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
             {steps.map((step, idx) => (
-              <div key={step.title} className="flex items-start gap-4 mb-0 last:mb-0">
-                <div className="flex flex-col items-center pt-1">
+              <div key={step.title} className="flex items-start gap-3 mb-0 last:mb-0">
+                <div className="flex flex-col items-center pt-0.5">
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                    className={`w-7 h-7 rounded-full flex items-center justify-center ${
                       idx <= currentStep
                         ? 'bg-green-600 text-white'
                         : 'bg-gray-200 dark:bg-gray-700 text-gray-400'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-xl">
+                    <span className="material-symbols-outlined text-[16px]">
                       {idx < currentStep ? 'check' : step.icon}
                     </span>
                   </div>
                   {idx < steps.length - 1 && (
                     <div
-                      className={`w-0.5 h-12 ${
+                      className={`w-0.5 h-7 ${
                         idx < currentStep ? 'bg-green-600' : 'bg-gray-200 dark:bg-gray-700'
                       }`}
                     />
                   )}
                 </div>
-                <div className="flex-1 pt-0">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="flex-1 pt-0 pb-3 last:pb-0">
+                  <div className="flex items-center gap-1.5">
                     <h3
-                      className={`font-bold text-base ${
+                      className={`font-bold text-sm leading-tight ${
                         idx <= currentStep
                           ? 'text-[#181411] dark:text-white'
                           : 'text-[#887263] dark:text-gray-400'
@@ -241,11 +241,11 @@ export default function GroceryOrderTracking() {
                       {step.title}
                     </h3>
                     {idx === currentStep && (
-                      <span className="w-2 h-2 rounded-full bg-green-600 animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-green-600 animate-pulse" />
                     )}
                   </div>
                   <p
-                    className={`text-sm ${
+                    className={`text-xs leading-snug ${
                       idx === currentStep
                         ? 'text-green-700 italic font-medium'
                         : 'text-[#887263] dark:text-gray-400'
@@ -258,16 +258,16 @@ export default function GroceryOrderTracking() {
             ))}
           </div>
         ) : (
-          <div className="mb-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-red-500 text-2xl">info</span>
+          <div className="mb-5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
+            <div className="flex items-start gap-2">
+              <span className="material-symbols-outlined text-red-500 text-lg">info</span>
               <div className="flex-1">
-                <h4 className="text-red-700 dark:text-red-400 font-bold text-sm mb-1">Order Cancellation</h4>
-                <p className="text-red-600 dark:text-red-500 text-sm">
+                <h4 className="text-red-700 dark:text-red-400 font-bold text-xs mb-0.5">Order Cancellation</h4>
+                <p className="text-red-600 dark:text-red-500 text-xs">
                   Your order was cancelled and no charges have been made.
                 </p>
                 {order.cancellationReason && (
-                  <p className="text-red-600 dark:text-red-500 text-sm mt-2">
+                  <p className="text-red-600 dark:text-red-500 text-xs mt-1">
                     <span className="font-medium">Reason:</span> {order.cancellationReason}
                   </p>
                 )}
@@ -276,32 +276,32 @@ export default function GroceryOrderTracking() {
           </div>
         )}
 
-        <div className="mb-6">
-          <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3">Order Details</h3>
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
-            <div className="flex items-center justify-between mb-4">
+        <div className="mb-4">
+          <h3 className="text-[#181411] dark:text-white text-sm font-bold mb-2">Order Details</h3>
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-3 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24]">
+            <div className="flex items-center justify-between mb-3">
               <div>
-                <h4 className="text-[#181411] dark:text-white font-bold text-base mb-1">HungerWood Grocery</h4>
-                <p className="text-[#887263] dark:text-gray-400 text-sm">Order #{orderNumber}</p>
+                <h4 className="text-[#181411] dark:text-white font-bold text-sm">HungerWood Grocery</h4>
+                <p className="text-[#887263] dark:text-gray-400 text-[11px]">Order #{orderNumber}</p>
               </div>
-              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-700">
-                <span className="material-symbols-outlined">shopping_basket</span>
+              <div className="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center text-green-700">
+                <span className="material-symbols-outlined text-base">shopping_basket</span>
               </div>
             </div>
 
-            <div className="space-y-2 mb-4">
+            <div className="space-y-1.5 mb-3">
               {(order.items || []).map((it, i) => (
-                <div key={i} className="flex items-center justify-between text-sm">
+                <div key={i} className="flex items-center justify-between text-xs">
                   <div className="min-w-0 pr-2">
                     <div className="font-medium text-[#181411] dark:text-white truncate">{it.name}</div>
-                    <div className="text-[11px] text-[#887263]">{it.variantLabel} × {it.quantity}</div>
+                    <div className="text-[10px] text-[#887263]">{it.variantLabel} × {it.quantity}</div>
                   </div>
                   <span className="font-medium whitespace-nowrap">₹{(it.sellingPrice || 0) * (it.quantity || 0)}</span>
                 </div>
               ))}
             </div>
 
-            <div className="border-t-2 border-dashed border-gray-200 dark:border-gray-600 pt-3 space-y-1.5 text-sm">
+            <div className="border-t border-dashed border-gray-200 dark:border-gray-600 pt-2 space-y-1 text-xs">
               <div className="flex justify-between text-[#887263]"><span>Subtotal</span><span>₹{order.subtotal}</span></div>
               <div className="flex justify-between text-[#887263]"><span>Tax</span><span>₹{order.tax}</span></div>
               <div className="flex justify-between text-[#887263]"><span>Delivery</span><span>₹{order.delivery}</span></div>
@@ -310,10 +310,10 @@ export default function GroceryOrderTracking() {
                   <span>Wallet used</span><span>−₹{order.walletUsed}</span>
                 </div>
               )}
-              <div className="flex justify-between font-bold pt-2 border-t border-gray-200 dark:border-gray-700">
+              <div className="flex justify-between font-bold pt-1.5 border-t border-gray-200 dark:border-gray-700 text-sm">
                 <span>Total</span><span>₹{order.totalAmount}</span>
               </div>
-              <div className="text-xs text-gray-500 pt-1">
+              <div className="text-[10px] text-gray-500 pt-0.5">
                 Payment: {order.paymentMethod} ({order.paymentStatus || 'pending'})
               </div>
             </div>
@@ -321,9 +321,9 @@ export default function GroceryOrderTracking() {
         </div>
 
         {order.deliveryAddress && (
-          <div className="mb-6">
-            <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3">Delivery Address</h3>
-            <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-sm">
+          <div className="mb-4">
+            <h3 className="text-[#181411] dark:text-white text-sm font-bold mb-2">Delivery Address</h3>
+            <div className="bg-white dark:bg-[#2d221a] rounded-xl p-3 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] text-xs">
               <div>{order.deliveryAddress.street}</div>
               <div>{order.deliveryAddress.city} - {order.deliveryAddress.pincode}</div>
             </div>
@@ -331,8 +331,8 @@ export default function GroceryOrderTracking() {
         )}
 
         {order.instructions && (
-          <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-xl p-4 text-sm">
-            <div className="font-bold mb-1 text-yellow-800 dark:text-yellow-200">Pack notes</div>
+          <div className="mb-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-3 text-xs">
+            <div className="font-bold mb-0.5 text-yellow-800 dark:text-yellow-200">Pack notes</div>
             <div>{order.instructions}</div>
           </div>
         )}
@@ -340,9 +340,9 @@ export default function GroceryOrderTracking() {
         {canCancel && (
           <button
             onClick={() => navigate(`/grocery/orders/${id}/cancel`)}
-            className="w-full mb-4 flex items-center justify-center gap-2 py-3 border-2 border-rose-300 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50"
+            className="w-full mb-4 flex items-center justify-center gap-1.5 py-2.5 border border-rose-300 text-rose-600 rounded-xl text-xs font-bold hover:bg-rose-50"
           >
-            <span className="material-symbols-outlined text-base">cancel</span> Cancel order
+            <span className="material-symbols-outlined text-sm">cancel</span> Cancel order
           </button>
         )}
       </main>
