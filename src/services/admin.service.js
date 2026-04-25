@@ -226,6 +226,9 @@ export const adminOrderService = {
 export const adminUserService = {
   // Response interceptor unwraps axios response to JSON body {success, data},
   // so r.data is the payload.
+  // /admin/users → { users: [...], total } — used by the Customers page.
+  getAll: () => api.get('/admin/users').then(r => r.data),
+  // /super/users → admin-only listing; used by /admin/super/users.
   list: () => api.get('/super/users').then(r => r.data),
   create: (payload) => api.post('/super/users', payload).then(r => r.data),
   update: (id, payload) => api.patch(`/super/users/${id}`, payload).then(r => r.data),
