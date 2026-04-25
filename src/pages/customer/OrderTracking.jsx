@@ -191,7 +191,7 @@ const OrderTracking = () => {
   };
 
   const handleHelp = () => {
-    alert('Help & Support coming soon!');
+    toast('Help & Support coming soon!', { icon: '💬' });
   };
 
   const handleCallRestaurant = () => {
@@ -199,7 +199,7 @@ const OrderTracking = () => {
   };
 
   const handleChat = () => {
-    alert('Chat support coming soon!');
+    toast('Chat support coming soon!', { icon: '💬' });
   };
 
   // Helper to format timestamp

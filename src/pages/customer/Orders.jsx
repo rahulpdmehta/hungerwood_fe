@@ -8,6 +8,7 @@ import { useMyGroceryOrders } from '@hooks/useGroceryCustomerQueries';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import BottomNavBar from '@components/layout/BottomNavBar';
 import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
+import { SkeletonList } from '@components/common/Skeleton';
 
 export default function Orders({ section }) {
   const isGrocerySection = section === 'grocery';
@@ -98,8 +99,8 @@ export default function Orders({ section }) {
 
       <main className="max-w-md mx-auto pb-20 w-full">
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center p-12 text-center">
-            <p className="text-[#887263] dark:text-gray-400">Loading…</p>
+          <div className="p-4">
+            <SkeletonList rows={5} />
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 text-center">

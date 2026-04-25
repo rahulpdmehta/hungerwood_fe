@@ -5,28 +5,29 @@ import ProtectedRoute from './ProtectedRoute';
 import AdminRoutes from './AdminRoutes';
 import PageTransition from '@components/common/PageTransition';
 
-// Auth Pages
+// Auth Pages — eager: small files on the boot path
 import Login from '@pages/auth/Login';
 import ProfileCompletion from '@pages/auth/ProfileCompletion';
 
-// Customer Pages
+// Customer Pages — Home stays eager (splash/landing, entry route).
+// Everything else is lazy so the initial JS bundle stays small on 3G.
 import Home from '@pages/customer/Home';
-import Menu from '@pages/customer/Menu';
-import ItemDetails from '@pages/customer/ItemDetails';
-import Cart from '@pages/customer/Cart';
-import Checkout from '@pages/customer/Checkout';
-import Orders from '@pages/customer/Orders';
-import OrderTracking from '@pages/customer/OrderTracking';
-import CancelOrder from '@pages/customer/CancelOrder';
-import Profile from '@pages/customer/Profile';
-import Addresses from '@pages/customer/Addresses';
-import EditProfile from '@pages/customer/EditProfile';
-import Wallet from '@pages/customer/Wallet';
-import Referral from '@pages/customer/Referral';
-import PrivacyPolicy from '@pages/customer/PrivacyPolicy';
-import Help from '@pages/customer/Help';
-import Settings from '@pages/customer/Settings';
-import AboutUs from '@pages/customer/AboutUs';
+const Menu = lazy(() => import('@pages/customer/Menu'));
+const ItemDetails = lazy(() => import('@pages/customer/ItemDetails'));
+const Cart = lazy(() => import('@pages/customer/Cart'));
+const Checkout = lazy(() => import('@pages/customer/Checkout'));
+const Orders = lazy(() => import('@pages/customer/Orders'));
+const OrderTracking = lazy(() => import('@pages/customer/OrderTracking'));
+const CancelOrder = lazy(() => import('@pages/customer/CancelOrder'));
+const Profile = lazy(() => import('@pages/customer/Profile'));
+const Addresses = lazy(() => import('@pages/customer/Addresses'));
+const EditProfile = lazy(() => import('@pages/customer/EditProfile'));
+const Wallet = lazy(() => import('@pages/customer/Wallet'));
+const Referral = lazy(() => import('@pages/customer/Referral'));
+const PrivacyPolicy = lazy(() => import('@pages/customer/PrivacyPolicy'));
+const Help = lazy(() => import('@pages/customer/Help'));
+const Settings = lazy(() => import('@pages/customer/Settings'));
+const AboutUs = lazy(() => import('@pages/customer/AboutUs'));
 const GroceryHome = lazy(() => import('@pages/customer/grocery/Home'));
 const GroceryCategoriesAll = lazy(() => import('@pages/customer/grocery/CategoriesAll'));
 const GroceryCategory = lazy(() => import('@pages/customer/grocery/Category'));
@@ -52,11 +53,18 @@ const Lazy = ({ children }) => (
   </Suspense>
 );
 
+const RouteFallback = () => (
+  <div className="min-h-screen flex items-center justify-center bg-[#f8f7f6] dark:bg-[#211811]">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#7f4f13]"></div>
+  </div>
+);
+
 const AppRoutes = () => {
   const location = useLocation();
 
   return (
     <AnimatePresence mode="wait">
+      <Suspense fallback={<RouteFallback />}>
       <Routes location={location} key={location.pathname}>
         {/* Public Routes */}
         <Route path="/login" element={<Animated><Login /></Animated>} />
@@ -270,6 +278,7 @@ const AppRoutes = () => {
           }
         />
       </Routes>
+      </Suspense>
     </AnimatePresence>
   );
 };

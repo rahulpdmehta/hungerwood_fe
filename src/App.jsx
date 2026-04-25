@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter, useNavigate, useLocation } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
+import { Toaster } from 'react-hot-toast';
 import { useVersionChecker } from '@hooks/useVersionChecker';
 import AppRoutes from '@/routes/AppRoutes';
 import SplashScreen from '@components/common/SplashScreen';
 import RestaurantStatusBanner from '@components/common/RestaurantStatusBanner';
+import ErrorBoundary from '@components/common/ErrorBoundary';
 import useAuthStore from '@store/useAuthStore';
 import useRestaurantStore from '@store/useRestaurantStore';
 import { AnimationProvider } from '@/contexts/AnimationContext';
@@ -140,12 +142,29 @@ function AppContent() {
 
 function App() {
   return (
-    <BrowserRouter>
-      <AnimationProvider>
-        <AppContent />
-        <AnimationContainer />
-      </AnimationProvider>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <AnimationProvider>
+          <AppContent />
+          <AnimationContainer />
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+            toastOptions={{
+              duration: 3000,
+              style: {
+                fontSize: '13px',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                maxWidth: '90vw',
+              },
+              success: { duration: 2500, iconTheme: { primary: '#16a34a', secondary: '#fff' } },
+              error: { duration: 4000, iconTheme: { primary: '#dc2626', secondary: '#fff' } },
+            }}
+          />
+        </AnimationProvider>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }
 

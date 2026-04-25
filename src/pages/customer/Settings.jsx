@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { toast } from 'react-hot-toast';
 import BackButton from '@components/common/BackButton';
 import BottomNavBar from '@components/layout/BottomNavBar';
 
@@ -175,7 +176,7 @@ const Settings = () => {
             if (window.confirm('Are you sure you want to clear the cache?')) {
               localStorage.removeItem('menuCache');
               localStorage.removeItem('categoriesCache');
-              alert('Cache cleared successfully!');
+              toast.success('Cache cleared');
             }
           }
         },
@@ -187,7 +188,7 @@ const Settings = () => {
           action: () => {
             if (window.confirm('This will clear all your app data. Are you sure?')) {
               localStorage.clear();
-              alert('All data cleared. Please restart the app.');
+              toast.success('All data cleared — please restart the app');
             }
           }
         }

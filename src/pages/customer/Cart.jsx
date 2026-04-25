@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useMemo } from 'react';
+import { toast } from 'react-hot-toast';
 import useCartStore from '@store/useCartStore';
 import useRestaurantStore from '@store/useRestaurantStore';
 import useAuthStore from '@store/useAuthStore';
@@ -60,13 +61,13 @@ const Cart = () => {
   const handleCheckout = () => {
     if (blockedItems.length > 0) {
       const first = blockedItems[0];
-      alert(`${first.cat.name} is only orderable between ${formatWindowLabel(first.cat)} (IST).`);
+      toast.error(`${first.cat.name} is only orderable between ${formatWindowLabel(first.cat)} (IST).`);
       return;
     }
 
     // Block checkout if restaurant is closed
     if (!isOpen) {
-      alert(closingMessage || 'Restaurant is currently closed. Please try again later.');
+      toast.error(closingMessage || 'Restaurant is currently closed. Please try again later.');
       return;
     }
 
