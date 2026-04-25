@@ -1,20 +1,34 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Check, Package, Truck, Home as HomeIcon, X } from 'lucide-react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import BackButton from '@components/common/BackButton';
+import { formatDate, formatTime as formatTimeUtil } from '@utils/dateFormatter';
 import { useMyGroceryOrder } from '@hooks/useGroceryCustomerQueries';
 import RateOrderModal from '@components/grocery/RateOrderModal';
 
-const STATUS_STEPS_DELIVERY = [
-  { key: 'RECEIVED', label: 'Received', icon: Check },
-  { key: 'PACKED', label: 'Packed', icon: Package },
-  { key: 'OUT_FOR_DELIVERY', label: 'Out for delivery', icon: Truck },
-  { key: 'DELIVERED', label: 'Delivered', icon: HomeIcon },
-];
-const STATUS_STEPS_PICKUP = [
-  { key: 'RECEIVED', label: 'Received', icon: Check },
-  { key: 'READY_FOR_PICKUP', label: 'Ready for pickup', icon: Package },
-  { key: 'PICKED_UP', label: 'Picked up', icon: Check },
-];
+const formatTime = (t) => (t ? formatTimeUtil(t, 'h:mm A') : '');
+
+// Map a backend status to a step index for the rail.
+const getStep = (status, orderType) => {
+  if (!status) return 0;
+  if (orderType === 'PICKUP') {
+    return { RECEIVED: 0, READY_FOR_PICKUP: 1, PICKED_UP: 2 }[status] ?? 0;
+  }
+  return { RECEIVED: 0, PACKED: 1, OUT_FOR_DELIVERY: 2, DELIVERED: 3 }[status] ?? 0;
+};
+
+const stepsForType = (orderType) =>
+  orderType === 'PICKUP'
+    ? [
+        { title: 'Order Received', icon: 'check_circle' },
+        { title: 'Ready for Pickup', icon: 'shopping_bag' },
+        { title: 'Picked Up', icon: 'verified' },
+      ]
+    : [
+        { title: 'Order Received', icon: 'check_circle' },
+        { title: 'Packed', icon: 'inventory_2' },
+        { title: 'Out for Delivery', icon: 'delivery_dining' },
+        { title: 'Delivered', icon: 'verified' },
+      ];
 
 export default function GroceryOrderTracking() {
   const { id } = useParams();
@@ -44,155 +58,292 @@ export default function GroceryOrderTracking() {
     }
   }, [order]);
 
-  if (isLoading) return <div className="min-h-screen flex items-center justify-center">Loading…</div>;
-  if (!order) return <div className="min-h-screen flex items-center justify-center">Order not found.</div>;
-
-  const steps = order.orderType === 'DELIVERY' ? STATUS_STEPS_DELIVERY : STATUS_STEPS_PICKUP;
-  const currentIdx = steps.findIndex(s => s.key === order.status);
-  const isCancelled = order.status === 'CANCELLED';
-  const canCancel = order.status === 'RECEIVED';
-
-  if (justPlaced) {
+  if (isLoading) {
     return (
-      <div
-        className="min-h-screen flex flex-col"
-        style={{ background: 'linear-gradient(180deg, #DCFCE7 0%, #f8f7f6 60%)' }}
-      >
-        <nav className="p-4 flex justify-end">
-          <button
-            onClick={() => setJustPlaced(false)}
-            aria-label="Close"
-            className="flex size-9 items-center justify-center rounded-full bg-white/70 backdrop-blur-sm shadow"
-          >
-            <X size={18} />
-          </button>
-        </nav>
-        <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <div className="relative mb-4">
-            <div
-              className="w-24 h-24 rounded-full bg-green-600 flex items-center justify-center text-white text-5xl shadow-[0_0_0_8px_rgba(22,163,74,0.18),0_0_0_16px_rgba(22,163,74,0.08)]"
-              aria-hidden
-            >
-              ✓
-            </div>
-            <span className="absolute -left-6 top-1/3 text-amber-500 text-base tracking-widest" aria-hidden>✦ ✦ ✧</span>
-            <span className="absolute -right-6 top-1/3 text-rose-500 text-base tracking-widest" aria-hidden>✧ ✦ ✦</span>
-          </div>
-          <h3 className="text-lg font-extrabold">Order placed!</h3>
-          <p className="text-xs text-stone-500 mt-1">Thank you — your grocery is on its way.</p>
-          <div className="inline-block mt-3 px-3 py-1.5 bg-white border border-dashed border-amber-300 rounded text-[11px] font-extrabold font-mono">
-            {order.orderId}
-          </div>
+      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4" />
+          <p className="text-[#887263]">Loading order details...</p>
         </div>
-        <div className="bg-white border-t border-stone-200 p-4 max-w-md mx-auto w-full">
-          <div className="text-xs text-stone-600 mb-3">
-            <div className="flex justify-between"><span>Total paid</span><span className="font-extrabold">₹{order.totalAmount}</span></div>
-            <div className="flex justify-between"><span>Items</span><span>{order.items?.length || 0}</span></div>
-            <div className="flex justify-between"><span>Mode</span><span>{order.orderType}</span></div>
-          </div>
-          <div className="flex items-center gap-2 p-2.5 bg-green-100 rounded-lg mb-3">
-            <span className="w-7 h-7 bg-green-600 rounded-full flex items-center justify-center text-white text-sm">🛵</span>
-            <div className="text-[11px] text-green-800">
-              <div className="font-extrabold">Arriving in 25–35 min</div>
-              <div className="opacity-80">We'll notify you when it's out for delivery</div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={() => setJustPlaced(false)} className="flex-1 bg-green-600 text-white font-extrabold py-2.5 rounded-xl text-sm">Track order</button>
-            <button onClick={() => navigate('/grocery')} className="flex-1 bg-white border-[1.5px] border-amber-700 text-amber-700 font-extrabold py-2.5 rounded-xl text-sm">Continue shopping</button>
-          </div>
+      </div>
+    );
+  }
+  if (!order) {
+    return (
+      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex items-center justify-center">
+        <div className="text-center px-4">
+          <span className="material-symbols-outlined text-[#887263] text-6xl mb-4">error</span>
+          <h3 className="text-xl font-bold text-[#181411] dark:text-white mb-2">Order Not Found</h3>
+          <p className="text-[#887263] dark:text-gray-400 mb-6">
+            We couldn't find this order. It may have been removed or doesn't exist.
+          </p>
+          <button
+            onClick={() => navigate('/grocery/orders')}
+            className="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl transition-all"
+          >
+            View All Orders
+          </button>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] pb-20">
-      <nav className="sticky top-0 z-50 bg-white dark:bg-[#211811] border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="flex items-center p-4 max-w-md mx-auto">
-          <Link to="/orders" className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
-            <ArrowLeft size={20} />
-          </Link>
-          <div className="ml-2">
-            <h2 className="text-lg font-bold font-mono">{order.orderId}</h2>
-            <p className="text-xs text-gray-500">{new Date(order.createdAt).toLocaleString()}</p>
-          </div>
-        </div>
-      </nav>
+  const orderType = order.orderType === 'PICKUP' ? 'PICKUP' : 'DELIVERY';
+  const steps = stepsForType(orderType);
+  const currentStep = getStep(order.status, orderType);
+  const isCancelled = order.status === 'CANCELLED';
+  const canCancel = order.status === 'RECEIVED';
+  const orderNumber = order.orderId;
 
-      <main className="max-w-md mx-auto p-4 space-y-5">
-        {isCancelled ? (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-center">
-            <p className="font-bold text-red-700 dark:text-red-300">Order cancelled</p>
+  const getStatusTime = (status) => {
+    if (!Array.isArray(order.statusHistory)) return '';
+    const entry = order.statusHistory.find((s) => s.status === status);
+    return entry ? formatTime(entry.timestamp) : '';
+  };
+
+  const stepSubtitle = (idx) => {
+    if (idx === 0) {
+      const t = getStatusTime('RECEIVED') || formatTime(order.createdAt);
+      return t ? `Confirmed at ${t}` : 'Confirmed';
+    }
+    if (orderType === 'DELIVERY') {
+      if (idx === 1) {
+        if (order.status === 'PACKED') return 'Packing complete!';
+        const t = getStatusTime('PACKED');
+        return t ? `Packed at ${t}` : 'Pending';
+      }
+      if (idx === 2) {
+        if (order.status === 'OUT_FOR_DELIVERY') return 'On the way!';
+        const t = getStatusTime('OUT_FOR_DELIVERY');
+        return t ? `Started at ${t}` : 'Pending';
+      }
+      if (idx === 3) {
+        if (order.status === 'DELIVERED') {
+          const t = getStatusTime('DELIVERED');
+          return t ? `Delivered at ${t}` : 'Order delivered!';
+        }
+        return 'Almost there!';
+      }
+    } else {
+      if (idx === 1) {
+        if (order.status === 'READY_FOR_PICKUP') return 'Ready for pickup!';
+        const t = getStatusTime('READY_FOR_PICKUP');
+        return t ? `Ready at ${t}` : 'Pending';
+      }
+      if (idx === 2) {
+        if (order.status === 'PICKED_UP') {
+          const t = getStatusTime('PICKED_UP');
+          return t ? `Picked up at ${t}` : 'Picked up';
+        }
+        return 'Pending';
+      }
+    }
+    return '';
+  };
+
+  return (
+    <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-[#f8f7f6] dark:bg-[#211811] shadow-xl overflow-x-hidden pb-4">
+      <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] justify-between">
+        <BackButton
+          className="text-[#181411] dark:text-white flex size-10 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-gray-200 dark:hover:bg-gray-800"
+          variant="minimal"
+          onClick={() => navigate('/grocery/orders')}
+        />
+        <div className="flex-1 text-center pr-10">
+          <p className="text-[#887263] dark:text-gray-400 text-xs font-medium">
+            {order.createdAt && (
+              <span className="ml-2">• {formatDate(order.createdAt, 'D MMM, YYYY')}</span>
+            )}
+          </p>
+          <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight">Track Order</h2>
+        </div>
+      </div>
+
+      <main className="flex-1 px-4 pt-6">
+        <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3 text-center">
+          Order #{orderNumber}
+        </h3>
+
+        <div className="text-center mb-8">
+          {isCancelled ? (
+            <>
+              <div className="flex items-center justify-center mb-3">
+                <span className="material-symbols-outlined text-red-500 text-5xl">cancel</span>
+              </div>
+              <h3 className="text-red-600 dark:text-red-500 text-xl font-bold mb-2">Order Cancelled</h3>
+              <p className="text-[#887263] dark:text-gray-400 text-base">This order has been cancelled.</p>
+            </>
+          ) : (
+            <>
+              <h3 className="text-green-700 text-xl font-bold mb-2">
+                {order.status === 'DELIVERED'
+                  ? 'Order Delivered!'
+                  : order.status === 'PICKED_UP'
+                  ? 'Order Picked Up!'
+                  : order.status === 'OUT_FOR_DELIVERY'
+                  ? 'On the way!'
+                  : order.status === 'READY_FOR_PICKUP'
+                  ? 'Ready for Pickup!'
+                  : order.status === 'PACKED'
+                  ? 'Packed & ready'
+                  : 'Arriving soon'}
+              </h3>
+              <p className="text-[#887263] dark:text-gray-400 text-base italic">
+                {order.status === 'DELIVERED'
+                  ? 'Enjoy your groceries! 🎉'
+                  : order.status === 'PICKED_UP'
+                  ? 'Thanks for shopping with us.'
+                  : order.status === 'OUT_FOR_DELIVERY'
+                  ? 'Your order is on its way.'
+                  : order.status === 'READY_FOR_PICKUP'
+                  ? 'Pick up at your convenience.'
+                  : order.status === 'PACKED'
+                  ? 'Heading out for delivery soon.'
+                  : "Hang tight! We're getting your order ready."}
+              </p>
+            </>
+          )}
+        </div>
+
+        {!isCancelled ? (
+          <div className="relative z-10 mb-8 bg-white dark:bg-[#2d221a] rounded-xl p-6 shadow-md border border-[#f4f2f0] dark:border-[#3d2e24]">
+            {steps.map((step, idx) => (
+              <div key={step.title} className="flex items-start gap-4 mb-0 last:mb-0">
+                <div className="flex flex-col items-center pt-1">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      idx <= currentStep
+                        ? 'bg-green-600 text-white'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-400'
+                    }`}
+                  >
+                    <span className="material-symbols-outlined text-xl">
+                      {idx < currentStep ? 'check' : step.icon}
+                    </span>
+                  </div>
+                  {idx < steps.length - 1 && (
+                    <div
+                      className={`w-0.5 h-12 ${
+                        idx < currentStep ? 'bg-green-600' : 'bg-gray-200 dark:bg-gray-700'
+                      }`}
+                    />
+                  )}
+                </div>
+                <div className="flex-1 pt-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3
+                      className={`font-bold text-base ${
+                        idx <= currentStep
+                          ? 'text-[#181411] dark:text-white'
+                          : 'text-[#887263] dark:text-gray-400'
+                      }`}
+                    >
+                      {step.title}
+                    </h3>
+                    {idx === currentStep && (
+                      <span className="w-2 h-2 rounded-full bg-green-600 animate-pulse" />
+                    )}
+                  </div>
+                  <p
+                    className={`text-sm ${
+                      idx === currentStep
+                        ? 'text-green-700 italic font-medium'
+                        : 'text-[#887263] dark:text-gray-400'
+                    }`}
+                  >
+                    {stepSubtitle(idx)}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
-          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              {steps.map((s, idx) => {
-                const Icon = s.icon;
-                const active = idx <= currentIdx;
-                return (
-                  <div key={s.key} className="flex flex-col items-center flex-1">
-                    <div className={`w-9 h-9 rounded-full flex items-center justify-center ${active ? 'bg-green-600 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-400'}`}>
-                      <Icon size={18} />
-                    </div>
-                    <p className={`text-[10px] mt-1 font-bold text-center ${active ? 'text-green-700 dark:text-green-400' : 'text-gray-400'}`}>{s.label}</p>
-                  </div>
-                );
-              })}
+          <div className="mb-8 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <span className="material-symbols-outlined text-red-500 text-2xl">info</span>
+              <div className="flex-1">
+                <h4 className="text-red-700 dark:text-red-400 font-bold text-sm mb-1">Order Cancellation</h4>
+                <p className="text-red-600 dark:text-red-500 text-sm">
+                  Your order was cancelled and no charges have been made.
+                </p>
+                {order.cancellationReason && (
+                  <p className="text-red-600 dark:text-red-500 text-sm mt-2">
+                    <span className="font-medium">Reason:</span> {order.cancellationReason}
+                  </p>
+                )}
+              </div>
             </div>
           </div>
         )}
 
-        <section className="bg-white dark:bg-[#2d221a] rounded-xl p-4 border border-gray-200 dark:border-gray-700">
-          <h3 className="font-bold mb-2">Items</h3>
-          <ul className="space-y-2 text-sm">
-            {order.items.map((it, i) => (
-              <li key={i} className="flex justify-between">
-                <span>{it.name} · {it.variantLabel} × {it.quantity}</span>
-                <span className="font-medium">₹{(it.sellingPrice || 0) * (it.quantity || 0)}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+        <div className="mb-6">
+          <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3">Order Details</h3>
+          <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24]">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h4 className="text-[#181411] dark:text-white font-bold text-base mb-1">HungerWood Grocery</h4>
+                <p className="text-[#887263] dark:text-gray-400 text-sm">Order #{orderNumber}</p>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center text-green-700">
+                <span className="material-symbols-outlined">shopping_basket</span>
+              </div>
+            </div>
 
-        <section className="bg-white dark:bg-[#2d221a] rounded-xl p-4 border border-gray-200 dark:border-gray-700 text-sm space-y-1">
-          <h3 className="font-bold mb-2">Bill</h3>
-          <div className="flex justify-between"><span>Subtotal</span><span>₹{order.subtotal}</span></div>
-          <div className="flex justify-between"><span>Tax</span><span>₹{order.tax}</span></div>
-          <div className="flex justify-between"><span>Delivery</span><span>₹{order.delivery}</span></div>
-          {order.walletUsed > 0 && <div className="flex justify-between text-green-700 dark:text-green-400"><span>Wallet used</span><span>-₹{order.walletUsed}</span></div>}
-          <div className="flex justify-between font-bold pt-2 border-t border-gray-200 dark:border-gray-700"><span>Total</span><span>₹{order.totalAmount}</span></div>
-          <div className="text-xs text-gray-500 pt-1">Payment: {order.paymentMethod} ({order.paymentStatus})</div>
-        </section>
+            <div className="space-y-2 mb-4">
+              {(order.items || []).map((it, i) => (
+                <div key={i} className="flex items-center justify-between text-sm">
+                  <div className="min-w-0 pr-2">
+                    <div className="font-medium text-[#181411] dark:text-white truncate">{it.name}</div>
+                    <div className="text-[11px] text-[#887263]">{it.variantLabel} × {it.quantity}</div>
+                  </div>
+                  <span className="font-medium whitespace-nowrap">₹{(it.sellingPrice || 0) * (it.quantity || 0)}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="border-t-2 border-dashed border-gray-200 dark:border-gray-600 pt-3 space-y-1.5 text-sm">
+              <div className="flex justify-between text-[#887263]"><span>Subtotal</span><span>₹{order.subtotal}</span></div>
+              <div className="flex justify-between text-[#887263]"><span>Tax</span><span>₹{order.tax}</span></div>
+              <div className="flex justify-between text-[#887263]"><span>Delivery</span><span>₹{order.delivery}</span></div>
+              {order.walletUsed > 0 && (
+                <div className="flex justify-between text-green-700">
+                  <span>Wallet used</span><span>−₹{order.walletUsed}</span>
+                </div>
+              )}
+              <div className="flex justify-between font-bold pt-2 border-t border-gray-200 dark:border-gray-700">
+                <span>Total</span><span>₹{order.totalAmount}</span>
+              </div>
+              <div className="text-xs text-gray-500 pt-1">
+                Payment: {order.paymentMethod} ({order.paymentStatus || 'pending'})
+              </div>
+            </div>
+          </div>
+        </div>
 
         {order.deliveryAddress && (
-          <section className="bg-white dark:bg-[#2d221a] rounded-xl p-4 border border-gray-200 dark:border-gray-700 text-sm">
-            <h3 className="font-bold mb-2">Delivery address</h3>
-            <div>{order.deliveryAddress.street}</div>
-            <div>{order.deliveryAddress.city} - {order.deliveryAddress.pincode}</div>
-          </section>
+          <div className="mb-6">
+            <h3 className="text-[#181411] dark:text-white text-lg font-bold mb-3">Delivery Address</h3>
+            <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-md border-2 border-[#f4f2f0] dark:border-[#3d2e24] text-sm">
+              <div>{order.deliveryAddress.street}</div>
+              <div>{order.deliveryAddress.city} - {order.deliveryAddress.pincode}</div>
+            </div>
+          </div>
         )}
 
         {order.instructions && (
-          <section className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 text-sm">
+          <div className="mb-6 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-200 dark:border-yellow-800 rounded-xl p-4 text-sm">
             <div className="font-bold mb-1 text-yellow-800 dark:text-yellow-200">Pack notes</div>
             <div>{order.instructions}</div>
-          </section>
+          </div>
         )}
 
         {canCancel && (
           <button
             onClick={() => navigate(`/grocery/orders/${id}/cancel`)}
-            className="w-full mt-2 flex items-center justify-center gap-2 py-3 border border-rose-300 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50"
+            className="w-full mb-4 flex items-center justify-center gap-2 py-3 border-2 border-rose-300 text-rose-600 rounded-xl text-sm font-bold hover:bg-rose-50"
           >
-            <X size={16} /> Cancel order
+            <span className="material-symbols-outlined text-base">cancel</span> Cancel order
           </button>
-        )}
-        {isCancelled && order.cancellationReason && (
-          <section className="bg-stone-100 dark:bg-stone-800 rounded-xl p-3 text-xs text-stone-600 dark:text-stone-400">
-            <strong>Reason:</strong> {order.cancellationReason}
-          </section>
         )}
       </main>
 
