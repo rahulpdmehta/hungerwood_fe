@@ -16,6 +16,10 @@ import SavingsWidget from '@components/grocery/SavingsWidget';
 import CategoryTile from '@components/grocery/CategoryTile';
 import HomeHeader from '@components/layout/HomeHeader';
 
+const DEFAULT_BG = 'linear-gradient(135deg, #FFE9C8 0%, #F5C16C 50%, #E59B40 100%)';
+const DEFAULT_TEXT = '#451a03';
+const DEFAULT_BADGE = '#92400e';
+
 function HeroBanner({ banners }) {
   const [idx, setIdx] = useState(0);
   useEffect(() => {
@@ -25,29 +29,53 @@ function HeroBanner({ banners }) {
   }, [banners.length]);
   if (!banners.length) return null;
   const b = banners[idx];
+  const bg = b.backgroundColor && b.backgroundColor !== '#ffffff' ? b.backgroundColor : DEFAULT_BG;
+  const textColor = b.textColor && b.textColor !== '#000000' ? b.textColor : DEFAULT_TEXT;
+  const badgeBg = b.badgeColor && b.badgeColor !== '#000000' ? b.badgeColor : DEFAULT_BADGE;
   return (
     <div
-      className="mx-4 my-3 h-32 rounded-2xl relative overflow-hidden p-4 text-amber-950 shadow-lg"
-      style={{ background: 'linear-gradient(135deg, #FFE9C8 0%, #F5C16C 50%, #E59B40 100%)' }}
+      className="mx-4 my-3 h-32 rounded-2xl relative overflow-hidden shadow-lg"
+      style={{ background: bg, color: textColor }}
     >
-      <div
-        className="absolute -right-5 -top-5 w-32 h-32 rounded-full opacity-50"
-        style={{ background: 'radial-gradient(circle, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 70%)' }}
-      />
-      <div className="absolute -right-3 -bottom-3 text-7xl opacity-30 transform -rotate-12 pointer-events-none select-none" aria-hidden>🛍️</div>
-      {b.badge && (
-        <span className="inline-block bg-white/55 backdrop-blur-sm text-[10px] font-extrabold px-2.5 py-0.5 rounded-full text-amber-950">
-          {b.badge}
-        </span>
+      {b.image && (
+        <img
+          src={b.image}
+          alt=""
+          aria-hidden
+          className="absolute right-0 top-0 h-full w-1/3 object-cover"
+          style={{ maskImage: 'linear-gradient(to left, black 60%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, black 60%, transparent 100%)' }}
+          onError={(e) => { e.currentTarget.style.display = 'none'; }}
+        />
       )}
-      <h3 className="mt-2 text-lg font-extrabold leading-tight max-w-[70%]">{b.title}</h3>
-      {b.subtitle && <p className="text-[11px] mt-0.5 opacity-90 max-w-[70%]">{b.subtitle}</p>}
+      <div className="absolute inset-0 p-4 flex flex-col justify-center">
+        {b.badge && (
+          <span
+            className="self-start inline-block text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full"
+            style={{ backgroundColor: badgeBg }}
+          >
+            {b.badge}
+          </span>
+        )}
+        <h3 className="mt-2 text-lg font-extrabold leading-tight max-w-[60%]" style={{ color: textColor }}>
+          {b.title}
+        </h3>
+        {b.subtitle && (
+          <p className="text-[11px] mt-0.5 opacity-90 max-w-[60%]" style={{ color: textColor }}>
+            {b.subtitle}
+          </p>
+        )}
+      </div>
       {banners.length > 1 && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
           {banners.map((_, i) => (
             <span
               key={i}
-              className={`h-1 rounded-full transition-all ${i === idx ? 'w-4 bg-amber-900' : 'w-1.5 bg-amber-900/30'}`}
+              className="h-1 rounded-full transition-all"
+              style={{
+                width: i === idx ? 16 : 6,
+                backgroundColor: textColor,
+                opacity: i === idx ? 0.85 : 0.3,
+              }}
             />
           ))}
         </div>
