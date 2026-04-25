@@ -28,6 +28,7 @@ import Help from '@pages/customer/Help';
 import Settings from '@pages/customer/Settings';
 import AboutUs from '@pages/customer/AboutUs';
 const GroceryHome = lazy(() => import('@pages/customer/grocery/Home'));
+const GroceryCategoriesAll = lazy(() => import('@pages/customer/grocery/CategoriesAll'));
 const GroceryCategory = lazy(() => import('@pages/customer/grocery/Category'));
 const GroceryProductDetail = lazy(() => import('@pages/customer/grocery/ProductDetail'));
 const GroceryCart = lazy(() => import('@pages/customer/grocery/Cart'));
@@ -64,6 +65,7 @@ const AppRoutes = () => {
         <Route path="/menu" element={<Animated><Menu /></Animated>} />
         <Route path="/menu/:id" element={<Animated><ItemDetails /></Animated>} />
         <Route path="/grocery" element={<Lazy><Animated><GroceryHome /></Animated></Lazy>} />
+        <Route path="/grocery/categories" element={<Lazy><Animated><GroceryCategoriesAll /></Animated></Lazy>} />
         <Route path="/grocery/c/:slug" element={<Lazy><Animated><GroceryCategory /></Animated></Lazy>} />
         <Route path="/grocery/p/:id" element={<Lazy><Animated><GroceryProductDetail /></Animated></Lazy>} />
         <Route path="/grocery/cart" element={<Lazy><Animated><GroceryCart /></Animated></Lazy>} />

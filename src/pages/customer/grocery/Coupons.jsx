@@ -30,8 +30,8 @@ export default function GroceryCoupons() {
         code: rawCode,
         subtotal,
       });
-      applyCoupon(res.data.data);
-      toast.success(`Coupon ${res.data.data.code} applied`);
+      applyCoupon(res.data);
+      toast.success(`Coupon ${res.data.code} applied`);
       navigate('/grocery/cart');
     } catch (e) {
       toast.error(e?.response?.data?.message || 'Could not apply coupon');

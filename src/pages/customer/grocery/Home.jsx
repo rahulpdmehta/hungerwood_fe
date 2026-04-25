@@ -91,7 +91,10 @@ export default function GroceryHome() {
         <SavingsWidget />
 
         <div className="px-4 pt-2">
-          <h3 className="text-base font-extrabold mb-2">Shop by category</h3>
+          <div className="flex justify-between items-center mb-2">
+            <h3 className="text-base font-extrabold">Shop by category</h3>
+            <Link to="/grocery/categories" className="text-xs text-[#7f4f13] font-bold">View all &rarr;</Link>
+          </div>
           {catsLoading ? (
             <div className="grid grid-cols-5 gap-2">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(i => <CategoryTileSkeleton key={i} />)}

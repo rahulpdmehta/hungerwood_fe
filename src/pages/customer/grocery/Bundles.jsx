@@ -7,7 +7,7 @@ import api from '@services/api';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import BundleCard from '@components/grocery/BundleCard';
 
-const fetchBundles = async () => (await api.get('/grocery/bundles')).data?.data || [];
+const fetchBundles = async () => (await api.get('/grocery/bundles')).data || [];
 
 export default function GroceryBundles() {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default function GroceryBundles() {
     setBusySlug(bundle.slug);
     try {
       const res = await api.get(`/grocery/bundles/${bundle.slug}`);
-      const data = res.data?.data;
+      const data = res.data;
       if (!data || !data.items?.length) throw new Error('Bundle is unavailable');
       applyBundle(
         { slug: data.slug, name: data.name, discount: data.bundleDiscount, regularPrice: data.regularPrice, bundlePrice: data.bundlePrice },

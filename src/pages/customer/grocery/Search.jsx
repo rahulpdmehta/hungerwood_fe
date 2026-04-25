@@ -5,9 +5,14 @@ import { useQuery } from '@tanstack/react-query';
 import api from '@services/api';
 import { useDebounce } from '@hooks/useDebounce';
 import { optimizeImage } from '@utils/image';
-import { useGroceryProductsPublic } from '@hooks/useGroceryCustomerQueries';
+import {
+  useGroceryProductsPublic,
+  useGroceryCategoriesPublic,
+} from '@hooks/useGroceryCustomerQueries';
 import GroceryProductCard from '@components/grocery/GroceryProductCard';
 import GroceryCardSkeleton from '@components/grocery/GroceryCardSkeleton';
+import CategoryTile from '@components/grocery/CategoryTile';
+import CategoryTileSkeleton from '@components/grocery/CategoryTileSkeleton';
 
 const RECENT_KEY = 'grocery.recent';
 const MAX_RECENT = 5;
@@ -40,6 +45,7 @@ export default function GrocerySearch() {
   });
 
   const { data: allProducts = [], isLoading: productsLoading } = useGroceryProductsPublic();
+  const { data: categories = [], isLoading: categoriesLoading } = useGroceryCategoriesPublic();
   const topPicks = useMemo(() => {
     const bestsellers = allProducts.filter(p => p.tags?.isBestseller);
     const picks = bestsellers.length >= 8 ? bestsellers : allProducts;
@@ -138,7 +144,35 @@ export default function GrocerySearch() {
           </section>
         )}
 
-        {q.length < 2 && !productsLoading && recent.length === 0 && trending.length === 0 && topPicks.length === 0 && (
+        {q.length < 2 && (
+          <section className="pt-6 px-4">
+            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">Shop by category</h6>
+            {categoriesLoading ? (
+              <div className="grid grid-cols-4 gap-2">
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(i => <CategoryTileSkeleton key={i} />)}
+              </div>
+            ) : categories.length > 0 ? (
+              <div className="grid grid-cols-4 gap-2">
+                {categories.slice(0, 8).map(c => (
+                  <CategoryTile key={c.id || c._id} category={c} />
+                ))}
+              </div>
+            ) : null}
+          </section>
+        )}
+
+        {q.length < 2 && !productsLoading && allProducts.length > topPicks.length && (
+          <section className="pt-6 px-4">
+            <h6 className="text-[10px] font-extrabold text-stone-500 uppercase tracking-wider mb-2">More to explore</h6>
+            <div className="grid grid-cols-3 gap-2">
+              {allProducts.slice(topPicks.length, topPicks.length + 9).map(p => (
+                <GroceryProductCard key={p.id || p._id} product={p} />
+              ))}
+            </div>
+          </section>
+        )}
+
+        {q.length < 2 && !productsLoading && !categoriesLoading && recent.length === 0 && trending.length === 0 && topPicks.length === 0 && categories.length === 0 && (
           <div className="text-center text-stone-400 text-sm py-16 px-6">
             Start typing to search our catalogue.
           </div>
