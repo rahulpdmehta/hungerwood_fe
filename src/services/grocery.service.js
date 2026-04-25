@@ -26,7 +26,10 @@ export const groceryCategoryService = {
 };
 
 export const groceryProductService = {
+  // Returns the array. Used by callers that need every product (e.g. bundles picker).
   list: (params = {}) => api.get('/admin/grocery/products', { params }).then(r => r.data),
+  // Returns the full envelope `{ data, pagination }` for paginated admin views.
+  listPaginated: (params = {}) => api.get('/admin/grocery/products', { params }).then(r => r),
   get: (id) => api.get(`/admin/grocery/products/${id}`).then(r => r.data),
   create: (d) => { const { body, headers } = toPayload(d); return api.post('/admin/grocery/products', body, { headers }).then(r => r.data); },
   update: (id, d) => { const { body, headers } = toPayload(d); return api.patch(`/admin/grocery/products/${id}`, body, { headers }).then(r => r.data); },

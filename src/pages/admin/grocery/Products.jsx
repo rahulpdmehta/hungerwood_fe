@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Power, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import AdminLayout from '@components/admin/AdminLayout';
@@ -7,8 +7,9 @@ import StatusBadge from '@components/admin/StatusBadge';
 import ImageUploader from '@components/admin/ImageUploader';
 import ConfirmDialog from '@components/admin/ConfirmDialog';
 import Pagination from '@components/admin/Pagination';
+import { useDebounce } from '@hooks/useDebounce';
 import {
-  useGroceryProducts,
+  useGroceryProductsPaginated,
   useCreateGroceryProduct,
   useUpdateGroceryProduct,
   useDeleteGroceryProduct,
@@ -25,13 +26,6 @@ const EMPTY = {
 };
 
 export default function GroceryProducts() {
-  const { data: products = [], isLoading } = useGroceryProducts();
-  const { data: categories = [] } = useGroceryCategories();
-  const createMut = useCreateGroceryProduct();
-  const updateMut = useUpdateGroceryProduct();
-  const deleteMut = useDeleteGroceryProduct();
-  const toggleMut = useToggleGroceryProduct();
-
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [confirmDel, setConfirmDel] = useState(null);
@@ -40,29 +34,28 @@ export default function GroceryProducts() {
   const [categoryFilter, setCategoryFilter] = useState('');
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const debouncedSearch = useDebounce(searchQuery, 350);
 
   useEffect(() => {
     setPage(1);
-  }, [searchQuery, categoryFilter]);
+  }, [debouncedSearch, categoryFilter, pageSize]);
 
-  const filteredProducts = useMemo(() => {
-    const q = searchQuery.trim().toLowerCase();
-    return products.filter((p) => {
-      const catId = p.category?.id || p.category?._id || p.category;
-      if (categoryFilter && String(catId) !== String(categoryFilter)) return false;
-      if (!q) return true;
-      return (
-        p.name?.toLowerCase().includes(q) ||
-        p.brand?.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q)
-      );
-    });
-  }, [products, searchQuery, categoryFilter]);
+  const queryParams = {
+    page,
+    limit: pageSize,
+    ...(categoryFilter ? { category: categoryFilter } : {}),
+    ...(debouncedSearch.trim() ? { search: debouncedSearch.trim() } : {}),
+  };
 
-  const pagedProducts = useMemo(
-    () => filteredProducts.slice((page - 1) * pageSize, page * pageSize),
-    [filteredProducts, page, pageSize]
-  );
+  const { data: result, isLoading, isFetching } = useGroceryProductsPaginated(queryParams);
+  const products = result?.data || [];
+  const total = result?.pagination?.total ?? 0;
+
+  const { data: categories = [] } = useGroceryCategories();
+  const createMut = useCreateGroceryProduct();
+  const updateMut = useUpdateGroceryProduct();
+  const deleteMut = useDeleteGroceryProduct();
+  const toggleMut = useToggleGroceryProduct();
 
   const openAdd = () => { setForm(EMPTY); setModal({ mode: 'add' }); };
   const openEdit = (p) => {
@@ -227,7 +220,7 @@ export default function GroceryProducts() {
           <>
             <DataTable
               columns={columns}
-              data={pagedProducts}
+              data={products}
               emptyMessage={
                 searchQuery || categoryFilter
                   ? 'No products match these filters.'
@@ -237,7 +230,7 @@ export default function GroceryProducts() {
             <Pagination
               page={page}
               pageSize={pageSize}
-              total={filteredProducts.length}
+              total={total}
               onPageChange={setPage}
               onPageSizeChange={(n) => { setPageSize(n); setPage(1); }}
             />

@@ -34,22 +34,28 @@ export const useToggleGroceryCategory = () => {
 
 // Products
 export const useGroceryProducts = (params = {}) => useQuery({ queryKey: K.products(params), queryFn: () => groceryProductService.list(params) });
+export const useGroceryProductsPaginated = (params = {}) =>
+  useQuery({
+    queryKey: ['grocery', 'products-paginated', params],
+    queryFn: () => groceryProductService.listPaginated(params),
+    placeholderData: (prev) => prev,
+  });
 export const useGroceryProduct = (id) => useQuery({ queryKey: ['grocery', 'product', id], queryFn: () => groceryProductService.get(id), enabled: !!id });
 export const useCreateGroceryProduct = () => {
   const qc = useQueryClient();
-  return useMutation({ mutationFn: groceryProductService.create, onSuccess: () => qc.invalidateQueries({ queryKey: ['grocery', 'products'] }) });
+  return useMutation({ mutationFn: groceryProductService.create, onSuccess: () => qc.invalidateQueries({ predicate: (q) => q.queryKey?.[0] === 'grocery' && (q.queryKey?.[1] === 'products' || q.queryKey?.[1] === 'products-paginated') }) });
 };
 export const useUpdateGroceryProduct = () => {
   const qc = useQueryClient();
-  return useMutation({ mutationFn: ({ id, ...d }) => groceryProductService.update(id, d), onSuccess: () => qc.invalidateQueries({ queryKey: ['grocery', 'products'] }) });
+  return useMutation({ mutationFn: ({ id, ...d }) => groceryProductService.update(id, d), onSuccess: () => qc.invalidateQueries({ predicate: (q) => q.queryKey?.[0] === 'grocery' && (q.queryKey?.[1] === 'products' || q.queryKey?.[1] === 'products-paginated') }) });
 };
 export const useDeleteGroceryProduct = () => {
   const qc = useQueryClient();
-  return useMutation({ mutationFn: groceryProductService.remove, onSuccess: () => qc.invalidateQueries({ queryKey: ['grocery', 'products'] }) });
+  return useMutation({ mutationFn: groceryProductService.remove, onSuccess: () => qc.invalidateQueries({ predicate: (q) => q.queryKey?.[0] === 'grocery' && (q.queryKey?.[1] === 'products' || q.queryKey?.[1] === 'products-paginated') }) });
 };
 export const useToggleGroceryProduct = () => {
   const qc = useQueryClient();
-  return useMutation({ mutationFn: groceryProductService.toggle, onSuccess: () => qc.invalidateQueries({ queryKey: ['grocery', 'products'] }) });
+  return useMutation({ mutationFn: groceryProductService.toggle, onSuccess: () => qc.invalidateQueries({ predicate: (q) => q.queryKey?.[0] === 'grocery' && (q.queryKey?.[1] === 'products' || q.queryKey?.[1] === 'products-paginated') }) });
 };
 
 // Settings
