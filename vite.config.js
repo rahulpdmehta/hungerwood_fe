@@ -112,7 +112,13 @@ export default defineConfig({
     }
   },
   server: {
+    host: true,        // 0.0.0.0 — needed so phones/tablets on the same Wi-Fi
+                       // can reach the dev server. Vite still prints both
+                       // Local: + Network: URLs on startup.
     port: 3000,
-    open: true
+    strictPort: true,  // Fail loudly if port 3000 is taken instead of silently
+                       // shifting to 3001 (the backend CORS allowlist + the
+                       // .env.local file both assume 3000).
+    open: true,
   }
 });

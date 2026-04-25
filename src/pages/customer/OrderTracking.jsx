@@ -7,6 +7,54 @@ import PriceDisplay from '@components/common/PriceDisplay';
 import { formatDate, formatTime as formatTimeUtil } from '@utils/dateFormatter';
 import { useAnimation } from '@/contexts/AnimationContext';
 import { toast } from 'react-hot-toast';
+import { SkeletonBlock, SkeletonText } from '@components/common/Skeleton';
+
+/** Layout-matched skeleton for the Track Order page so direct-URL navigation
+ *  doesn't flash an "Order Not Found" screen while the first fetch is in
+ *  flight. Mirrors: top bar, status banner, vertical step rail, details card. */
+const OrderTrackingSkeleton = () => (
+  <div className="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-[#f8f7f6] dark:bg-[#211811] shadow-xl overflow-x-hidden pb-4">
+    <div className="sticky top-0 z-50 flex items-center bg-white dark:bg-[#2d221a] p-4 border-b border-[#f4f2f0] dark:border-[#3d2e24] gap-3">
+      <SkeletonBlock className="w-10 h-10 rounded-full" />
+      <div className="flex-1 flex flex-col items-center gap-1">
+        <SkeletonText className="w-24" />
+        <SkeletonText className="w-32 h-4" />
+      </div>
+      <SkeletonBlock className="w-10 h-6" />
+    </div>
+    <main className="flex-1 px-3 pt-4">
+      <div className="flex justify-center mb-2">
+        <SkeletonText className="w-40 h-4" />
+      </div>
+      <div className="flex flex-col items-center gap-2 mb-5">
+        <SkeletonText className="w-32 h-4" />
+        <SkeletonText className="w-48" />
+      </div>
+      <div className="bg-white dark:bg-[#2d221a] rounded-xl p-4 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-5 space-y-3">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="flex items-start gap-3">
+            <SkeletonBlock className="w-7 h-7 rounded-full shrink-0" />
+            <div className="flex-1 space-y-1.5 pb-2">
+              <SkeletonText className="w-1/2" />
+              <SkeletonText className="w-2/3 h-2" />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="bg-white dark:bg-[#2d221a] rounded-xl p-3 shadow-sm border border-[#f4f2f0] dark:border-[#3d2e24] mb-4 space-y-2">
+        <SkeletonText className="w-32" />
+        <div className="border-t border-dashed border-gray-200 dark:border-gray-700 pt-2 space-y-1.5">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="flex items-center justify-between">
+              <SkeletonText className="w-32" />
+              <SkeletonText className="w-12" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  </div>
+);
 
 const OrderTracking = () => {
   const { id } = useParams();
@@ -15,6 +63,11 @@ const OrderTracking = () => {
 
   // State for order data
   const [order, setOrder] = useState(location.state?.order || {});
+  // True until the first fetch settles (or until polling brings data in).
+  // Initialised based on whether we already have order data passed via
+  // router state — direct-URL nav has none, so we start in fetching mode and
+  // show a skeleton instead of the "Order Not Found" branch.
+  const [fetching, setFetching] = useState(() => !location.state?.order);
   const previousStatus = useRef(order.status);
   const { animations } = useAnimation();
 
@@ -109,31 +162,19 @@ const OrderTracking = () => {
   const fetchOrder = async () => {
     try {
       const response = await orderService.getOrderById(id);
-      console.log('📦 Fetched order:', response.data);
-      console.log('🍽️ Order items details:', response.data?.items);
-
-      // Log each item to debug
-      if (Array.isArray(response.data?.items)) {
-        response.data.items.forEach((item, idx) => {
-          console.log(`  Item ${idx + 1}:`, {
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            id: item.id
-          });
-        });
-      }
-
-      setOrder(response.data);
+      setOrder(response.data || {});
     } catch (error) {
       console.error('Failed to fetch order:', error);
-      // Set empty order to show error state
+      // Leave order as {} so the "Order Not Found" branch below kicks in.
       setOrder({});
+    } finally {
+      setFetching(false);
     }
   };
 
-  // Determine loading state
-  const loading = !location.state?.order && !pollingOrderData && !order?.id && pollingLoading;
+  // Loading covers both: the first one-shot fetch we kicked off here, and
+  // the polling hook's own initial load. Either being in flight = skeleton.
+  const loading = fetching || (!order?.id && pollingLoading);
 
   // Get data from order
   const orderData = location.state || {};
@@ -153,19 +194,14 @@ const OrderTracking = () => {
   const orderNumber = order.orderId || id;
   const orderStatus = order.status || 'preparing';
 
-  // Show loading state
+  // First-load skeleton (also covers the gap between mount and the local
+  // fetch settling — previously this gap rendered the "Order Not Found"
+  // screen for ~500 ms, which felt like a real error).
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#7f4f13] mx-auto mb-4"></div>
-          <p className="text-[#887263]">Loading order details...</p>
-        </div>
-      </div>
-    );
+    return <OrderTrackingSkeleton />;
   }
 
-  // Show error if no order data
+  // Real "not found": fetch settled with no order data.
   if (!order || Object.keys(order).length === 0) {
     return (
       <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811] flex items-center justify-center">
