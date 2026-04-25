@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import OptimizedImage from '@components/common/OptimizedImage';
 
 const CuisineGrid = () => {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const CuisineGrid = () => {
             className="relative aspect-square overflow-hidden group shadow-md hover:shadow-lg transition-shadow"
             onClick={() => navigate(`/menu?category=${cuisine.name}`)}
           >
-            <img src={cuisine.image} alt={cuisine.name} className="absolute inset-0 w-full h-full object-cover" />
+            <OptimizedImage src={cuisine.image} alt={cuisine.name} width={400} className="absolute inset-0 w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
             <div className="absolute bottom-3 left-3">
               <p className="text-white text-sm font-bold drop-shadow-lg">{cuisine.name}</p>

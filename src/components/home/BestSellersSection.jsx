@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useMenuItems, useCategories } from '@hooks/useMenuQueries';
 import useCartStore from '@store/useCartStore';
 import { MenuSkeleton } from '@components/common/Loader';
+import OptimizedImage from '@components/common/OptimizedImage';
 import {
   isCategoryOrderable,
   formatWindowLabel,
@@ -122,7 +123,7 @@ const BestSellersSection = () => {
                 className="min-w-[180px] bg-white dark:bg-zinc-800 rounded-xl shadow-md border-2 border-gray-200 dark:border-zinc-700 overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
               >
                 <div className="h-32 bg-cover bg-center relative">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <OptimizedImage src={item.image} alt={item.name} width={300} className="w-full h-full object-cover" />
                   {item.favorite && (
                     <div className="absolute top-2 right-2 bg-white/90 backdrop-blur p-1 rounded-full shadow-sm">
                       <span

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 import BackButton from '@components/common/BackButton';
 import Button from '@components/common/Button';
+import { SkeletonList } from '@components/common/Skeleton';
+import ConfirmModal from '@components/common/ConfirmModal';
 import { addressService } from '@services/address.service';
 
 const Addresses = () => {
@@ -103,16 +106,19 @@ const Addresses = () => {
     setShowAddForm(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this address?')) return;
+  const [confirmDeleteId, setConfirmDeleteId] = useState(null);
 
+  const performDelete = async (id) => {
     try {
       await addressService.deleteAddress(id);
       await loadAddresses();
+      toast.success('Address deleted');
     } catch (error) {
-      setError('Failed to delete address');
+      toast.error('Failed to delete address');
     }
   };
+
+  const handleDelete = (id) => setConfirmDeleteId(id);
 
   const handleSetDefault = async (id) => {
     try {
@@ -132,10 +138,9 @@ const Addresses = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-text-secondary">Loading addresses...</p>
+      <div className="min-h-screen bg-[#f8f7f6] dark:bg-[#211811]">
+        <div className="max-w-md mx-auto p-4 pt-16">
+          <SkeletonList rows={3} />
         </div>
       </div>
     );
@@ -363,6 +368,15 @@ const Addresses = () => {
           </div>
         )}
       </div>
+      <ConfirmModal
+        open={!!confirmDeleteId}
+        onClose={() => setConfirmDeleteId(null)}
+        onConfirm={() => performDelete(confirmDeleteId)}
+        title="Delete address?"
+        message="This address will be removed from your saved list."
+        confirmText="Delete"
+        tone="danger"
+      />
     </div>
   );
 };
