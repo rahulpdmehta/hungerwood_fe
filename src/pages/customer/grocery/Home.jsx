@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   useGroceryCategoriesPublic,
   useGroceryProductsPublic,
@@ -21,6 +21,7 @@ const DEFAULT_TEXT = '#451a03';
 const DEFAULT_BADGE = '#92400e';
 
 function HeroBanner({ banners }) {
+  const navigate = useNavigate();
   const [idx, setIdx] = useState(0);
   useEffect(() => {
     if (banners.length <= 1) return;
@@ -32,9 +33,22 @@ function HeroBanner({ banners }) {
   const bg = b.backgroundColor && b.backgroundColor !== '#ffffff' ? b.backgroundColor : DEFAULT_BG;
   const textColor = b.textColor && b.textColor !== '#000000' ? b.textColor : DEFAULT_TEXT;
   const badgeBg = b.badgeColor && b.badgeColor !== '#000000' ? b.badgeColor : DEFAULT_BADGE;
+  const handleClick = () => {
+    const link = b.ctaLink?.trim();
+    if (!link) return;
+    if (/^https?:\/\//i.test(link)) {
+      window.open(link, '_blank', 'noopener,noreferrer');
+    } else {
+      navigate(link);
+    }
+  };
   return (
     <div
-      className="mx-4 my-3 h-32 rounded-2xl relative overflow-hidden shadow-lg"
+      role={b.ctaLink ? 'button' : undefined}
+      tabIndex={b.ctaLink ? 0 : undefined}
+      onClick={b.ctaLink ? handleClick : undefined}
+      onKeyDown={b.ctaLink ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } } : undefined}
+      className={`mx-4 my-3 h-32 rounded-2xl relative overflow-hidden shadow-lg ${b.ctaLink ? 'cursor-pointer active:scale-[.99] transition-transform' : ''}`}
       style={{ background: bg, color: textColor }}
     >
       {b.image && (

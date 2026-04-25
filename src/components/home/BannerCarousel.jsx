@@ -6,6 +6,16 @@ const BannerCarousel = () => {
   const navigate = useNavigate();
   const { data: activeBanners = [], isLoading: bannersLoading } = useActiveBanners();
 
+  const handleClick = (link) => {
+    const url = link?.trim();
+    if (!url) return;
+    if (/^https?:\/\//i.test(url)) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } else {
+      navigate(url);
+    }
+  };
+
   return (
     <div className="mt-2">
       <div className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 gap-2">
@@ -15,8 +25,11 @@ const BannerCarousel = () => {
           activeBanners.map((banner, index) => (
             <div
               key={banner.id || `banner-${index}`}
+              role={banner.ctaLink ? 'button' : undefined}
+              tabIndex={banner.ctaLink ? 0 : undefined}
               className="snap-center shrink-0 w-[85%] aspect-[2/1] rounded-xl relative overflow-hidden cursor-pointer shadow-lg border border-gray-200 dark:border-zinc-700 hover:shadow-xl transition-shadow"
-              onClick={() => banner.ctaLink && navigate(banner.ctaLink)}
+              onClick={() => handleClick(banner.ctaLink)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(banner.ctaLink); } }}
             >
               <img
                 src={banner.image}
