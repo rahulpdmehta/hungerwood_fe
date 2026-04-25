@@ -1,11 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import useAuthStore from '@store/useAuthStore';
 import BottomNavBar from '@components/layout/BottomNavBar';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 import BackButton from '@components/common/BackButton';
 
-const Profile = () => {
+const Profile = ({ section }) => {
     const navigate = useNavigate();
     const { user, logout } = useAuthStore();
+    const isGrocerySection = section === 'grocery';
+    const homePath = isGrocerySection ? '/grocery' : '/';
+    const orderHistoryPath = isGrocerySection ? '/grocery/orders' : '/orders';
 
     const handleLogout = () => {
         logout();
@@ -25,7 +29,7 @@ const Profile = () => {
             id: 'history',
             icon: 'history',
             label: 'Order History',
-            path: '/orders',
+            path: orderHistoryPath,
             iconBg: 'bg-[#7f4f13]/10',
             iconColor: 'text-[#7f4f13]',
         },
@@ -62,7 +66,7 @@ const Profile = () => {
         <div className="relative flex min-h-screen w-full flex-col bg-[#f8f7f6] dark:bg-[#211811] pb-20">
             {/* Top App Bar */}
             <div className="flex items-center bg-[#f8f7f6] dark:bg-[#211811] p-4 justify-between sticky top-0 z-10 border-b-2 border-gray-200 dark:border-gray-700 shadow-md">
-                <BackButton className="w-12 h-12 shrink-0  max-h-[40px] max-w-[40px]" onClick={() => navigate('/')} />
+                <BackButton className="w-12 h-12 shrink-0  max-h-[40px] max-w-[40px]" onClick={() => navigate(homePath)} />
                 <h2 className="text-[#181411] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">
                     Profile
                 </h2>
@@ -191,7 +195,7 @@ const Profile = () => {
             </div>
 
             {/* Bottom Navigation Bar */}
-            <BottomNavBar />
+            {isGrocerySection ? <GroceryBottomNavBar /> : <BottomNavBar />}
         </div>
     );
 };

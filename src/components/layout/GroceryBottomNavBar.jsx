@@ -9,15 +9,18 @@ const GroceryBottomNavBar = () => {
   const location = useLocation();
 
   const navItems = [
-    { id: 'home', path: '/', icon: 'home', label: 'Home' },
+    { id: 'home', path: '/grocery', icon: 'home', label: 'Home' },
     { id: 'categories', path: '/grocery/categories', icon: 'category', label: 'Categories' },
-    { id: 'orders', path: '/orders', icon: 'shopping_bag', label: 'Orders' },
-    { id: 'profile', path: '/profile', icon: 'person', label: 'Profile' },
+    { id: 'orders', path: '/grocery/orders', icon: 'shopping_bag', label: 'Orders' },
+    { id: 'profile', path: '/grocery/profile', icon: 'person', label: 'Profile' },
   ];
 
   const isActive = (path) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
+    // /grocery is the grocery home — only mark active on exact match so the
+    // Categories / Orders tabs (which are also under /grocery/...) stay
+    // distinct.
+    if (path === '/grocery') return location.pathname === '/grocery';
+    return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
   return (

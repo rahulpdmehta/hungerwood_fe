@@ -7,9 +7,11 @@ import { useOrders } from '@hooks/useOrderQueries';
 import { useMyGroceryOrders } from '@hooks/useGroceryCustomerQueries';
 import useGroceryCartStore from '@store/useGroceryCartStore';
 import BottomNavBar from '@components/layout/BottomNavBar';
+import GroceryBottomNavBar from '@components/layout/GroceryBottomNavBar';
 
-export default function Orders() {
-  const [tab, setTab] = useState('all');
+export default function Orders({ section }) {
+  const isGrocerySection = section === 'grocery';
+  const [tab, setTab] = useState(isGrocerySection ? 'grocery' : 'all');
   const [reorderingId, setReorderingId] = useState(null);
   const navigate = useNavigate();
   const addItem = useGroceryCartStore(s => s.addItem);
@@ -58,7 +60,7 @@ export default function Orders() {
         <div className="max-w-md mx-auto">
           <div className="flex items-center p-4 justify-between">
             <Link
-              to="/"
+              to={isGrocerySection ? '/grocery' : '/'}
               className="flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             >
               <ArrowLeft size={20} className="text-[#181411] dark:text-white" />
@@ -211,7 +213,7 @@ export default function Orders() {
         )}
       </main>
 
-      <BottomNavBar />
+      {isGrocerySection ? <GroceryBottomNavBar /> : <BottomNavBar />}
     </div>
   );
 }

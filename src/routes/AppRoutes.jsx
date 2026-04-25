@@ -127,6 +127,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="/grocery/orders"
+          element={
+            <ProtectedRoute>
+              <Animated><Orders section="grocery" /></Animated>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/orders"
           element={
             <ProtectedRoute>
@@ -163,6 +171,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Animated><Profile /></Animated>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/grocery/profile"
+          element={
+            <ProtectedRoute>
+              <Animated><Profile section="grocery" /></Animated>
             </ProtectedRoute>
           }
         />
