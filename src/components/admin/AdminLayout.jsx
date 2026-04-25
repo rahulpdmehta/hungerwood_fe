@@ -50,6 +50,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Orders', path: '/admin/grocery/orders', icon: ClipboardList },
     { name: 'Products', path: '/admin/grocery/products', icon: Package },
     { name: 'Categories', path: '/admin/grocery/categories', icon: Tags },
+    { name: 'Customers', path: '/admin/grocery/customers', icon: Users },
     { name: 'Banners', path: '/admin/grocery/banners', icon: Megaphone },
     { name: 'Coupons', path: '/admin/grocery/coupons', icon: Tags },
     { name: 'Bundles', path: '/admin/grocery/bundles', icon: Package },

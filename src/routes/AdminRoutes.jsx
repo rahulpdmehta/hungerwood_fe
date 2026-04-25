@@ -21,6 +21,7 @@ import GrocerySettings from '@pages/admin/grocery/Settings';
 import GroceryBanners from '@pages/admin/grocery/Banners';
 import GroceryCouponsAdmin from '@pages/admin/grocery/Coupons';
 import GroceryBundlesAdmin from '@pages/admin/grocery/Bundles';
+import GroceryCustomers from '@pages/admin/grocery/Customers';
 
 const AdminRoutes = () => {
   return (
@@ -191,6 +192,16 @@ const AdminRoutes = () => {
           <ProtectedRoute requireAdmin>
             <RoleGuard allow={['GROCERY_ADMIN']}>
               <GroceryBundlesAdmin />
+            </RoleGuard>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/grocery/customers"
+        element={
+          <ProtectedRoute requireAdmin>
+            <RoleGuard allow={['GROCERY_ADMIN']}>
+              <GroceryCustomers />
             </RoleGuard>
           </ProtectedRoute>
         }

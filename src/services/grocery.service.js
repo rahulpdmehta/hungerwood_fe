@@ -42,6 +42,10 @@ export const grocerySettingsService = {
   update: (d) => api.patch('/admin/grocery/settings', d).then(r => r.data),
 };
 
+export const groceryCustomerService = {
+  list: (params = {}) => api.get('/admin/grocery/customers', { params }).then(r => r),
+};
+
 export const groceryAdminOrderService = {
   // list returns the full body because the page also reads `.pagination`
   list: (params = {}) => api.get('/admin/grocery/orders', { params }).then(r => r),

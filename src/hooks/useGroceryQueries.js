@@ -4,6 +4,7 @@ import {
   groceryProductService,
   grocerySettingsService,
   groceryAdminOrderService,
+  groceryCustomerService,
 } from '@services/grocery.service';
 
 const K = {
@@ -64,6 +65,14 @@ export const useUpdateGrocerySettings = () => {
   const qc = useQueryClient();
   return useMutation({ mutationFn: grocerySettingsService.update, onSuccess: () => qc.invalidateQueries({ queryKey: K.settings }) });
 };
+
+// Customers (admin)
+export const useGroceryCustomers = (params = {}) =>
+  useQuery({
+    queryKey: ['grocery', 'customers', params],
+    queryFn: () => groceryCustomerService.list(params),
+    placeholderData: (prev) => prev,
+  });
 
 // Orders (admin)
 export const useGroceryAdminOrders = (params = {}) => useQuery({ queryKey: K.orders(params), queryFn: () => groceryAdminOrderService.list(params) });
