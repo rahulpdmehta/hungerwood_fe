@@ -3,7 +3,7 @@
  * Full CRUD operations for menu item management
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Plus, Edit2, Trash2, Power, Search, Leaf } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import AdminLayout from '../../components/admin/AdminLayout';
@@ -11,6 +11,7 @@ import DataTable from '../../components/admin/DataTable';
 import StatusBadge from '../../components/admin/StatusBadge';
 import ConfirmDialog from '../../components/admin/ConfirmDialog';
 import ImageUploader from '../../components/admin/ImageUploader';
+import Pagination from '../../components/admin/Pagination';
 import { menuItemService, categoryService } from '../../services/admin.service';
 
 const AdminMenu = () => {
@@ -35,6 +36,12 @@ const AdminMenu = () => {
   });
   const [sortKey, setSortKey] = useState('name');
   const [sortOrder, setSortOrder] = useState('asc');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, categoryFilter]);
 
   useEffect(() => {
     loadData();
@@ -67,17 +74,20 @@ const AdminMenu = () => {
   };
 
   // Filter and sort menu items
-  const filteredMenuItems = menuItems.filter(item => {
-    console.log('filteredMenuItems', item);
-    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = !categoryFilter || item.category === categoryFilter ||
-      item.category?.id === categoryFilter ||
-      item.category?.name === categoryFilter;
+  const filteredMenuItems = useMemo(() => menuItems.filter(item => {
+    const q = searchQuery.toLowerCase();
+    const matchesSearch = !q
+      || item.name?.toLowerCase().includes(q)
+      || item.description?.toLowerCase().includes(q);
+    const catId = typeof item.category === 'object' ? item.category?.id : item.categoryId;
+    const matchesCategory = !categoryFilter
+      || catId === categoryFilter
+      || item.category === categoryFilter
+      || item.category?.name === categoryFilter;
     return matchesSearch && matchesCategory;
-  });
+  }), [menuItems, searchQuery, categoryFilter]);
 
-  const sortedMenuItems = [...filteredMenuItems].sort((a, b) => {
+  const sortedMenuItems = useMemo(() => [...filteredMenuItems].sort((a, b) => {
     let aVal = a[sortKey];
     let bVal = b[sortKey];
 
@@ -92,7 +102,12 @@ const AdminMenu = () => {
     } else {
       return aVal < bVal ? 1 : -1;
     }
-  });
+  }), [filteredMenuItems, sortKey, sortOrder]);
+
+  const pagedMenuItems = useMemo(
+    () => sortedMenuItems.slice((page - 1) * pageSize, page * pageSize),
+    [sortedMenuItems, page, pageSize]
+  );
 
   const handleOpenModal = (item = null) => {
     if (item) {
@@ -386,14 +401,23 @@ const AdminMenu = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
           </div>
         ) : (
-          <DataTable
-            columns={columns}
-            data={sortedMenuItems}
-            onSort={handleSort}
-            sortKey={sortKey}
-            sortOrder={sortOrder}
-            emptyMessage="No menu items found. Click 'Add Item' to create one."
-          />
+          <>
+            <DataTable
+              columns={columns}
+              data={pagedMenuItems}
+              onSort={handleSort}
+              sortKey={sortKey}
+              sortOrder={sortOrder}
+              emptyMessage="No menu items found. Click 'Add Item' to create one."
+            />
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={sortedMenuItems.length}
+              onPageChange={setPage}
+              onPageSizeChange={(n) => { setPageSize(n); setPage(1); }}
+            />
+          </>
         )}
       </div>
 

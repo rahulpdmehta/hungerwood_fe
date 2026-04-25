@@ -26,7 +26,7 @@ export default function GroceryCouponsAdmin() {
   const qc = useQueryClient();
   const { data: coupons = [], isLoading } = useQuery({
     queryKey: ['admin', 'grocery', 'coupons'],
-    queryFn: async () => (await api.get('/admin/grocery/coupons?section=grocery')).data?.data || [],
+    queryFn: async () => (await api.get('/admin/grocery/coupons?section=grocery')).data || [],
   });
 
   const [modal, setModal] = useState(null);

@@ -23,10 +23,10 @@ const slugify = (s) =>
 
 export default function GroceryBundlesAdmin() {
   const qc = useQueryClient();
-  const { data: products = [] } = useGroceryProducts({ includeUnavailable: true });
+  const { data: products = [] } = useGroceryProducts();
   const { data: bundles = [], isLoading } = useQuery({
     queryKey: ['admin', 'grocery', 'bundles'],
-    queryFn: async () => (await api.get('/admin/grocery/bundles')).data?.data || [],
+    queryFn: async () => (await api.get('/admin/grocery/bundles')).data || [],
   });
 
   const [modal, setModal] = useState(null);

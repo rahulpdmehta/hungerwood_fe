@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Plus, Edit2, Trash2, Power } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Plus, Edit2, Trash2, Power, Search } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import AdminLayout from '@components/admin/AdminLayout';
 import DataTable from '@components/admin/DataTable';
 import StatusBadge from '@components/admin/StatusBadge';
 import ImageUploader from '@components/admin/ImageUploader';
 import ConfirmDialog from '@components/admin/ConfirmDialog';
+import Pagination from '@components/admin/Pagination';
 import {
   useGroceryProducts,
   useCreateGroceryProduct,
@@ -34,6 +35,34 @@ export default function GroceryProducts() {
   const [modal, setModal] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [confirmDel, setConfirmDel] = useState(null);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, categoryFilter]);
+
+  const filteredProducts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return products.filter((p) => {
+      const catId = p.category?.id || p.category?._id || p.category;
+      if (categoryFilter && String(catId) !== String(categoryFilter)) return false;
+      if (!q) return true;
+      return (
+        p.name?.toLowerCase().includes(q) ||
+        p.brand?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+      );
+    });
+  }, [products, searchQuery, categoryFilter]);
+
+  const pagedProducts = useMemo(
+    () => filteredProducts.slice((page - 1) * pageSize, page * pageSize),
+    [filteredProducts, page, pageSize]
+  );
 
   const openAdd = () => { setForm(EMPTY); setModal({ mode: 'add' }); };
   const openEdit = (p) => {
@@ -167,16 +196,52 @@ export default function GroceryProducts() {
           </button>
         </div>
 
+        <div className="bg-white p-4 rounded-lg shadow-sm flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <input
+              type="text"
+              placeholder="Search by name, brand, description…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+            />
+          </div>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          >
+            <option value="">All Categories</option>
+            {categories.map((c) => (
+              <option key={c.id || c._id} value={c.id || c._id}>{c.name}</option>
+            ))}
+          </select>
+        </div>
+
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
           </div>
         ) : (
-          <DataTable
-            columns={columns}
-            data={products}
-            emptyMessage="No grocery products yet. Click 'Add Product' to create one."
-          />
+          <>
+            <DataTable
+              columns={columns}
+              data={pagedProducts}
+              emptyMessage={
+                searchQuery || categoryFilter
+                  ? 'No products match these filters.'
+                  : "No grocery products yet. Click 'Add Product' to create one."
+              }
+            />
+            <Pagination
+              page={page}
+              pageSize={pageSize}
+              total={filteredProducts.length}
+              onPageChange={setPage}
+              onPageSizeChange={(n) => { setPageSize(n); setPage(1); }}
+            />
+          </>
         )}
       </div>
 
