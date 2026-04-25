@@ -140,74 +140,69 @@ const Cart = () => {
 
           {/* Cart Items */}
           {items.map((item) => {
-            // Handle both API format (isVeg) and fallback format (veg)
             const isVeg = item.isVeg !== undefined ? item.isVeg : item.veg;
-            
+            const discountPct = Math.round(item.discount || 0);
+            const unitPrice = Math.round(item.price * (1 - discountPct / 100));
+            const lineTotal = unitPrice * item.quantity;
+            const lineMrp = item.price * item.quantity;
             return (
               <div
                 key={item.id || item._id}
-                className="flex items-center gap-2 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-md border-2 border-gray-200 dark:border-gray-700 mb-2 last:mb-0"
+                className="flex items-center gap-2 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-2 last:mb-0"
               >
-                <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover w-[110px] h-[110px] shrink-0"
-                  style={{ backgroundImage: `url("${item.image}")` }}
-                ></div>
-                <div className="flex flex-col flex-1 justify-between min-h-[110px] p-2">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-1 mb-1 relative">
-                      {isVeg !== undefined && (
-                        <span
-                          className={`w-3 h-3 border absolute top-0 right-0 z-10 ${isVeg ? 'border-green-500' : 'border-red-500'
-                            } p-[1px] flex items-center justify-center`}
-                        >
-                          <span
-                            className={`w-full h-full rounded-full ${isVeg ? 'bg-green-500' : 'bg-red-500'}`}
-                          ></span>
-                        </span>
+                <div className="relative shrink-0">
+                  <div
+                    className="bg-center bg-no-repeat aspect-square bg-cover w-[72px] h-[72px] m-2 rounded-md"
+                    style={{ backgroundImage: `url("${item.image}")` }}
+                  />
+                  {discountPct > 0 && (
+                    <span className="absolute top-1 left-1 bg-[#7f4f13] text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
+                      {discountPct}% OFF
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col flex-1 justify-between py-2 pr-2 min-h-[72px]">
+                  <div className="flex items-start gap-1.5">
+                    <p className="text-[#181411] dark:text-white text-sm font-bold leading-tight line-clamp-1 flex-1">
+                      {item.name}
+                    </p>
+                    {isVeg !== undefined && (
+                      <span
+                        className={`w-3 h-3 border ${isVeg ? 'border-green-500' : 'border-red-500'} p-[1px] flex items-center justify-center shrink-0`}
+                      >
+                        <span className={`w-full h-full rounded-full ${isVeg ? 'bg-green-500' : 'bg-red-500'}`} />
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-sm font-extrabold text-[#181411] dark:text-white">₹{lineTotal}</span>
+                      {discountPct > 0 && (
+                        <span className="text-[10px] text-[#887263] line-through">₹{lineMrp}</span>
                       )}
                     </div>
-                    <p className="text-[#181411] dark:text-white text-base font-bold leading-tight pr-6 mb-2">{item.name}</p>
-                    {/* {item.description && (
-                      <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug line-clamp-2 mt-1">
-                        {item.description}
-                      </p>
-                    )} */}
-                     <PriceDisplay
-                      price={item.price}
-                      discount={item.discount || 0}
-                      size="sm"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between mt-2">
-                   <p className="total-price text-sm font-bold">Price: ₹{Math.round((item.price - (item.price*item.discount/100)) * item.quantity)}</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-center bg-[#f8f7f6] dark:bg-white/5 rounded-md border border-gray-200 dark:border-gray-700">
                         <button
-                          onClick={() => {
-                            if (item.quantity === 1) {
-                              removeItem(item.id);
-                            } else {
-                              decrementQuantity(item.id);
-                            }
-                          }}
-                          className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-l-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                          onClick={() => (item.quantity === 1 ? removeItem(item.id) : decrementQuantity(item.id))}
+                          className="text-sm font-bold flex h-7 w-7 items-center justify-center rounded-l-md hover:bg-gray-200"
                         >
-                          -
+                          −
                         </button>
-                        <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
+                        <span className="text-xs font-bold w-5 text-center">{item.quantity}</span>
                         <button
                           onClick={() => incrementQuantity(item.id)}
-                          className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-r-lg text-[#7f4f13] hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                          className="text-sm font-bold flex h-7 w-7 items-center justify-center rounded-r-md text-[#7f4f13] hover:bg-gray-200"
                         >
                           +
                         </button>
                       </div>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800 shrink-0"
+                        className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 shrink-0"
                         title="Delete item"
                       >
-                        <span className="material-symbols-outlined text-lg">delete</span>
+                        <span className="material-symbols-outlined text-base">delete</span>
                       </button>
                     </div>
                   </div>

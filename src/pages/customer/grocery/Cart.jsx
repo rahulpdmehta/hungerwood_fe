@@ -91,58 +91,65 @@ export default function GroceryCart() {
           {items.map((item) => {
             const lineTotal = item.sellingPrice * item.quantity;
             const hasMrp = item.mrp && item.mrp > item.sellingPrice;
+            const discountPct = hasMrp ? Math.round(((item.mrp - item.sellingPrice) / item.mrp) * 100) : 0;
             return (
               <div
                 key={`${item.productId}:${item.variantId}`}
-                className="flex items-center gap-2 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-md border-2 border-gray-200 dark:border-gray-700 mb-2 last:mb-0"
+                className="flex items-center gap-2 overflow-hidden bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-2 last:mb-0"
               >
-                <div
-                  className="bg-center bg-no-repeat aspect-square bg-cover w-[110px] h-[110px] shrink-0"
-                  style={{ backgroundImage: `url("${optimizeImage(item.image, 220)}")` }}
-                />
-                <div className="flex flex-col flex-1 justify-between min-h-[110px] p-2">
-                  <div className="flex-1">
-                    <p className="text-[#181411] dark:text-white text-base font-bold leading-tight pr-6 mb-1">
+                <div className="relative shrink-0">
+                  <div
+                    className="bg-center bg-no-repeat aspect-square bg-cover w-[72px] h-[72px] m-2 rounded-md"
+                    style={{ backgroundImage: `url("${optimizeImage(item.image, 160)}")` }}
+                  />
+                  {discountPct > 0 && (
+                    <span className="absolute top-1 left-1 bg-green-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded">
+                      {discountPct}% OFF
+                    </span>
+                  )}
+                </div>
+                <div className="flex flex-col flex-1 justify-between py-2 pr-2 min-h-[72px]">
+                  <div>
+                    <p className="text-[#181411] dark:text-white text-sm font-bold leading-tight line-clamp-1">
                       {item.name}
                     </p>
-                    <p className="text-[#887263] dark:text-gray-400 text-[11px] leading-snug mb-1">
+                    <p className="text-[#887263] dark:text-gray-400 text-[10px] leading-snug">
                       {item.variantLabel}
                     </p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-[#181411] dark:text-white">₹{item.sellingPrice}</span>
-                      {hasMrp && <span className="text-[11px] text-[#887263] line-through">₹{item.mrp}</span>}
-                    </div>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
-                    <p className="total-price text-sm font-bold">Price: ₹{lineTotal}</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center text-[#181411] dark:text-white bg-[#f8f7f6] dark:bg-white/5 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="flex items-center justify-between mt-1">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-sm font-extrabold text-[#181411] dark:text-white">₹{lineTotal}</span>
+                      {hasMrp && (
+                        <span className="text-[10px] text-[#887263] line-through">₹{item.mrp * item.quantity}</span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex items-center bg-[#f8f7f6] dark:bg-white/5 rounded-md border border-gray-200 dark:border-gray-700">
                         <button
-                          onClick={() => {
-                            if (item.quantity === 1) {
-                              removeItem(item.productId, item.variantId);
-                            } else {
-                              decrementQuantity(item.productId, item.variantId);
-                            }
-                          }}
-                          className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-l-lg hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                          onClick={() =>
+                            item.quantity === 1
+                              ? removeItem(item.productId, item.variantId)
+                              : decrementQuantity(item.productId, item.variantId)
+                          }
+                          className="text-sm font-bold flex h-7 w-7 items-center justify-center rounded-l-md hover:bg-gray-200"
                         >
                           −
                         </button>
-                        <span className="text-sm font-bold w-6 text-center">{item.quantity}</span>
+                        <span className="text-xs font-bold w-5 text-center">{item.quantity}</span>
                         <button
                           onClick={() => incrementQuantity(item.productId, item.variantId)}
-                          className="text-base font-bold flex h-8 w-8 items-center justify-center rounded-r-lg text-green-700 hover:bg-gray-200 dark:hover:bg-white/10 transition-colors"
+                          className="text-sm font-bold flex h-7 w-7 items-center justify-center rounded-r-md text-green-700 hover:bg-gray-200"
                         >
                           +
                         </button>
                       </div>
                       <button
                         onClick={() => removeItem(item.productId, item.variantId)}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors border border-red-200 dark:border-red-800 shrink-0"
+                        className="flex h-7 w-7 items-center justify-center rounded-md bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 shrink-0"
                         title="Delete item"
                       >
-                        <Trash2 size={16} />
+                        <Trash2 size={14} />
                       </button>
                     </div>
                   </div>
